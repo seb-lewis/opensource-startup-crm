@@ -1,114 +1,58 @@
 <script>
-    import { Tabs, TabItem } from 'flowbite-svelte';
-    import { Button, Modal } from 'flowbite-svelte';
-    import { Fa } from 'svelte-fa';
-    import { faChevronLeft, faChevronRight, faPlus } from '@fortawesome/free-solid-svg-icons';
-    import { goto } from '$app/navigation';
+  import { Button, Badge } from 'flowbite-svelte';
 
-    import LeadCard from '$lib/components/LeadCard.svelte';
-    // import Spinner from '$lib/components/Spinner.svelte';
-  
-    /** @type {any[]} */
-    export let openLeads = [];
-    /** @type {any[]} */
-    export let closedLeads = [];
-    /** @type {string} */
-    export let tab = 'open';
-    /** @type {any[]} */
-    export let recordsList = [];
-    /** @type {number} */
-    export let openCurrentPage = 1;
-    /** @type {number} */
-    export let openTotalPages = 1;
-    /** @type {number} */
-    export let closedCurrentPage = 1;
-    /** @type {number} */
-    export let closedTotalPages = 1;
-    /** @type {boolean} */
-    export let deleteLeadModal = false;
-    /** @type {number|string} */
-    export let selectedId;
-    /** @type {string} */
-    export let modalDialog;
-    /** @type {string} */
-    export let modalTitle;
-  
-    export let selectLeadList = (id) => {};
-    export let deleteLead = (id) => {};
-    export let deleteItem = (id) => {};
-    export let handleRecordsPerPage = (event) => {};
-    export let onAddHandle = () => {};
-    export let handleNextPage = () => {};
-    export let handlePreviousPage = () => {};
-    export let FormateTime = (dateStr) => '';
-  
-    const changeTab = (newTab) => {
-      tab = newTab;
-    };
-  </script>
-  
-  <div class="mt-20 p-4">
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <Tabs tabStyle="underline">
-            <TabItem open title="Open" on:click={() => goto('/leads/open')}>
-            </TabItem>
-            <TabItem title="Closed" on:click={() => goto('/leads/closed')}>
-            </TabItem>
-          </Tabs>
-  
-      <div class="flex items-center gap-2">
-        <select class="border rounded px-2 py-1" on:change={handleRecordsPerPage}>
-          {#each recordsList as record}
-            <option value={record[0]}>{record[1]}</option>
+  // Sample data for leads
+  let leads = [
+    { id: 1, name: 'John Doe', email: 'john@example.com', phone: '555-1234', company: 'Acme Inc.', status: 'Open' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com', phone: '555-5678', company: 'Globex Corp.', status: 'Won' },
+    { id: 3, name: 'Mike Johnson', email: 'mike@example.com', phone: '555-9012', company: 'Soylent Corp.', status: 'Lost' },
+  ];
+</script>
+
+<div class="min-h-screen bg-white">
+  <!-- Header -->
+  <header class="bg-blue-500 p-4 flex items-center justify-between">
+    <h1 class="text-white text-2xl font-bold">Open Leads</h1>
+    <Button href="/leads/new" size="sm" color="light">
+      + New Lead
+    </Button>
+  </header>
+
+  <!-- Main Content -->
+  <main class="p-4">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {#each leads as lead}
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">{lead.name}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{lead.email}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{lead.phone}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{lead.company}</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                {#if lead.status === 'Open'}
+                  <Badge color="info">Open</Badge>
+                {:else if lead.status === 'Won'}
+                  <Badge color="success">Won</Badge>
+                {:else if lead.status === 'Lost'}
+                  <Badge color="failure">Lost</Badge>
+                {:else}
+                  <Badge>{lead.status}</Badge>
+                {/if}
+              </td>
+            </tr>
           {/each}
-        </select>
-  
-        <div class="flex items-center border bg-white rounded px-2 py-1">
-          <button on:click={handlePreviousPage} disabled={tab === 'open' ? openCurrentPage === 1 : closedCurrentPage === 1}>
-            <Fa icon={faChevronLeft} class="h-4" />
-          </button>
-          <span class="text-sm mx-2">
-            {tab === 'open' ? `${openCurrentPage} to ${openTotalPages}` : `${closedCurrentPage} to ${closedTotalPages}`}
-          </span>
-          <button on:click={handleNextPage} disabled={tab === 'open' ? openCurrentPage === openTotalPages : closedCurrentPage === closedTotalPages}>
-            <Fa icon={faChevronRight} class="h-4" />
-          </button>
-        </div>
-  
-        <Button color="blue" on:click={onAddHandle}>
-          <Fa icon={faPlus} class="mr-2" />
-          Add Lead
-        </Button>
-      </div>
+        </tbody>
+      </table>
     </div>
-  
-    <div class="mt-4 space-y-3">
-      {#if tab === 'open'}
-        {#if openLeads.length}
-          {#each openLeads as item (item.id)}
-            <LeadCard {item} {selectLeadList} {deleteLead} {FormateTime} />
-          {/each}
-        {:else}
-          No Leads Found
-        {/if}
-      {:else}
-        {#if closedLeads.length}
-          {#each closedLeads as item (item.id)}
-            <LeadCard {item} {selectLeadList} {deleteLead} {FormateTime} />
-          {/each}
-        {:else}
-          No Leads Found
-        {/if}
-      {/if}
-    </div>
-  
-    <Modal bind:open={deleteLeadModal}>
-      <h3 slot="header">{modalTitle}</h3>
-      <div slot="body">{modalDialog}</div>
-      <div slot="footer" class="flex justify-end gap-2">
-        <Button on:click={() => deleteItem(selectedId)}>Confirm</Button>
-        <Button color="gray" on:click={() => deleteLeadModal = false}>Cancel</Button>
-      </div>
-    </Modal>
-  </div>
-  
+  </main>
+</div>

@@ -60,7 +60,7 @@ export async function load({ params, url, cookies, locals }) {
     } catch (error) {
       console.error('Login error:', error || error.message);
     }
-    throw redirect(307, '/org');
+    throw redirect(307, '/bounce');
 
   }
 
