@@ -18,18 +18,18 @@ enum UserRole {
 }
 
 model User {
-  id             String        @id @default(uuid())
-  email          String        @unique
+  id             String             @id @default(uuid())
+  email          String             @unique
   name           String?
   password       String
-  role           UserRole      @default(READ_ONLY)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  role           UserRole           @default(READ_ONLY)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
   profilePhoto   String?
   phone          String?
   title          String?
   department     String?
-  isActive       Boolean       @default(true)
+  isActive       Boolean            @default(true)
   lastLoginAt    DateTime?
   accounts       Account[]
   contacts       Contact[]
@@ -37,11 +37,56 @@ model User {
   opportunities  Opportunity[]
   tasks          Task[]
   events         Event[]
-  ownedTasks     Task[]        @relation("TaskOwner")
-  ownedEvents    Event[]       @relation("EventOwner")
+  ownedTasks     Task[]             @relation("TaskOwner")
+  ownedEvents    Event[]            @relation("EventOwner")
   cases          Case[]
   comments       Comment[]
-  preparedQuotes Quote[]       @relation("QuotePreparer")
+  preparedQuotes Quote[]            @relation("QuotePreparer")
+  organizations  UserOrganization[]
+}
+
+model Organization {
+  id          String   @id @default(uuid())
+  name        String
+  domain      String?
+  logo        String?
+  website     String?
+  industry    String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isActive    Boolean  @default(true)
+
+  // Relationships
+  users         UserOrganization[]
+  accounts      Account[]
+  contacts      Contact[]
+  leads         Lead[]
+  opportunities Opportunity[]
+  tasks         Task[]
+  events        Event[]
+  cases         Case[]
+  comments      Comment[]
+  quotes        Quote[]
+  products      Product[]
+  solutions     Solution[]
+}
+
+model UserOrganization {
+  id        String   @id @default(uuid())
+  role      UserRole @default(READ_ONLY)
+  isPrimary Boolean  @default(false)
+  joinedAt  DateTime @default(now())
+
+  // Relationships
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+
+  @@unique([userId, organizationId])
+  @@index([userId])
+  @@index([organizationId])
 }
 
 model Account {
@@ -64,6 +109,8 @@ model Account {
   sicCode           String? // Standard Industrial Classification code
   owner             User          @relation(fields: [ownerId], references: [id])
   ownerId           String
+  organization      Organization  @relation(fields: [organizationId], references: [id])
+  organizationId    String
   contacts          Contact[]
   opportunities     Opportunity[]
   tasks             Task[]
@@ -89,6 +136,8 @@ model Contact {
   accountId      String?
   owner          User          @relation(fields: [ownerId], references: [id])
   ownerId        String
+  organization   Organization  @relation(fields: [organizationId], references: [id])
+  organizationId String
   tasks          Task[]
   events         Event[]
   opportunities  Opportunity[]
@@ -111,31 +160,33 @@ enum LeadSource {
 }
 
 model Lead {
-  id                     String      @id @default(uuid())
+  id                     String       @id @default(uuid())
   firstName              String
   lastName               String
   email                  String?
   phone                  String?
   company                String?
   title                  String?
-  status                 LeadStatus  @default(PENDING)
+  status                 LeadStatus   @default(PENDING)
   leadSource             LeadSource?
   industry               String?
   rating                 String? // Hot, Warm, Cold
   description            String?
-  createdAt              DateTime    @default(now())
-  updatedAt              DateTime    @updatedAt
-  owner                  User        @relation(fields: [ownerId], references: [id])
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+  owner                  User         @relation(fields: [ownerId], references: [id])
   ownerId                String
+  organization           Organization @relation(fields: [organizationId], references: [id])
+  organizationId         String
   tasks                  Task[]
   events                 Event[]
-  isConverted            Boolean     @default(false)
+  isConverted            Boolean      @default(false)
   convertedAt            DateTime?
   comments               Comment[]
   convertedAccountId     String?
   convertedContactId     String?
   convertedOpportunityId String?
-  contact                Contact?    @relation(fields: [contactId], references: [id])
+  contact                Contact?     @relation(fields: [contactId], references: [id])
   contactId              String?
 }
 
@@ -163,6 +214,8 @@ model Opportunity {
   accountId            String
   owner                User                 @relation(fields: [ownerId], references: [id])
   ownerId              String
+  organization         Organization         @relation(fields: [organizationId], references: [id])
+  organizationId       String
   contacts             Contact[]
   tasks                Task[]
   events               Event[]
@@ -185,65 +238,71 @@ enum OpportunityStage {
 }
 
 model Task {
-  id            String       @id @default(uuid())
-  subject       String
-  status        String       @default("Not Started") // Not Started, In Progress, Completed, etc.
-  priority      String       @default("Normal") // High, Normal, Low
-  dueDate       DateTime?
-  description   String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  owner         User         @relation("TaskOwner", fields: [ownerId], references: [id])
-  ownerId       String
-  createdBy     User         @relation(fields: [createdById], references: [id])
-  createdById   String
-  account       Account?     @relation(fields: [accountId], references: [id])
-  accountId     String?
-  contact       Contact?     @relation(fields: [contactId], references: [id])
-  contactId     String?
-  lead          Lead?        @relation(fields: [leadId], references: [id])
-  leadId        String?
-  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id])
-  opportunityId String?
-  case          Case?        @relation(fields: [caseId], references: [id])
-  caseId        String?
+  id             String       @id @default(uuid())
+  subject        String
+  status         String       @default("Not Started") // Not Started, In Progress, Completed, etc.
+  priority       String       @default("Normal") // High, Normal, Low
+  dueDate        DateTime?
+  description    String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  owner          User         @relation("TaskOwner", fields: [ownerId], references: [id])
+  ownerId        String
+  createdBy      User         @relation(fields: [createdById], references: [id])
+  createdById    String
+  account        Account?     @relation(fields: [accountId], references: [id])
+  accountId      String?
+  contact        Contact?     @relation(fields: [contactId], references: [id])
+  contactId      String?
+  lead           Lead?        @relation(fields: [leadId], references: [id])
+  leadId         String?
+  opportunity    Opportunity? @relation(fields: [opportunityId], references: [id])
+  opportunityId  String?
+  case           Case?        @relation(fields: [caseId], references: [id])
+  caseId         String?
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
 }
 
 model Event {
-  id            String       @id @default(uuid())
-  subject       String
-  location      String?
-  startDate     DateTime
-  endDate       DateTime
-  allDayEvent   Boolean      @default(false)
-  description   String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  owner         User         @relation("EventOwner", fields: [ownerId], references: [id])
-  ownerId       String
-  createdBy     User         @relation(fields: [createdById], references: [id])
-  createdById   String
-  account       Account?     @relation(fields: [accountId], references: [id])
-  accountId     String?
-  contact       Contact?     @relation(fields: [contactId], references: [id])
-  contactId     String?
-  lead          Lead?        @relation(fields: [leadId], references: [id])
-  leadId        String?
-  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id])
-  opportunityId String?
+  id             String       @id @default(uuid())
+  subject        String
+  location       String?
+  startDate      DateTime
+  endDate        DateTime
+  allDayEvent    Boolean      @default(false)
+  description    String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  owner          User         @relation("EventOwner", fields: [ownerId], references: [id])
+  ownerId        String
+  createdBy      User         @relation(fields: [createdById], references: [id])
+  createdById    String
+  account        Account?     @relation(fields: [accountId], references: [id])
+  accountId      String?
+  contact        Contact?     @relation(fields: [contactId], references: [id])
+  contactId      String?
+  lead           Lead?        @relation(fields: [leadId], references: [id])
+  leadId         String?
+  opportunity    Opportunity? @relation(fields: [opportunityId], references: [id])
+  opportunityId  String?
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
 }
 
 model Product {
-  id            String               @id @default(uuid())
-  name          String
-  code          String               @unique
-  description   String?
-  unitPrice     Float
-  active        Boolean              @default(true)
-  createdAt     DateTime             @default(now())
-  updatedAt     DateTime             @updatedAt
-  opportunities ProductOpportunity[]
-  QuoteLineItem QuoteLineItem[]      @relation("ProductLineItems")
+  id             String               @id @default(uuid())
+  name           String
+  code           String               @unique
+  description    String?
+  unitPrice      Float
+  active         Boolean              @default(true)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  opportunities  ProductOpportunity[]
+  QuoteLineItem  QuoteLineItem[]      @relation("ProductLineItems")
+  organization   Organization         @relation(fields: [organizationId], references: [id])
+  organizationId String
 }
 
 model ProductOpportunity {
@@ -261,27 +320,29 @@ model ProductOpportunity {
 }
 
 model Case {
-  id          String     @id @default(uuid())
-  caseNumber  String     @unique @default(uuid())
-  subject     String
-  status      CaseStatus @default(OPEN)
-  description String?
-  priority    String     @default("Medium") // High, Medium, Low
-  origin      String? // Email, Web, Phone
-  type        String? // Problem, Feature Request, Question
-  reason      String? // Example: "User didn't attend training, Complex functionality"
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  closedAt    DateTime?
-  owner       User       @relation(fields: [ownerId], references: [id])
-  ownerId     String
-  account     Account    @relation(fields: [accountId], references: [id])
-  accountId   String
-  contact     Contact?   @relation(fields: [contactId], references: [id])
-  contactId   String?
-  tasks       Task[]
-  comments    Comment[]
-  solutions   Solution[]
+  id             String       @id @default(uuid())
+  caseNumber     String       @unique @default(uuid())
+  subject        String
+  status         CaseStatus   @default(OPEN)
+  description    String?
+  priority       String       @default("Medium") // High, Medium, Low
+  origin         String? // Email, Web, Phone
+  type           String? // Problem, Feature Request, Question
+  reason         String? // Example: "User didn't attend training, Complex functionality"
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  closedAt       DateTime?
+  owner          User         @relation(fields: [ownerId], references: [id])
+  ownerId        String
+  account        Account      @relation(fields: [accountId], references: [id])
+  accountId      String
+  contact        Contact?     @relation(fields: [contactId], references: [id])
+  contactId      String?
+  tasks          Task[]
+  comments       Comment[]
+  solutions      Solution[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
 }
 
 enum CaseStatus {
@@ -291,34 +352,38 @@ enum CaseStatus {
 }
 
 model Solution {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  status      String   @default("Draft") // Draft, Reviewed, Approved
-  isPublished Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  cases       Case[]
+  id             String       @id @default(uuid())
+  title          String
+  description    String
+  status         String       @default("Draft") // Draft, Reviewed, Approved
+  isPublished    Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  cases          Case[]
 }
 
 model Comment {
-  id            String       @id @default(uuid())
-  body          String
-  isPrivate     Boolean      @default(false)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  author        User         @relation(fields: [authorId], references: [id])
-  authorId      String
-  case          Case?        @relation(fields: [caseId], references: [id])
-  caseId        String?
-  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id])
-  opportunityId String?
-  lead          Lead?        @relation(fields: [leadId], references: [id])
-  leadId        String?
-  account       Account?     @relation(fields: [accountId], references: [id])
-  accountId     String?
-  contact       Contact?     @relation(fields: [contactId], references: [id])
-  contactId     String?
+  id             String       @id @default(uuid())
+  body           String
+  isPrivate      Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  author         User         @relation(fields: [authorId], references: [id])
+  authorId       String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  case           Case?        @relation(fields: [caseId], references: [id])
+  caseId         String?
+  opportunity    Opportunity? @relation(fields: [opportunityId], references: [id])
+  opportunityId  String?
+  lead           Lead?        @relation(fields: [leadId], references: [id])
+  leadId         String?
+  account        Account?     @relation(fields: [accountId], references: [id])
+  accountId      String?
+  contact        Contact?     @relation(fields: [contactId], references: [id])
+  contactId      String?
 }
 
 model Quote {
@@ -340,21 +405,24 @@ model Quote {
   updatedAt         DateTime    @updatedAt
 
   // Relationships
-  preparedById  String
-  preparedBy    User            @relation("QuotePreparer", fields: [preparedById], references: [id], onDelete: Restrict)
-  accountId     String
-  account       Account         @relation("AccountQuotes", fields: [accountId], references: [id], onDelete: Restrict)
-  opportunityId String?
-  opportunity   Opportunity?    @relation("OpportunityQuotes", fields: [opportunityId], references: [id], onDelete: SetNull)
-  contactId     String?
-  contact       Contact?        @relation("ContactQuotes", fields: [contactId], references: [id], onDelete: SetNull)
-  lineItems     QuoteLineItem[] @relation("QuoteLineItems")
+  preparedById   String
+  preparedBy     User            @relation("QuotePreparer", fields: [preparedById], references: [id], onDelete: Restrict)
+  accountId      String
+  account        Account         @relation("AccountQuotes", fields: [accountId], references: [id], onDelete: Restrict)
+  opportunityId  String?
+  opportunity    Opportunity?    @relation("OpportunityQuotes", fields: [opportunityId], references: [id], onDelete: SetNull)
+  contactId      String?
+  contact        Contact?        @relation("ContactQuotes", fields: [contactId], references: [id], onDelete: SetNull)
+  lineItems      QuoteLineItem[] @relation("QuoteLineItems")
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  organizationId String
 
   @@index([status])
   @@index([accountId])
   @@index([opportunityId])
   @@index([preparedById])
   @@index([expirationDate])
+  @@index([organizationId])
 }
 
 model QuoteLineItem {
