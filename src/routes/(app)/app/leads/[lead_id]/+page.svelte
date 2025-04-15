@@ -1,12 +1,42 @@
 <script>
-  import { Badge, Button, Card, Spinner, Tabs, TabItem, Textarea } from 'flowbite-svelte';
+  import { Badge, Button, Card, Spinner, Tabs, TabItem, Textarea, Toast } from 'flowbite-svelte';
   import { fly, fade, scale } from 'svelte/transition';
+  import { enhance } from '$app/forms';
+  import { invalidateAll } from '$app/navigation';
 
   export let data;
+  export let form;
   const { lead } = data;
 
   let newComment = '';
   let isSubmittingComment = false;
+  let isConverting = false;
+  
+  // Toast state variables
+  let showToast = false;
+  let toastMessage = '';
+  let toastType = 'default';
+
+  // Reactive statement to show toast messages based on form action result
+  $: if (form?.status === 'success') {
+    toastMessage = form.message || 'Action completed successfully!';
+    toastType = 'success';
+    showToast = true;
+    invalidateAll();
+    isConverting = false;
+    isSubmittingComment = false;
+    
+    // Reset comment field if the comment was successfully added
+    if (form.comment) {
+      newComment = '';
+    }
+  } else if (form?.status === 'error') {
+    toastMessage = form.message || 'An error occurred.';
+    toastType = 'error';
+    showToast = true;
+    isConverting = false;
+    isSubmittingComment = false;
+  }
 
   function formatDate(dateString) {
     if (!dateString) return '';
@@ -40,10 +70,6 @@
     return `${lead.firstName} ${lead.lastName}`.trim();
   }
 
-  async function convertLead() {
-    alert('Convert lead functionality would go here');
-  }
-
   async function addComment() {
     if (!newComment.trim()) return;
     isSubmittingComment = true;
@@ -54,6 +80,13 @@
     }, 1000);
   }
 </script>
+
+<!-- Use Toast component properly -->
+{#if showToast}
+  <Toast dismissable bind:open={showToast} color={toastType} position="top-right">
+    <span class="font-medium">{toastMessage}</span>
+  </Toast>
+{/if}
 
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
   <!-- Sticky Top Bar -->
@@ -70,14 +103,28 @@
       </div>
       <div class="flex gap-2">
         {#if lead.status !== 'CONVERTED'}
-          <Button color="success" size="sm" on:click={convertLead}>
-            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-            </svg>
-            Convert
-          </Button>
+          <!-- Use a form for the convert action -->
+          <form method="POST" action="?/convert" use:enhance={() => {
+            isConverting = true; // Set loading state on submit
+            return async ({ update }) => {
+              // This runs after the action completes
+              await update({ reset: false }); // Update form prop without resetting the page
+              // isConverting will be reset by the reactive statement above
+            };
+          }}>
+            <Button type="submit" color="success" size="sm" disabled={isConverting}>
+              {#if isConverting}
+                <Spinner size="sm" class="mr-1.5" /> Converting...
+              {:else}
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                Convert
+              {/if}
+            </Button>
+          </form>
         {/if}
-        <Button color="light" size="sm" href="/app/leads/{lead.id}/edit">
+        <Button color="light" size="sm" href="/app/leads/{lead.id}/edit" disabled={isConverting || lead.status === 'CONVERTED'}>
           <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
           </svg>
@@ -133,7 +180,16 @@
           <div>Created: <span class="font-medium text-gray-700">{formatDate(lead.createdAt)}</span></div>
           <div>Updated: <span class="font-medium text-gray-700">{formatDate(lead.updatedAt)}</span></div>
           {#if lead.isConverted && lead.convertedAt}
-            <div>Converted: <span class="font-medium text-indigo-700">{formatDate(lead.convertedAt)}</span></div>
+            <div class="text-green-600 font-semibold">Converted: <span class="font-medium">{formatDate(lead.convertedAt)}</span></div>
+            {#if lead.convertedContactId}
+              <div class="text-xs"><a href="/app/contacts/{lead.convertedContactId}" class="text-blue-600 hover:underline">View Contact</a></div>
+            {/if}
+            {#if lead.convertedAccountId}
+              <div class="text-xs"><a href="/app/accounts/{lead.convertedAccountId}" class="text-blue-600 hover:underline">View Account</a></div>
+            {/if}
+             {#if lead.convertedOpportunityId}
+              <div class="text-xs"><a href="/app/opportunities/{lead.convertedOpportunityId}" class="text-blue-600 hover:underline">View Opportunity</a></div>
+            {/if}
           {/if}
         </div>
       </Card>
@@ -161,25 +217,33 @@
       </Card>
 
       <!-- Related Contact -->
+      <!-- Show converted contact info if available -->
       <Card class="shadow border-0 bg-white/90">
         <h3 class="text-base font-semibold mb-2 text-blue-900">Related Contact</h3>
-        {#if lead.contact}
-          <div class="border rounded-lg p-3 hover:shadow transition" in:scale={{ duration: 200 }}>
-            <div class="font-medium text-gray-900">{lead.contact.firstName} {lead.contact.lastName}</div>
-            {#if lead.contact.email}
-              <div class="text-xs text-gray-500">{lead.contact.email}</div>
-            {/if}
-            {#if lead.contact.phone}
-              <div class="text-xs text-gray-500">{lead.contact.phone}</div>
-            {/if}
-            <Button size="xs" href={`/app/contacts/${lead.contact.id}`} class="w-full mt-2">
-              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-              </svg>
-              View Contact
-            </Button>
-          </div>
+        {#if lead.convertedContactId && lead.contact}
+          <div class="border rounded-lg p-3 bg-green-50 border-green-200" in:scale={{ duration: 200 }}>
+             <div class="font-medium text-gray-900">{lead.contact.firstName} {lead.contact.lastName}</div>
+             {#if lead.contact.email}
+               <div class="text-xs text-gray-500">{lead.contact.email}</div>
+             {/if}
+             {#if lead.contact.phone}
+               <div class="text-xs text-gray-500">{lead.contact.phone}</div>
+             {/if}
+             <Button size="xs" href={`/app/contacts/${lead.contact.id}`} class="w-full mt-2">
+               <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+               </svg>
+               View Contact
+             </Button>
+           </div>
+        {:else if lead.status === 'CONVERTED'}
+           <div class="text-center py-4 text-gray-400 border border-dashed rounded-lg" in:fade={{ delay: 300 }}>
+             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mx-auto text-green-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+             </svg>
+             Lead Converted
+           </div>
         {:else}
           <div class="text-center py-4 text-gray-400 border border-dashed rounded-lg" in:fade={{ delay: 300 }}>
             <svg class="w-8 h-8 mx-auto text-gray-200 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -260,20 +324,27 @@
           <TabItem open title="Comments">
             <div class="p-4">
               <div class="mb-4">
-                <Textarea bind:value={newComment} placeholder="Add a comment..." rows="3" class="focus:border-blue-500" />
-                <div class="flex justify-end mt-3">
-                  <Button size="sm" color="blue" disabled={!newComment || isSubmittingComment} on:click={addComment}
-                          class="px-4 py-2 transition-all duration-200 hover:shadow">
-                    {#if isSubmittingComment}
-                      <Spinner size="sm" class="mr-2" />
-                    {:else}
-                      <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                      </svg>
-                    {/if}
-                    Add Comment
-                  </Button>
-                </div>
+                <form method="POST" action="?/addComment" use:enhance={() => {
+                  isSubmittingComment = true;
+                  return async ({ update }) => {
+                    await update({ reset: false });
+                  };
+                }}>
+                  <Textarea name="comment" bind:value={newComment} placeholder="Add a comment..." rows="3" class="focus:border-blue-500" />
+                  <div class="flex justify-end mt-3">
+                    <Button type="submit" size="sm" color="blue" disabled={!newComment || isSubmittingComment}
+                            class="px-4 py-2 transition-all duration-200 hover:shadow">
+                      {#if isSubmittingComment}
+                        <Spinner size="sm" class="mr-2" />
+                      {:else}
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                      {/if}
+                      Add Comment
+                    </Button>
+                  </div>
+                </form>
               </div>
               {#if lead.comments && lead.comments.length > 0}
                 <div class="space-y-4">
