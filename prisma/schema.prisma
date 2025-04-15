@@ -17,32 +17,34 @@ enum UserRole {
 }
 
 model User {
-  id             String             @id @default(uuid())
-  user_id        String             @unique
-  email          String             @unique
-  name           String?
-  session_id     String?            @unique
-  role           UserRole           @default(READ_ONLY)
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  profilePhoto   String?
-  phone          String?
-  title          String?
-  department     String?
-  isActive       Boolean            @default(true)
-  lastLogin      DateTime?
-  accounts       Account[]
-  contacts       Contact[]
-  leads          Lead[]
-  opportunities  Opportunity[]
-  tasks          Task[]
-  events         Event[]
-  ownedTasks     Task[]             @relation("TaskOwner")
-  ownedEvents    Event[]            @relation("EventOwner")
-  cases          Case[]
-  comments       Comment[]
-  preparedQuotes Quote[]            @relation("QuotePreparer")
-  organizations  UserOrganization[]
+  id              String             @id @default(uuid())
+  user_id         String             @unique
+  email           String             @unique
+  name            String?
+  session_id      String?            @unique
+  role            UserRole           @default(READ_ONLY)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  profilePhoto    String?
+  phone           String?
+  title           String?
+  department      String?
+  isActive        Boolean            @default(true)
+  lastLogin       DateTime?
+  accounts        Account[]
+  deletedAccounts Account[]          @relation("DeletedAccounts")
+  contacts        Contact[]
+  leads           Lead[]
+  opportunities   Opportunity[]
+  tasks           Task[]
+  events          Event[]
+  ownedTasks      Task[]             @relation("TaskOwner")
+  ownedEvents     Event[]            @relation("EventOwner")
+  cases           Case[]
+  comments        Comment[]
+  preparedQuotes  Quote[]            @relation("QuotePreparer")
+  organizations   UserOrganization[]
+  AuditLog        AuditLog[]
 }
 
 model Organization {
@@ -70,6 +72,7 @@ model Organization {
   quotes        Quote[]
   products      Product[]
   solutions     Solution[]
+  AuditLog      AuditLog[]
 }
 
 model UserOrganization {
@@ -112,6 +115,13 @@ model Account {
   tickerSymbol      String?
   rating            String? // Hot, Warm, Cold
   sicCode           String? // Standard Industrial Classification code
+  isActive          Boolean                      @default(true)
+  isDeleted         Boolean                      @default(false)
+  deletedAt         DateTime?
+  deletedById       String?
+  deletedBy         User?                        @relation("DeletedAccounts", fields: [deletedById], references: [id])
+  closedAt          DateTime?
+  closureReason     String?
   owner             User                         @relation(fields: [ownerId], references: [id])
   ownerId           String
   organization      Organization                 @relation(fields: [organizationId], references: [id])
@@ -495,4 +505,41 @@ model AccountContactRelationship {
   @@unique([contactId, accountId])
   @@index([contactId])
   @@index([accountId])
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  EXPORT
+  IMPORT
+  VIEW
+  OTHER
+}
+
+model AuditLog {
+  id          String      @id @default(uuid())
+  timestamp   DateTime    @default(now())
+  action      AuditAction
+  entityType  String // Account, Contact, Opportunity, etc.
+  entityId    String? // The ID of the affected entity
+  description String? // Human-readable description of the action
+  oldValues   Json? // Previous state (for updates/deletes)
+  newValues   Json? // New state (for creates/updates)
+  ipAddress   String? // IP address of the user
+  userAgent   String? // Browser/client information
+
+  // Relationships
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  @@index([timestamp])
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([organizationId])
+  @@index([action])
 }
