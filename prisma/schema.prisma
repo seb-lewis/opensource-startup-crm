@@ -18,10 +18,10 @@ enum UserRole {
 
 model User {
   id             String             @id @default(uuid())
-  user_id         String            @unique
+  user_id        String             @unique
   email          String             @unique
   name           String?
-  session_id      String? @unique
+  session_id     String?            @unique
   role           UserRole           @default(READ_ONLY)
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
@@ -30,7 +30,7 @@ model User {
   title          String?
   department     String?
   isActive       Boolean            @default(true)
-  lastLogin    DateTime?
+  lastLogin      DateTime?
   accounts       Account[]
   contacts       Contact[]
   leads          Lead[]
@@ -90,62 +90,71 @@ model UserOrganization {
 }
 
 model Account {
-  id                String        @id @default(uuid())
+  id                String                       @id @default(uuid())
   name              String
   type              String? // customer, partner, prospect
   industry          String?
   website           String?
   phone             String?
-  address           Address?      @relation("AccountAddress", fields: [addressId], references: [id])
-  addressId         String?
+  street            String?
+  city              String?
+  state             String?
+  postalCode        String?
+  country           String?
+  latitude          Float?
+  longitude         Float?
   annualRevenue     Float?
   description       String?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  createdAt         DateTime                     @default(now())
+  updatedAt         DateTime                     @updatedAt
   numberOfEmployees Int?
   accountOwnership  String? // Public, Private, Subsidiary, etc.
   tickerSymbol      String?
   rating            String? // Hot, Warm, Cold
   sicCode           String? // Standard Industrial Classification code
-  owner             User          @relation(fields: [ownerId], references: [id])
+  owner             User                         @relation(fields: [ownerId], references: [id])
   ownerId           String
-  organization      Organization  @relation(fields: [organizationId], references: [id])
+  organization      Organization                 @relation(fields: [organizationId], references: [id])
   organizationId    String
-  contacts          Contact[]
   opportunities     Opportunity[]
   tasks             Task[]
   events            Event[]
   cases             Case[]
   comments          Comment[]
-  quotes            Quote[]       @relation("AccountQuotes")
+  quotes            Quote[]                      @relation("AccountQuotes")
+  relatedContacts   AccountContactRelationship[]
 }
 
 model Contact {
-  id             String        @id @default(uuid())
-  firstName      String
-  lastName       String
-  email          String?
-  phone          String?
-  title          String?
-  department     String?
-  mailingAddress Address?      @relation(fields: [addressId], references: [id])
-  description    String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  account        Account?      @relation(fields: [accountId], references: [id])
-  accountId      String?
-  owner          User          @relation(fields: [ownerId], references: [id])
-  ownerId        String
-  organization   Organization  @relation(fields: [organizationId], references: [id])
-  organizationId String
-  tasks          Task[]
-  events         Event[]
-  opportunities  Opportunity[]
-  cases          Case[]
-  leads          Lead[]
-  comments       Comment[]
-  quotes         Quote[]       @relation("ContactQuotes")
-  addressId      String?
+  id              String                       @id @default(uuid())
+  firstName       String
+  lastName        String
+  email           String?
+  phone           String?
+  title           String?
+  department      String?
+  street          String?
+  city            String?
+  state           String?
+  postalCode      String?
+  country         String?
+  latitude        Float?
+  longitude       Float?
+  description     String?
+  createdAt       DateTime                     @default(now())
+  updatedAt       DateTime                     @updatedAt
+  owner           User                         @relation(fields: [ownerId], references: [id])
+  ownerId         String
+  organization    Organization                 @relation(fields: [organizationId], references: [id])
+  organizationId  String
+  tasks           Task[]
+  events          Event[]
+  opportunities   Opportunity[]
+  cases           Case[]
+  leads           Lead[] // Keep this relation for historical tracking only
+  comments        Comment[]
+  quotes          Quote[]                      @relation("ContactQuotes")
+  relatedAccounts AccountContactRelationship[]
 }
 
 enum LeadSource {
@@ -387,22 +396,34 @@ model Comment {
 }
 
 model Quote {
-  id                String      @id @default(uuid())
-  quoteNumber       String      @unique
-  name              String
-  status            QuoteStatus @default(DRAFT)
-  description       String?     @db.Text
-  expirationDate    DateTime?
-  subtotal          Decimal     @default(0.00) @db.Decimal(18, 2)
-  discountAmount    Decimal     @default(0.00) @db.Decimal(18, 2)
-  taxAmount         Decimal     @default(0.00) @db.Decimal(18, 2)
-  grandTotal        Decimal     @default(0.00) @db.Decimal(18, 2)
-  billingAddressId  String?
-  shippingAddressId String?
-  billingAddress    Address?    @relation("QuoteBillingAddress", fields: [billingAddressId], references: [id], map: "QuoteBillingAddress_fk")
-  shippingAddress   Address?    @relation("QuoteShippingAddress", fields: [shippingAddressId], references: [id], map: "QuoteShippingAddress_fk")
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  id             String      @id @default(uuid())
+  quoteNumber    String      @unique
+  name           String
+  status         QuoteStatus @default(DRAFT)
+  description    String?     @db.Text
+  expirationDate DateTime?
+  subtotal       Decimal     @default(0.00) @db.Decimal(18, 2)
+  discountAmount Decimal     @default(0.00) @db.Decimal(18, 2)
+  taxAmount      Decimal     @default(0.00) @db.Decimal(18, 2)
+  grandTotal     Decimal     @default(0.00) @db.Decimal(18, 2)
+
+  // Billing address fields
+  billingStreet     String?
+  billingCity       String?
+  billingState      String?
+  billingPostalCode String?
+  billingCountry    String?
+
+  // Shipping address fields
+  shippingStreet     String?
+  shippingCity       String?
+  shippingState      String?
+  shippingPostalCode String?
+  shippingCountry    String?
+
+  // Remove billingAddressId, shippingAddressId and address relations
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relationships
   preparedById   String
@@ -454,18 +475,24 @@ enum QuoteStatus {
   ACCEPTED
 }
 
-model Address {
-  id         String  @id @default(uuid())
-  street     String?
-  city       String?
-  state      String?
-  postalCode String?
-  country    String?
-  latitude   Float?
-  longitude  Float?
+model AccountContactRelationship {
+  id          String    @id @default(uuid())
+  role        String? // Decision Maker, Influencer, etc.
+  isPrimary   Boolean   @default(false)
+  startDate   DateTime  @default(now())
+  endDate     DateTime?
+  description String?
 
-  billingQuotes  Quote[]   @relation("QuoteBillingAddress")
-  shippingQuotes Quote[]   @relation("QuoteShippingAddress")
-  accounts       Account[] @relation("AccountAddress")
-  Contact        Contact[]
+  // Relationships
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([contactId, accountId])
+  @@index([contactId])
+  @@index([accountId])
 }
