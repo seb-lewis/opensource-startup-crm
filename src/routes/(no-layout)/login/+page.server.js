@@ -1,13 +1,37 @@
 import axios from 'axios';
+import prisma from '$lib/prisma'
+
 import { redirect } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { auth } from '$lib/stores/auth';
 
+// import bcrypt from "bcryptjs";
+import { v4 as uuidv4 } from 'uuid';
+
+
+async function fetchUserData(params) {
+  const url = 'https://www.googleapis.com/oauth2/v1/userinfo'
+
+  // console.log('access token', params)
+  try {
+    const response = await axios.get(url, {
+      params,
+      headers: {},
+      timeout: 60000 // timeout in milliseconds
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error:', error)
+  }
+}
+
 /** @type {import('@sveltejs/kit').ServerLoad} */
-export async function load({ params, url, cookies, locals }) {
+export async function load({ params, url, cookies }) {
   const code = url.searchParams.get('code')
   const redirect_uri = env.GOOGLE_LOGIN_DOMAIN + '/login'
 
+  console.log('code', code)
+    // Check if the user is already authenticated
   if (code != null) {
     params = {
       grant_type: 'authorization_code',
@@ -25,43 +49,48 @@ export async function load({ params, url, cookies, locals }) {
       console.error('Error:', error)
     }
 
-    console.log('info', info)
-    var payload =
-    {
-      "token": info.access_token
-    }
-    try {
-      const response = await axios.post(env.API_HOST + '/api/auth/google', payload);
-      console.log(response.data);
+    const user_info = await fetchUserData({ access_token: info.access_token })
 
-      cookies.set('access_token', response.data.access_token, {
-        path: '/',
-        httpOnly: false, // set to true if server-side only
-        sameSite: 'strict',
-        secure: true,
-        maxAge: 60 * 60 * 24, // 1 day
-      });
+    const session_id = uuidv4()
+    
+    console.log('user_info', user_info)
+    const user = await prisma.user.upsert({
+      where: { email: user_info.email },
+      update: { 
+        session_id: session_id,
+        profilePhoto: user_info.picture,
+        lastLogin: new Date() 
+      },
+      create: {
+        email: user_info.email,
+        name: user_info.name,
+        profilePhoto: user_info.picture,
+        user_id: user_info.id,
+        session_id: session_id
+      }
+    })
 
-      cookies.set('refresh_token', response.data.refresh_token, {
-        path: '/',
-        httpOnly: false,
-        sameSite: 'strict',
-        secure: true,
-        maxAge: 60 * 60 * 24 * 7, // 1 week
-      });
-      auth.set({
-        isAuthenticated: true,
-        user: response.data.username,
-        access_token: response.data.access_token
-      });
-
-      
-      
-    } catch (error) {
-      console.error('Login error:', error || error.message);
-    }
+    await cookies.set('session', session_id, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: true,
+      maxAge: 60 * 60 * 24 * 7 // one week
+    });
+        
     throw redirect(307, '/bounce');
+  }
 
+  // Check for existing session
+  const sessionId = cookies.get('session');
+  if (sessionId) {
+    const user = await prisma.user.findUnique({
+      where: { session_id: sessionId }
+    });
+    
+    if (user) {
+      throw redirect(307, '/bounce');
+    }
   }
 
   const google_login_url = (
@@ -76,4 +105,3 @@ export async function load({ params, url, cookies, locals }) {
 
   return { google_url: google_login_url }
 }
-
