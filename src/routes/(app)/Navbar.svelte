@@ -1,26 +1,26 @@
 <script>
-	// import Notifications from '../utils/dashboard/NotificationList.svelte';
-	// import AppsMenu from '../utils/widgets/AppsMenu.svelte';
-	import UserMenu from '../utils/widgets/UserMenu.svelte';
 	import {
+	Avatar,
 		DarkMode,
 		Dropdown,
+		DropdownHeader,
 		DropdownItem,
 		NavBrand,
 		NavHamburger,
 		NavLi,
 		NavUl,
 		Navbar,
-		Search
 	} from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 	import '../../app.css';
-	import Users from '../data/users.json';
-    import imgLogo from '$lib/assets/images/logo.png';
+	import imgLogo from '$lib/assets/images/logo.png';
 
 	export let fluid = true;
 	export let drawerHidden = false;
 	export let list = false;
+	export let name = 'Neil Sims';
+	export let email = "";
+	export let userPic = '';
 </script>
 
 <Navbar {fluid} class="text-black" color="default" let:NavContainer>
@@ -29,13 +29,9 @@
 		class="m-0 me-3 md:block lg:hidden"
 	/>
 	<NavBrand href="/" class={list ? 'w-40' : 'lg:w-60'}>
-		<img
-			src="{imgLogo}"
-			class="me-2.5 h-6 sm:h-8"
-			alt="BottleCRM"
-		/>
+		<img src={imgLogo} class="me-2.5 h-6 sm:h-8" alt="BottleCRM" />
 		<span
-			class="ml-px self-center whitespace-nowrap text-xl font-semibold dark:text-white sm:text-2xl"
+			class="ml-px self-center text-xl font-semibold whitespace-nowrap sm:text-2xl dark:text-white"
 		>
 			BottleCRM
 		</span>
@@ -49,7 +45,7 @@
 				<NavLi href="#top">Settings</NavLi>
 				<NavLi class="cursor-pointer">
 					Dropdown
-					<ChevronDownOutline  class="ms-0 inline" />
+					<ChevronDownOutline class="ms-0 inline" />
 				</NavLi>
 				<Dropdown class="z-20 w-44">
 					<DropdownItem href="#top">Item 1</DropdownItem>
@@ -61,10 +57,21 @@
 			&nbsp;
 		{/if}
 	</div>
-	<div class="ms-auto flex items-center text-gray-500 dark:text-gray-400 sm:order-2">
+	<div class="ms-auto flex items-center text-gray-500 sm:order-2 dark:text-gray-400">
 		<!-- <Notifications />
 		<AppsMenu /> -->
 		<DarkMode />
-		<UserMenu {...Users[4]} />
+		<!-- <UserMenu {...Users[4]} /> -->
+
+		<button class="ms-3 rounded-full ring-gray-400 focus:ring-4 dark:ring-gray-600">
+			<Avatar size="sm" src={userPic} tabindex={0} />
+		</button>
+		<Dropdown placement="bottom-end">
+			<DropdownHeader>
+				<span class="block text-sm">{name}</span>
+				<span class="block truncate text-sm font-medium">{email}</span>
+			</DropdownHeader>
+			<DropdownItem href="/logout">Sign out</DropdownItem>
+		</Dropdown>
 	</div>
 </Navbar>

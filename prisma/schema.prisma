@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -19,9 +18,10 @@ enum UserRole {
 
 model User {
   id             String             @id @default(uuid())
+  user_id         String            @unique
   email          String             @unique
   name           String?
-  password       String
+  session_id      String? @unique
   role           UserRole           @default(READ_ONLY)
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
@@ -30,7 +30,7 @@ model User {
   title          String?
   department     String?
   isActive       Boolean            @default(true)
-  lastLoginAt    DateTime?
+  lastLogin    DateTime?
   accounts       Account[]
   contacts       Contact[]
   leads          Lead[]

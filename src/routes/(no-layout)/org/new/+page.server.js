@@ -1,51 +1,88 @@
 import { env } from '$env/dynamic/private';
+import prisma from '$lib/prisma'
 import { redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ cookies }) {
-  // Retrieve the stored access token from cookies
-  let access_token = cookies.get('access_token');
-  if (!access_token) {
-    // Redirect to login if the token is missing
-    throw redirect(307, '/login');
-  }
+  
 }
 
 /** @satisfies {import('./$types').Actions} */
 export const actions = {
-  default: async ({ request, fetch, cookies }) => {
+  default: async ({ request, cookies, locals }) => {
+    // Get the user from locals
+    const user = locals.user;
+    
+    if (!user) {
+      return {
+        error: {
+          name: 'You must be logged in to create an organization'
+        }
+      };
+    }
+    
     // Get the submitted form data
     const formData = await request.formData();
-    const orgName = formData.get('org_name'); // Ensure your <Input> has a corresponding "name" attribute, e.g., name="org_name"
+    const orgName = formData.get('org_name');
 
     try {
-      const orgs_url = env.API_HOST + '/api/org/';
-
-      let access_token = cookies.get('access_token');
-
-      const response = await fetch(orgs_url, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${access_token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ org_name: orgName })
+      // Check if organization with the same name already exists
+      const existingOrg = await prisma.organization.findFirst({
+        where: {
+          name: orgName
+        }
       });
 
-      // Check if the API response is not ok
-      if (!response.ok) {
-        const errorData = await response.json(); // Parse JSON from the response
-        console.log(errorData.detail.name);
-        return { error: errorData.detail || 'Failed to create organization.' };
-
+      if (existingOrg) {
+        return { 
+          error: { 
+            name: 'Organization with this name already exists' 
+          } 
+        };
       }
 
-      // Parse and return the JSON response from the API
-      const data = await response.json();
-      return { data };
+      // Use a transaction to create both the organization and user-organization relationship
+      const result = await prisma.$transaction(async (prisma) => {
+        // Create new organization
+        const newOrg = await prisma.organization.create({
+          data: {
+            name: orgName,
+          }
+        });
+
+        // Create user-organization relationship with ADMIN role
+        const userOrg = await prisma.userOrganization.create({
+          data: {
+            userId: user.id,
+            organizationId: newOrg.id,
+            role: 'ADMIN',
+            isPrimary: true
+          }
+        });
+
+        return { newOrg, userOrg };
+      });
+
+      // Set org cookie for the newly created org
+      cookies.set('org', result.newOrg.id, {
+        path: '/',
+        httpOnly: true,
+        sameSite: 'strict'
+      });
+
+      // Redirect to home page after successful creation
+      return {
+        data:{
+          name:orgName
+        }
+      }
     } catch (err) {
-      // Handle any unexpected errors
-      return { error: 'An unexpected error occurred.' };
+      console.error('Error creating organization:', err);
+      return { 
+        error: { 
+          name: 'An unexpected error occurred while creating the organization.' 
+        } 
+      };
     }
   }
 };

@@ -1,14 +1,23 @@
 <script>
-    import '../../../../app.css';
+    import '../../../app.css';
     import { enhance } from '$app/forms';
-    import { Input, Label, Helper, Button, Checkbox, A } from 'flowbite-svelte';
+    import { Input, Label, Button } from 'flowbite-svelte';
     import { Card } from 'flowbite-svelte';
+    import { goto } from '$app/navigation';
   
     export let data;
     export let form; // This contains the result of your form action
     
     console.log('Data:', data);
     console.log('Form result:', form);
+    
+    // Handle form submission success
+    $: if (form?.data) {
+        // Redirect after a short delay to show success message
+        setTimeout(() => {
+            goto('/org');
+        }, 1500);
+    }
 </script>
 
 <Card>
@@ -25,7 +34,7 @@
         {/if}
         
         {#if form?.data}
-            <div class="text-green-500 mb-4">Organization created successfully!</div>
+            <div class="text-green-500 mb-4">Organization "{form.data.name}" created successfully!</div>
         {/if}
         
         <Button type="submit">Create</Button>

@@ -2,15 +2,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
     import Fa from 'svelte-fa';
-  import { 
-    faUser, faArrowRightFromBracket, faBookOpen, 
-    faLayerGroup, faListCheck, faBuildingColumns, faLocationDot, 
-	faCog,
-
-	faPieChart
-
-
-  } from '@fortawesome/free-solid-svg-icons';
+  import { faPieChart  } from '@fortawesome/free-solid-svg-icons';
 	import {
 		Sidebar,
 		SidebarDropdownItem,
@@ -20,19 +12,7 @@
 		SidebarWrapper
 	} from 'flowbite-svelte';
 	import {
-		AngleDownOutline,
-		AngleUpOutline,
-		ClipboardListSolid,
-		CogOutline,
-		FileChartBarSolid,
-		GithubSolid,
-		LayersSolid,
 		LifeSaverSolid,
-		LockSolid,
-		WandMagicSparklesOutline,
-		ChartPieOutline,
-		RectangleListSolid,
-		TableColumnSolid
 	} from 'flowbite-svelte-icons';
 
 	export let drawerHidden = false;
@@ -59,59 +39,59 @@
 	});
 
 	let menu = [
-	{ name: 'Dashboard', icon: 'ChartPieOutline', href: '/dashboard' },
-	{ name: 'Leads', icon: 'FunnelOutline', href: '/leads' },
-	{ name: 'Contacts', icon: 'UserOutline', href: '/contacts' },
-	{ name: 'Accounts', icon: 'BuildingOfficeOutline', href: '/accounts' },
+	{ name: 'Dashboard', icon: 'ChartPieOutline', href: '/app/dashboard' },
+	{ name: 'Leads', icon: 'FunnelOutline', href: '/app/leads' },
+	{ name: 'Contacts', icon: 'UserOutline', href: '/app/contacts' },
+	{ name: 'Accounts', icon: 'BuildingOfficeOutline', href: '/app/accounts' },
 	{
 		name: 'Opportunities',
 		icon: 'CurrencyDollarOutline',
 		children: {
-			'All Opportunities': '/opportunities',
-			'New Opportunity': '/opportunities/new'
+			'All Opportunities': '/app/opportunities',
+			'New Opportunity': '/app/opportunities/new'
 		}
 	},
 	{
 		name: 'Cases',
 		icon: 'LifebuoyOutline',
 		children: {
-			'All Cases': '/cases',
-			'New Case': '/cases/new'
+			'All Cases': '/app/cases',
+			'New Case': '/app/cases/new'
 		}
 	},
 	{
 		name: 'Tasks',
 		icon: 'ClipboardOutline',
 		children: {
-			'All Tasks': '/tasks',
-			'New Task': '/tasks/new',
-			Calendar: '/tasks/calendar'
+			'All Tasks': '/app/tasks',
+			'New Task': '/app/tasks/new',
+			Calendar: '/app/tasks/calendar'
 		}
 	},
 	{
 		name: 'Invoices',
 		icon: 'ReceiptOutline',
 		children: {
-			'All Invoices': '/invoices',
-			'Create Invoice': '/invoices/new'
+			'All Invoices': '/app/invoices',
+			'Create Invoice': '/app/invoices/new'
 		}
 	},
 	{
 		name: 'Reports',
 		icon: 'ChartBarOutline',
 		children: {
-			'Sales Reports': '/reports/sales',
-			'Case Stats': '/reports/cases',
-			'Invoice Trends': '/reports/invoices'
+			'Sales Reports': '/app/reports/sales',
+			'Case Stats': '/app/reports/cases',
+			'Invoice Trends': '/app/reports/invoices'
 		}
 	},
 	{
 		name: 'Settings',
 		icon: 'CogOutline',
 		children: {
-			'User Management': '/settings/users',
-			'Custom Fields': '/settings/fields',
-			Integrations: '/settings/integrations'
+			'User Management': '/app/settings/users',
+			'Custom Fields': '/app/settings/fields',
+			Integrations: '/app/settings/integrations'
 		}
 	}
 ];
@@ -137,15 +117,15 @@
 	>
 		<nav class="divide-y divide-gray-200 dark:divide-gray-700">
 			<SidebarGroup ulClass={groupClass} class="mb-3">
-                <SidebarItem label="Dashboard">
+                <SidebarItem label="Dashboard" href="/app">
                     <svelte:fragment slot="icon">
                         <Fa icon={faPieChart} />
                     </svelte:fragment>
                 </SidebarItem>
 				<SidebarDropdownWrapper label="Leads">
-                    <SidebarDropdownItem label="Open Leads" href="/leads/open" />
-                    <SidebarDropdownItem label="Closed Leads" href="/leads/closed" />
-                    <SidebarDropdownItem label="Create Lead" href="/leads/new" />
+                    <SidebarDropdownItem label="Open Leads" href="/app/leads/open" />
+                    <SidebarDropdownItem label="Closed Leads" href="/app/leads/closed" />
+                    <SidebarDropdownItem label="Create Lead" href="/app/leads/new" />
                 </SidebarDropdownWrapper>
                 <SidebarItem label="Tasks" href="/tasks">
                     <svelte:fragment slot="icon">

@@ -16,10 +16,6 @@
 		<span class="block text-sm">{name}</span>
 		<span class="block truncate text-sm font-medium">{email}</span>
 	</DropdownHeader>
-	<DropdownItem>Dashboard</DropdownItem>
-	<DropdownItem>Settings</DropdownItem>
-	<DropdownItem>Earnings</DropdownItem>
-	<DropdownDivider />
 	<DropdownItem>Sign out</DropdownItem>
 </Dropdown>
 

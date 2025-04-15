@@ -1,25 +1,21 @@
 <script>
-    import '../../../app.css';
+    import '../../../app.css'
     import { SpeedDial, SpeedDialButton, Card, Button } from 'flowbite-svelte';
-    import { ShareNodesSolid, PrinterSolid, DownloadSolid, FileCopySolid, BuildingSolid } from 'flowbite-svelte-icons';
+    import { BuildingSolid } from 'flowbite-svelte-icons';
     import { goto } from '$app/navigation';
     import { browser } from '$app/environment';
     
     // Get the data from the server load function
     export let data;
-    const { products } = data;
-    const orgs = products?.orgs || [];
+    const { orgs } = data;
     
     // Function to handle organization selection
     function selectOrg(org) {
         if (browser) {
-            // Store the selected org in localStorage
-            // console.log('Selected Org:', org.id);
-            localStorage.setItem('org', org.id);
             document.cookie = `org=${org.id}; path=/; SameSite=Strict`;
 
             // Redirect to homepage
-            goto('/');
+            goto('/app');
         }
     }
 </script>
