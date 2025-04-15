@@ -1,12 +1,19 @@
 <script>
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
-  import { Tabs, TabItem, Button, Badge, Textarea, Card } from 'flowbite-svelte';
+  import { Tabs, TabItem, Button, Badge, Textarea, Card, Modal } from 'flowbite-svelte';
   
   export let data;
+  export let form;
   
   const { account, contacts, opportunities, quotes, tasks, cases } = data;
   let comments = data.comments;
+  
+  // Form state
+  let showCloseModal = false;
+  let closureReason = '';
+  let closeError = '';
+  let isClosing = false;
   
   // Format date string
   function formatDate(dateStr) {
@@ -90,6 +97,13 @@
       default: return 'gray';
     }
   }
+  
+  // Handle form submission errors
+  $: {
+    if (form?.success === false) {
+      closeError = form.message;
+    }
+  }
 </script>
 
 <div class="p-4">
@@ -109,12 +123,29 @@
     </div>
     
     <div class="flex items-center space-x-2">
-      <Button href="/app/accounts/{account.id}/edit" size="sm" color="light">
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-        </svg>
-        Edit
-      </Button>
+      {#if account.closedAt}
+        <form method="POST" action="?/reopenAccount">
+          <Button type="submit" size="sm" color="green" class="ml-2">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m-4 6H4m0 0l4 4m-4-4l4-4"></path>
+            </svg>
+            Reopen Account
+          </Button>
+        </form>
+      {:else}
+        <Button href="/app/accounts/{account.id}/edit" size="sm" color="light">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+          </svg>
+          Edit
+        </Button>
+        <Button on:click={() => showCloseModal = true} size="sm" color="yellow" class="ml-2">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+          Close Account
+        </Button>
+      {/if}
       <Button href="/app/accounts/{account.id}/delete" size="sm" color="red" class="ml-2">
         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -130,8 +161,8 @@
       <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
         <div class="mb-4 flex justify-between">
           <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Account Information</h2>
-          <Badge color={account.active ? "green" : "gray"}>
-            {account.active ? "Active" : "Inactive"}
+          <Badge color={account.closedAt ? "red" : account.active ? "green" : "gray"}>
+            {account.closedAt ? "Closed" : account.active ? "Active" : "Inactive"}
           </Badge>
         </div>
         
@@ -191,7 +222,7 @@
               <p class="text-base text-gray-900 dark:text-white">N/A</p>
             {/if}
           </div>
-
+          
           <div>
             <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Annual Revenue</h3>
             <p class="text-base text-gray-900 dark:text-white">
@@ -253,6 +284,20 @@
             <div class="md:col-span-2 mt-2">
               <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</h3>
               <p class="text-base text-gray-900 dark:text-white whitespace-pre-line">{account.description}</p>
+            </div>
+          {/if}
+          
+          {#if account.closedAt}
+            <div class="md:col-span-2 mt-4 bg-red-50 dark:bg-gray-700 border border-red-200 dark:border-red-700 p-4 rounded-lg">
+              <div class="flex">
+                <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <div>
+                  <p class="font-medium text-red-800 dark:text-red-200">This account was closed on {formatDate(account.closedAt)}.</p>
+                  <p class="text-red-700 dark:text-red-300">Reason: {account.closureReason || 'No reason provided'}</p>
+                </div>
+              </div>
             </div>
           {/if}
         </div>
@@ -545,7 +590,7 @@
           {/if}
         </div>
       </TabItem>
-
+      
       <TabItem title="Cases ({cases.length})">
         <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
           {#if cases.length === 0}
@@ -653,4 +698,28 @@
       </TabItem>
     </Tabs>
   </div>
+
+  <!-- Close Account Modal -->
+  <Modal bind:open={showCloseModal} size="md" autoclose={false} title="Close Account">
+    <form method="POST" action="?/closeAccount">
+      <p class="text-gray-700 dark:text-gray-300 mb-4">
+        You are about to close the account "{account.name}". This action will mark the account as closed but will retain all account data for historical purposes. Closed accounts cannot be modified without reopening them first.
+      </p>
+      
+      <div class="mb-4">
+        <label for="closureReason" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+          Reason for Closing <span class="text-red-600">*</span>
+        </label>
+        <Textarea id="closureReason" name="closureReason" rows="3" placeholder="Please provide a reason for closing this account..." bind:value={closureReason} />
+        {#if closeError}
+          <p class="mt-1 text-sm text-red-600 dark:text-red-500">{closeError}</p>
+        {/if}
+      </div>
+      
+      <div class="flex justify-end gap-2">
+        <Button type="button" color="alternative" on:click={() => showCloseModal = false}>Cancel</Button>
+        <Button type="submit" color="red">Close Account</Button>
+      </div>
+    </form>
+  </Modal>
 </div>
