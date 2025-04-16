@@ -4,18 +4,10 @@
   import '../../app.css'; // Import the app.css file directly
   
   let isMenuOpen = false;
-  let isDarkMode = false;
   
   // Toggle mobile menu
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
-  }
-  
-  // Toggle dark mode
-  function toggleDarkMode() {
-    isDarkMode = !isDarkMode;
-    document.documentElement.classList.toggle('dark', isDarkMode);
-    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
   }
   
   // Close mobile menu when route changes
@@ -24,18 +16,11 @@
   }
   
   onMount(() => {
-    // Check for dark mode preference
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      isDarkMode = true;
-      document.documentElement.classList.add('dark');
-    }
-    
     // Tailwind CSS is being imported in app.css, no need to add it here
   });
 </script>
 
-<div class="min-h-screen flex flex-col {isDarkMode ? 'dark' : ''}">
+<div class="min-h-screen flex flex-col">
   <!-- Navigation -->
   <nav class="bg-gray-900 text-white shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,19 +39,6 @@
           <a href="/contact" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Contact</a>
           <a href="/login" class="ml-4 px-4 py-2 rounded-md text-sm font-medium bg-blue-600 hover:bg-blue-700">Login</a>
           <a href="/signup" class="ml-2 px-4 py-2 rounded-md text-sm font-medium border border-blue-600 hover:bg-blue-700">Sign Up</a>
-          <button on:click={toggleDarkMode} class="ml-4 p-2 rounded-full hover:bg-gray-700" aria-label="Toggle dark mode">
-            {#if isDarkMode}
-              <!-- Sun icon for light mode -->
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
-              </svg>
-            {:else}
-              <!-- Moon icon for dark mode -->
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-              </svg>
-            {/if}
-          </button>
         </div>
         
         <!-- Mobile menu button -->
@@ -94,20 +66,6 @@
           <a href="/contact" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Contact</a>
           <a href="/login" class="block px-3 py-2 rounded-md text-base font-medium bg-blue-600 hover:bg-blue-700 mt-2">Login</a>
           <a href="/signup" class="block px-3 py-2 rounded-md text-base font-medium border border-blue-600 hover:bg-blue-700 mt-2">Sign Up</a>
-          <button on:click={toggleDarkMode} class="w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700 mt-2 flex items-center">
-            {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-            <span class="ml-2">
-              {#if isDarkMode}
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
-                </svg>
-              {:else}
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                </svg>
-              {/if}
-            </span>
-          </button>
         </div>
       </div>
     {/if}
@@ -131,8 +89,8 @@
           <ul class="space-y-2">
             <li><a href="/features" class="text-gray-300 hover:text-white">Features</a></li>
             <li><a href="/pricing" class="text-gray-300 hover:text-white">Pricing</a></li>
-            <li><a href="/integrations" class="text-gray-300 hover:text-white">Integrations</a></li>
             <li><a href="/updates" class="text-gray-300 hover:text-white">Updates</a></li>
+            <li><a href="/roadmap" class="text-gray-300 hover:text-white">Roadmap</a></li>
           </ul>
         </div>
         <div>

@@ -35,10 +35,16 @@ export async function load({ params }) {
 }
 
 export const actions = {
-  default: async ({ request, params }) => {
+  default: async ({ request, params, locals }) => {
     const { lead_id } = params;
     const formData = await request.formData();
     
+    // Get org from locals
+    const org = locals.org;
+    if (!org) {
+      return { success: false, error: 'Organization not found in session.' };
+    }
+
     const updatedLead = {
       firstName: formData.get('firstName'),
       lastName: formData.get('lastName'),
@@ -51,7 +57,8 @@ export const actions = {
       industry: formData.get('industry') || null,
       rating: formData.get('rating') || null,
       description: formData.get('description') || null,
-      ownerId: formData.get('ownerId')
+      ownerId: formData.get('ownerId'),
+      organizationId: org.id // Always set from session
     };
     
     try {
