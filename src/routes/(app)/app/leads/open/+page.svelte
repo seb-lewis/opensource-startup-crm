@@ -72,6 +72,7 @@
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
@@ -86,10 +87,13 @@
                   class="hover:bg-blue-50 transition-colors duration-150"
                   in:fly={{y: 20, duration: 300, delay: i * 50}}
                 >
+                <td class="px-6 py-4 whitespace-nowrap text-gray-600">
+                  <a href="/app/leads/{lead.id}" class="text-blue-600 hover:text-blue-800 font-medium">
+                    {lead.title || '-'}
+                  </a>
+                </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <a href="/app/leads/{lead.id}" class="text-blue-600 hover:text-blue-800 font-medium">
                       {getFullName(lead)}
-                    </a>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-gray-600">{lead.email || '-'}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-gray-600">{lead.phone || '-'}</td>
@@ -119,6 +123,13 @@
               </div>
               
               <div class="grid grid-cols-1 gap-1 text-sm">
+                {#if lead.title}
+                  <div class="flex items-center">
+                    <span class="w-20 text-gray-500">Title:</span>
+                    <span class="text-gray-700">{lead.title}</span>
+                  </div>
+                {/if}
+                
                 {#if lead.email}
                   <div class="flex items-center">
                     <span class="w-20 text-gray-500">Email:</span>

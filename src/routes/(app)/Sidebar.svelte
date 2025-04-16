@@ -117,19 +117,47 @@
 	>
 		<nav class="divide-y divide-gray-200 dark:divide-gray-700">
 			<SidebarGroup ulClass={groupClass} class="mb-3">
-                <SidebarItem label="Dashboard" href="/app">
+                <SidebarItem
+                    label="Dashboard"
+                    href="/app"
+                    class={`${itemClass} ${mainSidebarUrl === '/app' ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : ''}`}
+                    spanClass="ml-3"
+                >
                     <svelte:fragment slot="icon">
-                        <Fa icon={faPieChart} />
+                        <Fa
+                            icon={faPieChart}
+                            class={`${iconClass} ${mainSidebarUrl === '/app' ? 'text-gray-900 dark:text-white' : ''}`}
+                        />
                     </svelte:fragment>
                 </SidebarItem>
 				<SidebarDropdownWrapper label="Leads">
-                    <SidebarDropdownItem label="Open Leads" href="/app/leads/open" />
-                    <SidebarDropdownItem label="Closed Leads" href="/app/leads/closed" />
-                    <SidebarDropdownItem label="Create Lead" href="/app/leads/new" />
+                    <SidebarDropdownItem
+                        label="Open Leads"
+                        href="/app/leads/open"
+                        class={`${itemClass} ${mainSidebarUrl === '/app/leads/open' ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : ''}`}
+                    />
+                    <SidebarDropdownItem
+                        label="Closed Leads"
+                        href="/app/leads/closed"
+                        class={`${itemClass} ${mainSidebarUrl === '/app/leads/closed' ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : ''}`}
+                    />
+                    <SidebarDropdownItem
+                        label="Create Lead"
+                        href="/app/leads/new"
+                        class={`${itemClass} ${mainSidebarUrl === '/app/leads/new' ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : ''}`}
+                    />
                 </SidebarDropdownWrapper>
-                <SidebarItem label="Tasks" href="/tasks">
+                <SidebarItem
+                    label="Tasks"
+                    href="/app/tasks"
+                    class={`${itemClass} ${mainSidebarUrl === '/app/tasks' ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : ''}`}
+                    spanClass="ml-3"
+                >
                     <svelte:fragment slot="icon">
-                        <Fa icon={faPieChart} />
+                        <Fa
+                            icon={faPieChart}
+                            class={`${iconClass} ${mainSidebarUrl === '/app/tasks' ? 'text-gray-900 dark:text-white' : ''}`}
+                        />
                     </svelte:fragment>
                 </SidebarItem>
 			</SidebarGroup>

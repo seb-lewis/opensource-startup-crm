@@ -1,31 +1,40 @@
 <script>
     import { enhance } from '$app/forms';
     // Flowbite-Svelte components
-    import { Button, Input, Select, Label, Card, Alert } from 'flowbite-svelte';
+    import { Button, Input, Select, Label, Card, Alert, Toast } from 'flowbite-svelte';
+    import { CheckCircleSolid } from 'flowbite-svelte-icons';
     // Import FontAwesome icons via svelte-fa
     import Fa from 'svelte-fa';
     import {
       faPercent,
     } from '@fortawesome/free-solid-svg-icons';
+    import { goto } from '$app/navigation'; // Import goto for navigation
 
     /** @type {import('./$types').ActionData} */
     export let form;
     export let data;
+    
+    // Toast state
+    let showToast = false;
+    let toastMessage = '';
+    
     /**
      * Object holding the form fields.
      * @type {Object}
      */
     let formData = {
+      lead_title: '',
       opportunity_amount: 0,
       website: '',
       industry: '',
-      status: 'new',
+      status: 'NEW',
       skype_ID: '',
       source: '',
       lead_attachment: '',
       probability: 0,
       first_name: '',
       last_name: '',
+      company: '', 
       title: '',
       phone: '',
       email: '',
@@ -35,7 +44,8 @@
       state: '',
       postcode: '',
       country: '',
-      description: ''
+      description: '',
+      rating: ''
     };
   
     /**
@@ -67,13 +77,19 @@
     function validateForm() {
       errors = {}; // Reset errors
   
-      if (!formData.title.trim()) {
-        errors.title = 'Lead Title is required.';
+      // Validate required fields based on the Lead model
+      if (!formData.first_name.trim()) {
+        errors.first_name = 'First name is required.';
       }
-      if (!formData.email.trim()) {
-        errors.email = 'Email is required.';
+      
+      if (!formData.last_name.trim()) {
+        errors.last_name = 'Last name is required.';
       }
-  
+
+      if (!formData.lead_title.trim()) {
+        errors.lead_title = 'Lead title is required.';
+      }
+
       return Object.keys(errors).length === 0;
     }
   
@@ -86,11 +102,55 @@
         event.preventDefault(); // Prevent form submission
       }
     }
-  
+      // Submitting indicator
+    let isSubmitting = false;
+    
+    /**
+     * Resets the form to its initial state
+     */
+    function resetForm() {
+      formData = {
+        lead_title: '',
+        opportunity_amount: 0,
+        website: '',
+        industry: '',
+        status: 'NEW',
+        skype_ID: '',
+        source: '',
+        lead_attachment: '',
+        probability: 0,
+        first_name: '',
+        last_name: '',
+        company: '', 
+        title: '',
+        phone: '',
+        email: '',
+        address_line: '',
+        city: '',
+        street: '',
+        state: '',
+        postcode: '',
+        country: '',
+        description: '',
+        rating: ''
+      };
+    }
 </script>
 
 <!-- Main container -->
 <div class="container mx-auto px-4 py-6">
+  <!-- Toast notification for success -->
+  {#if showToast}
+    <div class="fixed top-4 right-4 z-50">
+      <Toast color="green" dismissable={true} on:dismiss={() => showToast = false}>
+        <svelte:fragment slot="icon">
+          <CheckCircleSolid class="w-5 h-5" />
+        </svelte:fragment>
+        {toastMessage}
+      </Toast>
+    </div>
+  {/if}
+
   <Card class="px-4 sm:px-6 py-4 pb-8 max-w-5xl mx-auto">
     <!-- Show error if returned from server -->
     {#if form?.error}
@@ -100,35 +160,99 @@
     {/if}
 
     <!-- Form content -->
-    <form method="POST" enctype="multipart/form-data" use:enhance on:submit={handleSubmit} class="pb-4">
+    <form method="POST" use:enhance={() => {
+      if (!validateForm()) return;
+      
+      isSubmitting = true;
+      
+      // Return a callback to run when the form action completes
+      return async ({ result }) => {
+        isSubmitting = false;
+        
+        if (result.type === 'success') {
+          // Handle successful form submission
+          toastMessage = form?.message || 'Lead created successfully!';
+          showToast = true;
+          
+          // Reset form after successful submission
+          resetForm();
+          
+          // Optional: Navigate to the leads page after a short delay
+          setTimeout(() => goto('/app/leads/'), 1500);
+        }
+      };
+    }} class="pb-4">
         <!-- Lead Information Section -->
         <div class="mb-8">
           <h2 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Lead Information</h2>
           <div class="grid md:grid-cols-2 gap-x-6 gap-y-4">
-            <!-- Lead Name -->
-            <div>
-              <Label for="title" class="font-medium">Lead Name</Label>
+            <!-- Lead Title -->
+            <div class="md:col-span-2">
+              <Label for="lead_title" class="font-medium">Lead Title *</Label>
               <Input
-                id="title"
-                name="title"
-                bind:value={formData.title}
+                id="lead_title"
+                name="lead_title"
+                bind:value={formData.lead_title}
                 on:input={handleChange}
-                placeholder="Lead Name" required/>
-              {#if errors.title}
-                <span class="text-red-500 text-sm">{errors.title}</span>
+                placeholder="Lead Title"
+                required />
+              {#if errors.lead_title}
+                <span class="text-red-500 text-sm">{errors.lead_title}</span>
               {/if}
             </div>
-            <!-- Amount -->
+            
+            <!-- Company -->
             <div>
-              <Label for="opportunity_amount" class="font-medium">Amount</Label>
+              <Label for="company" class="font-medium">Company</Label>
               <Input
-                type="number"
-                id="opportunity_amount"
-                name="opportunity_amount"
-                bind:value={formData.opportunity_amount}
+                id="company"
+                name="company"
+                bind:value={formData.company}
                 on:input={handleChange}
-                placeholder="Amount" />
+                placeholder="Company Name" />
             </div>
+            
+            <!-- Lead Source -->
+            <div>
+              <Label for="source" class="font-medium">Lead Source</Label>
+              <Select id="source" name="source" bind:value={formData.source} on:change={handleChange}>
+                {#each data.data.source as [value, label]}
+                  <option value={value}>{label}</option>
+                {/each}
+              </Select>
+            </div>
+
+            <!-- Industry -->
+            <div>
+              <Label for="industry" class="font-medium">Industry</Label>
+              <Select id="industry" name="industry" bind:value={formData.industry} on:change={handleChange}>
+                {#each data.data.industries as [value, label]}
+                  <option value={value}>{label}</option>
+                {/each}
+              </Select>
+            </div>
+
+            <!-- Status -->
+            <div>
+              <Label for="status" class="font-medium">Status</Label>
+              <Select id="status" name="status" bind:value={formData.status} on:change={handleChange}>
+                {#each data.data.status as [value, label]}
+                  <option value={value}>{label}</option>
+                {/each}
+              </Select>
+            </div>
+            
+            <!-- Rating -->
+            <div>
+              <Label for="rating" class="font-medium">Rating</Label>
+              <Select id="rating" name="rating" bind:value={formData.rating} on:change={handleChange}>
+                <option value="">Select Rating</option>
+                <option value="HOT">Hot</option>
+                <option value="WARM">Warm</option>
+                <option value="COLD">Cold</option>
+              </Select>
+            </div>
+            
             <!-- Website -->
             <div>
               <Label for="website" class="font-medium">Website</Label>
@@ -139,44 +263,20 @@
                 on:input={handleChange}
                 placeholder="Website" />
             </div>
-            <!-- Industry -->
+            
+            <!-- Opportunity Amount (stored in description) -->
             <div>
-              <Label for="industry" class="font-medium">Industry</Label>
-              <Select id="industry" name="industry" bind:value={formData.industry} on:change={handleChange}>
-                {#each data.data.industries as [value, label]}
-                  <option value={value}>{label}</option>
-                {/each}
-              </Select>
-            </div>
-            <!-- Status -->
-            <div>
-              <Label for="status" class="font-medium">Status</Label>
-              <Select id="status" name="status" bind:value={formData.status} on:change={handleChange}>
-                {#each data.data.status as [value, label]}
-                  <option value={value}>{label}</option>
-                {/each}
-              </Select>
-            </div>
-            <!-- Skype ID -->
-            <div>
-              <Label for="skype_ID" class="font-medium">Skype ID</Label>
+              <Label for="opportunity_amount" class="font-medium">Opportunity Amount</Label>
               <Input
-                id="skype_ID"
-                name="skype_ID"
-                bind:value={formData.skype_ID}
+                type="number"
+                id="opportunity_amount"
+                name="opportunity_amount"
+                bind:value={formData.opportunity_amount}
                 on:input={handleChange}
-                placeholder="Skype ID" />
+                placeholder="Amount" />
             </div>
-            <!-- Lead Source -->
-            <div>
-              <Label for="source" class="font-medium">Lead Source</Label>
-              <Select id="source" name="source" bind:value={formData.source} on:change={handleChange}>
-                {#each data.data.source as [value, label]}
-                  <option value={value}>{label}</option>
-                {/each}
-              </Select>
-            </div>
-            <!-- Probability with Icon -->
+            
+            <!-- Probability with Icon (stored in description) -->
             <div>
               <Label for="probability" class="font-medium">Probability</Label>
               <div class="relative">
@@ -191,6 +291,17 @@
                 </div>
               </div>
             </div>
+            
+            <!-- Skype ID (stored in description) -->
+            <div>
+              <Label for="skype_ID" class="font-medium">Skype ID</Label>
+              <Input
+                id="skype_ID"
+                name="skype_ID"
+                bind:value={formData.skype_ID}
+                on:input={handleChange}
+                placeholder="Skype ID" />
+            </div>
           </div>
         </div>
        
@@ -200,7 +311,7 @@
           <div class="grid md:grid-cols-2 gap-x-6 gap-y-4">
             <!-- First Name -->
             <div>
-              <Label for="first_name" class="font-medium">First Name</Label>
+              <Label for="first_name" class="font-medium">First Name *</Label>
               <Input
                 id="first_name"
                 name="first_name"
@@ -208,17 +319,23 @@
                 on:input={handleChange}
                 placeholder="First Name"
                 required />
+              {#if errors.first_name}
+                <span class="text-red-500 text-sm">{errors.first_name}</span>
+              {/if}
             </div>
             <!-- Last Name -->
             <div>
-              <Label for="last_name" class="font-medium">Last Name</Label>
+              <Label for="last_name" class="font-medium">Last Name *</Label>
               <Input
                 id="last_name"
                 name="last_name"
                 bind:value={formData.last_name}
                 on:input={handleChange}
                 placeholder="Last Name"
-               />
+                required />
+              {#if errors.last_name}
+                <span class="text-red-500 text-sm">{errors.last_name}</span>
+              {/if}
             </div>
             <!-- Job Title -->
             <div>
@@ -249,7 +366,7 @@
                 name="email"
                 bind:value={formData.email}
                 on:input={handleChange}
-                placeholder="Email Address" required />
+                placeholder="Email Address" />
               {#if errors.email}
                 <span class="text-red-500 text-sm">{errors.email}</span>
               {/if}
