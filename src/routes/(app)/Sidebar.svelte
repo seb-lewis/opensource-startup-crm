@@ -1,8 +1,8 @@
 <script>
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
-    import Fa from 'svelte-fa';
-  import { faPieChart  } from '@fortawesome/free-solid-svg-icons';
+	import Fa from 'svelte-fa';
+	import { faPieChart } from '@fortawesome/free-solid-svg-icons';
 	import {
 		Sidebar,
 		SidebarDropdownItem,
@@ -11,9 +11,7 @@
 		SidebarItem,
 		SidebarWrapper
 	} from 'flowbite-svelte';
-	import {
-		LifeSaverSolid,
-	} from 'flowbite-svelte-icons';
+	import { LifeSaverSolid } from 'flowbite-svelte-icons';
 
 	export let drawerHidden = false;
 
@@ -39,62 +37,71 @@
 	});
 
 	let menu = [
-	{ name: 'Dashboard', icon: 'ChartPieOutline', href: '/app/dashboard' },
-	{ name: 'Leads', icon: 'FunnelOutline', href: '/app/leads' },
-	{ name: 'Contacts', icon: 'UserOutline', href: '/app/contacts' },
-	{ name: 'Accounts', icon: 'BuildingOfficeOutline', href: '/app/accounts' },
-	{
-		name: 'Opportunities',
-		icon: 'CurrencyDollarOutline',
-		children: {
-			'All Opportunities': '/app/opportunities',
-			'New Opportunity': '/app/opportunities/new'
+		{ name: 'Dashboard', icon: 'ChartPieOutline', href: '/app/dashboard' },
+		{ name: 'Leads', icon: 'FunnelOutline', href: '/app/leads' },
+		{ name: 'Contacts', icon: 'UserOutline', href: '/app/contacts' },
+		{
+			name: 'Accounts',
+			icon: 'BuildingOfficeOutline',
+			children: {
+				'All Accounts': '/app/accounts',
+				'New Account': '/app/accounts/new',
+				'Account Opportunities': '/app/accounts/opportunities',
+				'Deleted/Archived Accounts': '/app/accounts/deleted'
+			}
+		},
+		{
+			name: 'Opportunities',
+			icon: 'CurrencyDollarOutline',
+			children: {
+				'All Opportunities': '/app/opportunities',
+				'New Opportunity': '/app/opportunities/new'
+			}
+		},
+		{
+			name: 'Cases',
+			icon: 'LifebuoyOutline',
+			children: {
+				'All Cases': '/app/cases',
+				'New Case': '/app/cases/new'
+			}
+		},
+		{
+			name: 'Tasks',
+			icon: 'ClipboardOutline',
+			children: {
+				'All Tasks': '/app/tasks',
+				'New Task': '/app/tasks/new',
+				Calendar: '/app/tasks/calendar'
+			}
+		},
+		{
+			name: 'Invoices',
+			icon: 'ReceiptOutline',
+			children: {
+				'All Invoices': '/app/invoices',
+				'Create Invoice': '/app/invoices/new'
+			}
+		},
+		{
+			name: 'Reports',
+			icon: 'ChartBarOutline',
+			children: {
+				'Sales Reports': '/app/reports/sales',
+				'Case Stats': '/app/reports/cases',
+				'Invoice Trends': '/app/reports/invoices'
+			}
+		},
+		{
+			name: 'Settings',
+			icon: 'CogOutline',
+			children: {
+				'User Management': '/app/settings/users',
+				'Custom Fields': '/app/settings/fields',
+				Integrations: '/app/settings/integrations'
+			}
 		}
-	},
-	{
-		name: 'Cases',
-		icon: 'LifebuoyOutline',
-		children: {
-			'All Cases': '/app/cases',
-			'New Case': '/app/cases/new'
-		}
-	},
-	{
-		name: 'Tasks',
-		icon: 'ClipboardOutline',
-		children: {
-			'All Tasks': '/app/tasks',
-			'New Task': '/app/tasks/new',
-			Calendar: '/app/tasks/calendar'
-		}
-	},
-	{
-		name: 'Invoices',
-		icon: 'ReceiptOutline',
-		children: {
-			'All Invoices': '/app/invoices',
-			'Create Invoice': '/app/invoices/new'
-		}
-	},
-	{
-		name: 'Reports',
-		icon: 'ChartBarOutline',
-		children: {
-			'Sales Reports': '/app/reports/sales',
-			'Case Stats': '/app/reports/cases',
-			'Invoice Trends': '/app/reports/invoices'
-		}
-	},
-	{
-		name: 'Settings',
-		icon: 'CogOutline',
-		children: {
-			'User Management': '/app/settings/users',
-			'Custom Fields': '/app/settings/fields',
-			Integrations: '/app/settings/integrations'
-		}
-	}
-];
+	];
 	let links = [
 		{
 			label: 'Support',
@@ -117,31 +124,102 @@
 	>
 		<nav class="divide-y divide-gray-200 dark:divide-gray-700">
 			<SidebarGroup ulClass={groupClass} class="mb-3">
-                <SidebarItem label="Dashboard" href="/app">
-                    <svelte:fragment slot="icon">
-                        <Fa icon={faPieChart} />
-                    </svelte:fragment>
-                </SidebarItem>
+				<SidebarItem
+					label="Dashboard"
+					href="/app"
+					class={`${itemClass} ${mainSidebarUrl === '/app' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					spanClass="ml-3"
+				>
+					<svelte:fragment slot="icon">
+						<Fa
+							icon={faPieChart}
+							class={`${iconClass} ${mainSidebarUrl === '/app' ? 'text-gray-900 dark:text-white' : ''}`}
+						/>
+					</svelte:fragment>
+				</SidebarItem>
 				<SidebarDropdownWrapper label="Leads">
-                    <SidebarDropdownItem label="Open Leads" href="/app/leads/open" />
-                    <SidebarDropdownItem label="Closed Leads" href="/app/leads/closed" />
-                    <SidebarDropdownItem label="Create Lead" href="/app/leads/new" />
-                </SidebarDropdownWrapper>
-                <SidebarItem label="Tasks" href="/tasks">
-                    <svelte:fragment slot="icon">
-                        <Fa icon={faPieChart} />
-                    </svelte:fragment>
-                </SidebarItem>
+					<SidebarDropdownItem
+						label="Open Leads"
+						href="/app/leads/open"
+						class={`${itemClass} ${mainSidebarUrl === '/app/leads/open' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="Closed Leads"
+						href="/app/leads/closed"
+						class={`${itemClass} ${mainSidebarUrl === '/app/leads/closed' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="Create Lead"
+						href="/app/leads/new"
+						class={`${itemClass} ${mainSidebarUrl === '/app/leads/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+				</SidebarDropdownWrapper>
+
+				<SidebarDropdownWrapper label="Accounts">
+					<SidebarDropdownItem
+						label="All Accounts"
+						href="/app/accounts"
+						class={`${itemClass} ${mainSidebarUrl === '/app/accounts' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="New Account"
+						href="/app/accounts/new"
+						class={`${itemClass} ${mainSidebarUrl === '/app/accounts/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="Account Opportunities"
+						href="/app/accounts/opportunities"
+						class={`${itemClass} ${mainSidebarUrl === '/app/accounts/opportunities' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="Deleted/Archived Accounts"
+						href="/app/accounts/deleted"
+						class={`${itemClass} ${mainSidebarUrl === '/app/accounts/deleted' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+				</SidebarDropdownWrapper>
+
+				<SidebarDropdownWrapper label="Opportunities">
+					<SidebarDropdownItem
+						label="All Opportunities"
+						href="/app/opportunities"
+						class={`${itemClass} ${mainSidebarUrl === '/app/opportunities' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="New Opportunity"
+						href="/app/opportunities/new"
+						class={`${itemClass} ${mainSidebarUrl === '/app/opportunities/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+				</SidebarDropdownWrapper>
+
+				<SidebarDropdownWrapper label="Cases">
+					<SidebarDropdownItem
+						label="All Cases"
+						href="/app/cases"
+						class={`${itemClass} ${mainSidebarUrl === '/app/cases' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="New Case"
+						href="/app/cases/new"
+						class={`${itemClass} ${mainSidebarUrl === '/app/cases/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+				</SidebarDropdownWrapper>
+
+				<SidebarDropdownWrapper label="Tasks">
+					<SidebarDropdownItem
+						label="Boards"
+						href="/app/tasks"
+						class={`${itemClass} ${mainSidebarUrl === '/app/tasks' ? 'bg-blue-100 font-semibold dark:bg-blue-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="Calendar"
+						href="/app/tasks/calendar"
+						class={`${itemClass} ${mainSidebarUrl === '/app/tasks/calendar' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+				</SidebarDropdownWrapper>
 			</SidebarGroup>
 			<SidebarGroup ulClass={groupClass}>
 				{#each links as { label, href, icon } (label)}
-					<SidebarItem
-						{label}
-						{href}
-						spanClass="ml-3"
-						class={itemClass}
-						target="_blank"
-					>
+					<SidebarItem {label} {href} spanClass="ml-3" class={itemClass} target="_blank">
 						<svelte:component this={icon} slot="icon" class={iconClass} />
 					</SidebarItem>
 				{/each}

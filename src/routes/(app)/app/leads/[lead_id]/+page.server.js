@@ -23,10 +23,11 @@ export async function load({ params }) {
             author: true
           },
           orderBy: { createdAt: 'desc' }
-        }
+        },
+        contact: true
       }
     });
-    
+    console.log('Lead:', lead);
     if (!lead) {
       throw error(404, 'Lead not found');
     }
