@@ -24,4 +24,3 @@ vite.config.ts.timestamp-*
 
 generated/*
 src/generated/*
-.github/*
