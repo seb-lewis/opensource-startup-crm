@@ -144,11 +144,6 @@
 						class={`${itemClass} ${mainSidebarUrl === '/app/leads/open' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 					<SidebarDropdownItem
-						label="Closed Leads"
-						href="/app/leads/closed"
-						class={`${itemClass} ${mainSidebarUrl === '/app/leads/closed' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-					<SidebarDropdownItem
 						label="Create Lead"
 						href="/app/leads/new"
 						class={`${itemClass} ${mainSidebarUrl === '/app/leads/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}

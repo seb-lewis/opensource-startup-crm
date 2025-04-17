@@ -2,6 +2,8 @@
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { Tabs, TabItem, Button, Badge, Textarea, Card, Modal } from 'flowbite-svelte';
+  import { onMount } from 'svelte';
+  import { invalidateAll } from '$app/navigation';
   
   export let data;
   export let form;
@@ -14,6 +16,69 @@
   let closureReason = '';
   let closeError = '';
   let isClosing = false;
+  
+  // Add Contact Modal state
+  let showAddContactModal = false;
+  let contactForm = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    title: '',
+    isPrimary: false,
+    role: ''
+  };
+  let addContactError = '';
+  let isAddingContact = false;
+
+  function resetContactForm() {
+    contactForm = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      title: '',
+      isPrimary: false,
+      role: ''
+    };
+    addContactError = '';
+  }
+  
+  async function submitAddContact() {
+    addContactError = '';
+    if (!contactForm.firstName.trim() || !contactForm.lastName.trim()) {
+      addContactError = 'First and last name are required.';
+      return;
+    }
+    isAddingContact = true;
+    try {
+      // Use form-encoded data for SvelteKit form actions
+      const formData = new FormData();
+      formData.append('firstName', contactForm.firstName);
+      formData.append('lastName', contactForm.lastName);
+      formData.append('email', contactForm.email);
+      formData.append('phone', contactForm.phone);
+      formData.append('title', contactForm.title);
+      formData.append('isPrimary', contactForm.isPrimary ? 'true' : '');
+      formData.append('role', contactForm.role);
+      const res = await fetch(`/app/accounts/${account.id}?/addContact`, {
+        method: 'POST',
+        body: formData
+      });
+      if (res.ok) {
+        showAddContactModal = false;
+        resetContactForm();
+        await invalidateAll();
+      } else {
+        const data = await res.json();
+        addContactError = data?.message || 'Failed to add contact.';
+      }
+    } catch (e) {
+      addContactError = 'Failed to add contact.';
+    } finally {
+      isAddingContact = false;
+    }
+  }
   
   // Format date string
   function formatDate(dateStr) {
@@ -356,7 +421,7 @@
         </div>
         
         <div class="mt-6">
-          <Button href="/app/contacts/new?accountId={account.id}" color="blue" class="w-full justify-center">
+          <Button on:click={() => showAddContactModal = true} color="blue" class="w-full justify-center">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
             </svg>
@@ -719,6 +784,55 @@
       <div class="flex justify-end gap-2">
         <Button type="button" color="alternative" on:click={() => showCloseModal = false}>Cancel</Button>
         <Button type="submit" color="red">Close Account</Button>
+      </div>
+    </form>
+  </Modal>
+
+  <!-- Add Contact Modal -->
+  <Modal bind:open={showAddContactModal} size="md" autoclose={false} title="Add Contact to Account">
+    <form on:submit|preventDefault={submitAddContact}>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="firstName" class="block text-sm font-medium mb-1">First Name <span class="text-red-500">*</span></label>
+          <input id="firstName" class="w-full border rounded px-3 py-2" bind:value={contactForm.firstName} required />
+        </div>
+        <div>
+          <label for="lastName" class="block text-sm font-medium mb-1">Last Name <span class="text-red-500">*</span></label>
+          <input id="lastName" class="w-full border rounded px-3 py-2" bind:value={contactForm.lastName} required />
+        </div>
+        <div class="md:col-span-2">
+          <label for="email" class="block text-sm font-medium mb-1">Email</label>
+          <input id="email" class="w-full border rounded px-3 py-2" type="email" bind:value={contactForm.email} />
+        </div>
+        <div class="md:col-span-2">
+          <label for="phone" class="block text-sm font-medium mb-1">Phone</label>
+          <input id="phone" class="w-full border rounded px-3 py-2" type="tel" bind:value={contactForm.phone} />
+        </div>
+        <div class="md:col-span-2">
+          <label for="title" class="block text-sm font-medium mb-1">Title</label>
+          <input id="title" class="w-full border rounded px-3 py-2" bind:value={contactForm.title} />
+        </div>
+        <div class="md:col-span-2 flex items-center gap-3">
+          <input id="isPrimary" type="checkbox" bind:checked={contactForm.isPrimary} />
+          <label for="isPrimary" class="text-sm">Primary Contact</label>
+        </div>
+        <div class="md:col-span-2">
+          <label for="role" class="block text-sm font-medium mb-1">Role</label>
+          <input id="role" class="w-full border rounded px-3 py-2" bind:value={contactForm.role} />
+        </div>
+      </div>
+      {#if addContactError}
+        <p class="text-red-600 mt-2">{addContactError}</p>
+      {/if}
+      <div class="flex justify-end gap-2 mt-6">
+        <Button type="button" color="alternative" on:click={() => { showAddContactModal = false; resetContactForm(); }}>Cancel</Button>
+        <Button type="submit" color="blue" disabled={isAddingContact}>
+          {#if isAddingContact}
+            Adding...
+          {:else}
+            Add Contact
+          {/if}
+        </Button>
       </div>
     </form>
   </Modal>
