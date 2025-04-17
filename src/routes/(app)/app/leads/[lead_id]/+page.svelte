@@ -179,37 +179,6 @@
             </div>
           </div>
           
-          <!-- Quick Actions -->
-          <div class="border-t border-blue-100 pt-5 px-4 bg-gradient-to-b from-white to-blue-50">
-            <div class="text-sm font-semibold text-blue-800 mb-3">Quick Actions</div>
-            <div class="grid grid-cols-2 gap-2">
-              <Button color="blue" size="sm" class="w-full shadow-sm hover:shadow transition-all duration-200">
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-                Email
-              </Button>
-              <Button color="green" size="sm" class="w-full shadow-sm hover:shadow transition-all duration-200">
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                </svg>
-                Call
-              </Button>
-              <Button color="purple" size="sm" class="w-full shadow-sm hover:shadow transition-all duration-200">
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
-                Meeting
-              </Button>
-              <Button color="yellow" size="sm" class="w-full shadow-sm hover:shadow transition-all duration-200">
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                </svg>
-                Task
-              </Button>
-            </div>
-          </div>
-
           <!-- Contact Info -->
           <div class="border-t border-blue-100 pt-5 px-5 space-y-4 mt-3">
             <h3 class="text-sm font-semibold text-blue-800 uppercase tracking-wider">Contact Information</h3>
