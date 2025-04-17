@@ -274,5 +274,54 @@ export const actions = {
       console.error('Error reopening account:', error);
       return fail(500, { success: false, message: 'An unexpected error occurred' });
     }
+  },
+
+  addContact: async ({ params, request, locals }) => {
+    try {
+      const user = locals.user;
+      if (!user) {
+        return fail(401, { success: false, message: 'Unauthorized' });
+      }
+      const { accountId } = params;
+      let data;
+      // Support both JSON and form submissions
+      const contentType = request.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        data = await request.json();
+      } else {
+        const formData = await request.formData();
+        data = Object.fromEntries(formData.entries());
+      }
+      const firstName = data.firstName?.toString().trim();
+      const lastName = data.lastName?.toString().trim();
+      if (!firstName || !lastName) {
+        return fail(400, { success: false, message: 'First and last name are required.' });
+      }
+      // Create the contact
+      const contact = await prisma.contact.create({
+        data: {
+          firstName,
+          lastName,
+          email: data.email?.toString() || null,
+          phone: data.phone?.toString() || null,
+          title: data.title?.toString() || null,
+          ownerId: user.id,
+          organizationId: (await prisma.account.findUnique({ where: { id: accountId }, select: { organizationId: true } })).organizationId
+        }
+      });
+      // Link contact to account
+      await prisma.accountContactRelationship.create({
+        data: {
+          accountId,
+          contactId: contact.id,
+          isPrimary: !!data.isPrimary,
+          role: data.role?.toString() || null
+        }
+      });
+      return { success: true, message: 'Contact added successfully.' };
+    } catch (err) {
+      console.error('Error adding contact:', err);
+      return fail(500, { success: false, message: 'Failed to add contact.' });
+    }
   }
 };
