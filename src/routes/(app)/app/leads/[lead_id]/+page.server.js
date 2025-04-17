@@ -27,7 +27,7 @@ export async function load({ params }) {
         contact: true
       }
     });
-    
+    console.log('Lead:', lead);
     if (!lead) {
       throw error(404, 'Lead not found');
     }

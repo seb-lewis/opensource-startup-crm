@@ -139,7 +139,6 @@ export const actions = {
         company: leadData.company,
         title: leadData.title,
         status: leadData.status,
-        // Use conditional check for enum fields
         ...(leadData.leadSource ? { leadSource: leadData.leadSource } : {}),
         industry: leadData.industry,
         description: leadData.description || '',
@@ -156,31 +155,8 @@ export const actions = {
         }
       };
 
-      // Add lead title to description since it's not in the Lead schema
-      let additionalInfo = [`Lead Title: ${leadData.leadTitle}`];
-      
-      // Add address info to description if model doesn't support it
-      const addressText = [
-        leadData.street, 
-        leadData.city, 
-        leadData.state, 
-        leadData.postalCode, 
-        leadData.country
-      ].filter(Boolean).join(', ');
-          
-      // Add website, skype, opportunity amount, and probability info to description
-      if (addressText) additionalInfo.push(`Address: ${addressText}`);
-      if (leadData.website) additionalInfo.push(`Website: ${leadData.website}`);
-      if (leadData.skypeID) additionalInfo.push(`Skype ID: ${leadData.skypeID}`);
-      if (leadData.opportunityAmount) additionalInfo.push(`Opportunity Amount: ${leadData.opportunityAmount}`);
-      if (leadData.probability) additionalInfo.push(`Probability: ${leadData.probability}%`);
-      
-      if (additionalInfo.length > 0) {
-        leadCreateData.description = [
-          leadCreateData.description,
-          ...additionalInfo
-        ].filter(Boolean).join('\n\n');
-      }
+      // Remove logic that appends extra info to description
+      // All extra fields are now ignored if not in schema
 
       // Create new lead in the database
       const lead = await prisma.lead.create({
