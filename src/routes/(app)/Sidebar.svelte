@@ -40,7 +40,16 @@
 		{ name: 'Dashboard', icon: 'ChartPieOutline', href: '/app/dashboard' },
 		{ name: 'Leads', icon: 'FunnelOutline', href: '/app/leads' },
 		{ name: 'Contacts', icon: 'UserOutline', href: '/app/contacts' },
-		{ name: 'Accounts', icon: 'BuildingOfficeOutline', href: '/app/accounts' },
+		{
+			name: 'Accounts',
+			icon: 'BuildingOfficeOutline',
+			children: {
+				'All Accounts': '/app/accounts',
+				'New Account': '/app/accounts/new',
+				'Account Opportunities': '/app/accounts/opportunities',
+				'Deleted/Archived Accounts': '/app/accounts/deleted'
+			}
+		},
 		{
 			name: 'Opportunities',
 			icon: 'CurrencyDollarOutline',
@@ -145,7 +154,56 @@
 						class={`${itemClass} ${mainSidebarUrl === '/app/leads/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 				</SidebarDropdownWrapper>
-				
+
+				<SidebarDropdownWrapper label="Accounts">
+					<SidebarDropdownItem
+						label="All Accounts"
+						href="/app/accounts"
+						class={`${itemClass} ${mainSidebarUrl === '/app/accounts' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="New Account"
+						href="/app/accounts/new"
+						class={`${itemClass} ${mainSidebarUrl === '/app/accounts/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="Account Opportunities"
+						href="/app/accounts/opportunities"
+						class={`${itemClass} ${mainSidebarUrl === '/app/accounts/opportunities' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="Deleted/Archived Accounts"
+						href="/app/accounts/deleted"
+						class={`${itemClass} ${mainSidebarUrl === '/app/accounts/deleted' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+				</SidebarDropdownWrapper>
+
+				<SidebarDropdownWrapper label="Opportunities">
+					<SidebarDropdownItem
+						label="All Opportunities"
+						href="/app/opportunities"
+						class={`${itemClass} ${mainSidebarUrl === '/app/opportunities' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="New Opportunity"
+						href="/app/opportunities/new"
+						class={`${itemClass} ${mainSidebarUrl === '/app/opportunities/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+				</SidebarDropdownWrapper>
+
+				<SidebarDropdownWrapper label="Cases">
+					<SidebarDropdownItem
+						label="All Cases"
+						href="/app/cases"
+						class={`${itemClass} ${mainSidebarUrl === '/app/cases' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="New Case"
+						href="/app/cases/new"
+						class={`${itemClass} ${mainSidebarUrl === '/app/cases/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+				</SidebarDropdownWrapper>
+
 				<SidebarDropdownWrapper label="Tasks">
 					<SidebarDropdownItem
 						label="Boards"
