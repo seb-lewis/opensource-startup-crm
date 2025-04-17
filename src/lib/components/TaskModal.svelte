@@ -102,18 +102,25 @@
 <button type="button" class="modal-backdrop" on:click={() => dispatch('close')} on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('close')} aria-label="Close modal" tabindex="0"></button>
 <div class="modal">
   {#if loading}
-    <p>Loading...</p>
+    <div class="modal-loading">
+      <span class="loader"></span>
+      <span>Loading...</span>
+    </div>
   {:else if error}
     <p class="error">{error}</p>
   {:else}
-    <h2>{details.title}</h2>
-    <p>{details.description}</p>
-    <div style="margin-bottom: 0.5rem;">
+    <div class="modal-header">
+      <h2>{details.title}</h2>
+      <span class="status-badge {details.completed ? 'completed' : 'open'}">{details.completed ? 'Completed' : 'Open'}</span>
+      <button class="close-icon" on:click={() => dispatch('close')} aria-label="Close">×</button>
+    </div>
+    <p class="modal-description">{details.description}</p>
+    <div class="modal-section">
       <label for="due-date"><b>Due:</b></label>
       <input id="due-date" type="date" bind:value={dueDateInput} on:change={updateDueDate} />
-      <span style="margin-left: 0.5em; color: #888; font-size: 0.95em;">{details.dueDate ? new Date(details.dueDate).toLocaleString() : '—'}</span>
+      <span class="date-info">{details.dueDate ? new Date(details.dueDate).toLocaleDateString() : '—'}</span>
     </div>
-    <div style="margin-bottom: 0.5rem;">
+    <div class="modal-section">
       <label for="assignee"><b>Assigned to:</b></label>
       <select id="assignee" bind:value={assigneeInput} on:change={updateAssignee}>
         <option value="">Unassigned</option>
@@ -121,15 +128,23 @@
           <option value={user.id}>{user.name} ({user.email})</option>
         {/each}
       </select>
-      <span style="margin-left: 0.5em; color: #888; font-size: 0.95em;">{details.assignee?.name || 'Unassigned'}</span>
+      <span class="assignee-info">{details.assignee?.name || 'Unassigned'}</span>
     </div>
-    <h3>Activity & Comments</h3>
+    <h3 class="modal-section-title">Activity & Comments</h3>
     <ul class="comments">
       {#each comments as c}
-        <li><b>{c.author.name}:</b> {c.content} <span class="date">{new Date(c.createdAt).toLocaleString()}</span></li>
+        <li class="comment-item">
+          {#if c.author.avatar}
+            <img src={c.author.avatar} alt={c.author.name} class="comment-avatar" />
+          {/if}
+          <div class="comment-content">
+            <b>{c.author.name}:</b> {c.content}
+            <span class="date">{new Date(c.createdAt).toLocaleString()}</span>
+          </div>
+        </li>
       {/each}
     </ul>
-    <form on:submit|preventDefault={addComment}>
+    <form class="comment-form" on:submit|preventDefault={addComment}>
       <textarea bind:value={newComment} placeholder="Add a comment..." rows="2"></textarea>
       <button type="submit">Comment</button>
     </form>
@@ -160,59 +175,105 @@
   flex-direction: column;
   gap: 1.2rem;
 }
-.modal h2 {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #172b4d;
-  margin-bottom: 0.2rem;
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
 }
-.modal p {
+.status-badge {
+  font-size: 0.95rem;
+  padding: 0.2em 0.8em;
+  border-radius: 0.7em;
+  font-weight: 600;
+  background: #e0e7ff;
+  color: #3730a3;
+  margin-left: 0.5em;
+}
+.status-badge.completed {
+  background: #dcfce7;
+  color: #166534;
+}
+.status-badge.open {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.close-icon {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #64748b;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: -0.5rem;
+  margin-top: -0.5rem;
+  transition: color 0.15s;
+}
+.close-icon:hover {
+  color: #2563eb;
+}
+.modal-description {
   color: #344563;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.7rem;
+  font-size: 1.05rem;
 }
-.modal h3 {
+.modal-section {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.date-info, .assignee-info {
+  margin-left: 0.5em;
+  color: #888;
+  font-size: 0.95em;
+}
+.modal-section-title {
+  margin-top: 1.2rem;
+  margin-bottom: 0.5rem;
   font-size: 1.1rem;
   font-weight: 600;
   color: #253858;
-  margin-top: 1.2rem;
-  margin-bottom: 0.5rem;
 }
-.comments {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 1rem;
-  background: #fff;
-  border-radius: 7px;
-  box-shadow: 0 1px 3px rgba(9,30,66,.07);
-  border: 1px solid #e2e4ea;
-}
-.comments li {
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
   margin-bottom: 0.5rem;
   padding: 0.6rem 1rem 0.4rem 1rem;
   border-bottom: 1px solid #f4f5f7;
   font-size: 0.98rem;
 }
-.comments li:last-child {
-  border-bottom: none;
+.comment-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 2px;
 }
-.date {
-  color: #888;
-  font-size: 0.85em;
-  margin-left: 0.5em;
+.comment-content {
+  flex: 1;
 }
-form textarea {
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.comment-form textarea {
   width: 100%;
   border-radius: 6px;
   border: 1px solid #b6bac2;
   padding: 0.5rem 0.7rem;
   font-size: 1rem;
-  margin-bottom: 0.5rem;
   background: #fff;
   resize: vertical;
   min-height: 40px;
 }
-form button[type="submit"] {
-  background: #5aac44;
+.comment-form button[type="submit"] {
+  align-self: flex-end;
+  background: #2563eb;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -222,24 +283,30 @@ form button[type="submit"] {
   cursor: pointer;
   transition: background 0.15s;
 }
-form button[type="submit"]:hover {
-  background: #519839;
+.comment-form button[type="submit"]:hover {
+  background: #1d4ed8;
 }
-.close {
-  margin-top: 1rem;
-  background: #e0e0e0;
-  color: #253858;
-  border: none;
-  border-radius: 4px;
-  padding: 0.4rem 1.1rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.15s;
-  align-self: flex-end;
+.modal-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  justify-content: center;
+  min-height: 120px;
 }
-.close:hover {
-  background: #b6bac2;
+.loader {
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #2563eb;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.modal-loading span {
+  color: #2563eb;
 }
 .error {
   color: #c00;

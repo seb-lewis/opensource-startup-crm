@@ -67,6 +67,16 @@
 </script>
 
 <style>
+/* Card container for better separation */
+.card {
+  background: #fff;
+  border-radius: 1.25rem;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.06);
+  padding: 2rem 2.5rem;
+  margin: 2rem auto;
+  max-width: 540px;
+}
+
 .calendar {
   display: grid;
   grid-template-columns: repeat(7, 2.5rem);
@@ -87,6 +97,7 @@
   background: white;
   border: 1px solid #e5e7eb;
   transition: background 0.2s, color 0.2s;
+  position: relative;
 }
 .day.today {
   border: 2px solid #2563eb;
@@ -112,10 +123,59 @@
   color: #64748b;
   text-align: center;
 }
+
+/* Task list improvements */
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.task-item {
+  background: #f1f5f9;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  padding: 0.15em 0.7em;
+  border-radius: 0.5em;
+  margin-left: 0.5em;
+  font-weight: 600;
+}
+.badge-crm { background: #dbeafe; color: #2563eb; }
+.badge-board { background: #dcfce7; color: #16a34a; }
+.badge-priority-high { background: #fee2e2; color: #dc2626; }
+.badge-priority-medium { background: #fef9c3; color: #ca8a04; }
+.badge-priority-low { background: #d1fae5; color: #059669; }
+
+h1 {
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #2563eb;
+}
+
+.no-tasks {
+  color: #64748b;
+  text-align: center;
+  margin: 2rem 0;
+}
 </style>
 
 <h1>Task Calendar</h1>
-<div>
+<div class="card">
   <div class="calendar-header">
     <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
   </div>
@@ -133,26 +193,33 @@
       {/if}
     {/each}
   </div>
-</div>
 
-<main>
-  <h2>Tasks for {selectedDate}</h2>
-  {#if selectedTasks.length}
-    <ul>
-      {#each selectedTasks as task}
-        <li style="margin-bottom: 0.5rem;">
-          <strong>{task.title}</strong> ({task.type})
-          {#if task.type === 'CRM'}
-            <span> - {task.status} [{task.priority}]</span>
-          {:else}
-            <span> - {task.completed ? 'Completed' : 'Open'} (Board)</span>
-          {/if}
-          <br />
-          <span>{task.description}</span>
-        </li>
-      {/each}
-    </ul>
-  {:else}
-    <p>No tasks for this date.</p>
-  {/if}
-</main>
+  <main>
+    <h2>Tasks for {selectedDate}</h2>
+    {#if selectedTasks.length}
+      <ul class="task-list">
+        {#each selectedTasks as task}
+          <li class="task-item">
+            <div>
+              <strong>{task.title}</strong>
+              <span class="badge {task.type === 'CRM' ? 'badge-crm' : 'badge-board'}">{task.type}</span>
+              {#if task.type === 'CRM'}
+                <span class="badge {task.priority === 'High' ? 'badge-priority-high' : task.priority === 'Medium' ? 'badge-priority-medium' : 'badge-priority-low'}">{task.priority}</span>
+              {/if}
+            </div>
+            <div style="font-size:0.95em; color:#64748b;">{task.description}</div>
+            <div style="font-size:0.9em; margin-top:0.2em;">
+              {#if task.type === 'CRM'}
+                <span>Status: <b>{task.status}</b></span>
+              {:else}
+                <span>Status: <b>{task.completed ? 'Completed' : 'Open'}</b></span>
+              {/if}
+            </div>
+          </li>
+        {/each}
+      </ul>
+    {:else}
+      <p class="no-tasks">No tasks for this date.</p>
+    {/if}
+  </main>
+</div>
