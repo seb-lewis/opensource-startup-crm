@@ -344,9 +344,14 @@
             <TabItem open title="Comments">
               <div class="p-4">
                 <div class="mb-6">
-                  <form method="POST" action="?/addComment" use:enhance={() => {
+                  <form method="POST" action="?/addComment" use:enhance={({ update }) => {
                     isSubmittingComment = true;
-                    return async ({ update }) => {
+                    return async ({ result }) => {
+                      isSubmittingComment = false;
+                      if (result?.type === 'success' && result?.data?.comments) {
+                        lead.comments = result.data.comments;
+                        newComment = '';
+                      }
                       await update({ reset: false });
                     };
                   }}>
@@ -400,137 +405,6 @@
                     </div>
                   {/if}
                 </div>
-              </div>
-            </TabItem>
-
-            <TabItem title="Tasks">
-              <div class="p-4">
-                <div class="flex justify-between items-center mb-4">
-                  <h3 class="font-semibold text-blue-900">Tasks</h3>
-                  <Button size="xs" color="blue" class="px-3 py-1 shadow-sm">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    New Task
-                  </Button>
-                </div>
-                
-                {#if lead.tasks && lead.tasks.length > 0}
-                  <div class="space-y-4">
-                    {#each lead.tasks as task, i}
-                      <div class="border rounded-lg p-4 hover:shadow-md transition-shadow bg-white" in:fly={{ y: 20, delay: i * 80, duration: 300 }}>
-                        <div class="flex items-start justify-between">
-                          <div class="flex items-center gap-3">
-                            <div class="relative">
-                              <input type="checkbox" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" checked={task.completed || false} />
-                              {#if task.completed}
-                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                  <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                  </svg>
-                                </div>
-                              {/if}
-                            </div>
-                            <div class="font-medium text-lg">{task.subject}</div>
-                          </div>
-                          <Badge color={getPriorityColor(task.priority)} class="text-xs px-2.5 py-1">{task.priority}</Badge>
-                        </div>
-                        {#if task.description}
-                          <p class="mt-3 text-sm text-gray-600 pl-8">{task.description}</p>
-                        {/if}
-                        <div class="mt-3 flex items-center gap-3 text-xs text-gray-500 pl-8">
-                          <div class="flex items-center gap-1">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            <span class="font-medium">Due: {formatDate(task.dueDate)}</span>
-                          </div>
-                          <Button size="xs" color="light" class="text-xs px-2 py-0.5 ml-auto">
-                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-                            </svg>
-                            Edit
-                          </Button>
-                        </div>
-                      </div>
-                    {/each}
-                  </div>
-                {:else}
-                  <div class="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                    <div class="text-gray-400 flex flex-col items-center">
-                      <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                      </svg>
-                      <p class="text-lg font-medium">No tasks found</p>
-                      <p class="text-sm mt-1">Create a new task for this lead</p>
-                    </div>
-                  </div>
-                {/if}
-              </div>
-            </TabItem>
-
-            <TabItem title="Events">
-              <div class="p-4">
-                <div class="flex justify-between items-center mb-4">
-                  <h3 class="font-semibold text-blue-900">Events</h3>
-                  <Button size="xs" color="blue" class="px-3 py-1 shadow-sm">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    New Event
-                  </Button>
-                </div>
-                
-                {#if lead.events && lead.events.length > 0}
-                  <div class="space-y-4">
-                    {#each lead.events as event, i}
-                      <div class="border rounded-lg p-4 hover:shadow-md transition-shadow bg-white" in:fly={{ y: 20, delay: i * 80, duration: 300 }}>
-                        <div class="flex items-start gap-4">
-                          <div class="bg-gradient-to-br from-indigo-400 to-indigo-600 text-white p-3 rounded-lg shadow-sm flex flex-col items-center justify-center min-w-[3rem]">
-                            <div class="text-xs font-bold">{new Date(event.startDate).toLocaleString('default', { month: 'short' })}</div>
-                            <div class="text-xl font-bold">{new Date(event.startDate).getDate()}</div>
-                          </div>
-                          <div class="flex-1">
-                            <div class="font-medium text-lg text-indigo-900">{event.subject}</div>
-                            <div class="text-sm text-gray-600 mt-2 flex items-center">
-                              <svg class="w-4 h-4 mr-1 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                              </svg>
-                              {formatDate(event.startDate)} - {formatDate(event.endDate)}
-                            </div>
-                            {#if event.location}
-                              <div class="text-sm mt-2 flex items-center text-gray-600">
-                                <svg class="w-4 h-4 mr-1 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
-                                {event.location}
-                              </div>
-                            {/if}
-                            {#if event.description}
-                              <p class="mt-3 text-sm text-gray-600 bg-indigo-50/60 p-3 rounded border border-indigo-100">{event.description}</p>
-                            {/if}
-                          </div>
-                          <Button size="xs" color="light" class="self-start p-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-                            </svg>
-                          </Button>
-                        </div>
-                      </div>
-                    {/each}
-                  </div>
-                {:else}
-                  <div class="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                    <div class="text-gray-400 flex flex-col items-center">
-                      <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                      </svg>
-                      <p class="text-lg font-medium">No events found</p>
-                      <p class="text-sm mt-1">Schedule a new event for this lead</p>
-                    </div>
-                  </div>
-                {/if}
               </div>
             </TabItem>
           </Tabs>

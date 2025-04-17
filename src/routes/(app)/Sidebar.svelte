@@ -171,26 +171,7 @@
 						href="/app/accounts/opportunities"
 						class={`${itemClass} ${mainSidebarUrl === '/app/accounts/opportunities' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
-					<SidebarDropdownItem
-						label="Deleted/Archived Accounts"
-						href="/app/accounts/deleted"
-						class={`${itemClass} ${mainSidebarUrl === '/app/accounts/deleted' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
 				</SidebarDropdownWrapper>
-
-				<SidebarDropdownWrapper label="Opportunities">
-					<SidebarDropdownItem
-						label="All Opportunities"
-						href="/app/opportunities"
-						class={`${itemClass} ${mainSidebarUrl === '/app/opportunities' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-					<SidebarDropdownItem
-						label="New Opportunity"
-						href="/app/opportunities/new"
-						class={`${itemClass} ${mainSidebarUrl === '/app/opportunities/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-				</SidebarDropdownWrapper>
-
 				<SidebarDropdownWrapper label="Cases">
 					<SidebarDropdownItem
 						label="All Cases"
