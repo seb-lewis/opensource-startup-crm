@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import { Badge, Button, Card, Spinner, Tabs, TabItem, Textarea, Toast } from 'flowbite-svelte';
   import { fly, fade, scale } from 'svelte/transition';
   import { enhance } from '$app/forms';
@@ -18,68 +18,63 @@
   let toastMessage = '';
   let toastType = 'default';
 
-  // Type definitions
-  interface Lead {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string | null;
-    phone: string | null;
-    company: string | null;
-    title: string | null;
-    status: 'NEW' | 'PENDING' | 'CONTACTED' | 'QUALIFIED' | 'UNQUALIFIED' | 'CONVERTED';
-    leadSource: 'WEB' | 'PHONE_INQUIRY' | 'PARTNER_REFERRAL' | 'COLD_CALL' | 'TRADE_SHOW' | 'EMPLOYEE_REFERRAL' | 'ADVERTISEMENT' | 'OTHER' | null;
-    industry: string | null;
-    rating: string | null;
-    description: string | null;
-    ownerId: string;
-    owner?: {
-      id: string;
-      name: string | null;
-      email: string;
-      title: string | null;
-    };
-    tasks: Array<{
-      id: string;
-      subject: string;
-      description: string | null;
-      status: string;
-      priority: string;
-      dueDate: Date | null;
-      createdAt: Date;
-      updatedAt: Date;
-    }>;
-    events: Array<{
-      id: string;
-      subject: string;
-      description: string | null;
-      startDate: Date;
-      endDate: Date;
-      location: string | null;
-    }>;
-    comments: Array<{
-      id: string;
-      content: string;
-      createdAt: Date;
-      author?: {
-        id: string;
-        name: string | null;
-      };
-    }>;
-    createdAt: Date;
-    updatedAt: Date;
-    isConverted: boolean;
-    convertedAt: Date | null;
-    convertedContactId: string | null;
-    convertedAccountId: string | null;
-    convertedOpportunityId: string | null;
-    contact?: {
-      id: string;
-      firstName: string;
-      lastName: string;
-      email: string | null;
-      phone: string | null;
-    };
+  // Function to get the full name of a lead
+  function getFullName(lead) {
+    return `${lead.firstName} ${lead.lastName}`.trim();
+  }
+
+  // Function to format date
+  function formatDate(dateString) {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+
+  // Function to map lead status to badge color
+  function getStatusColor(status) {
+    switch (status) {
+      case 'NEW':
+        return 'blue';
+      case 'PENDING':
+        return 'purple';
+      case 'CONTACTED':
+        return 'green';
+      case 'QUALIFIED':
+        return 'indigo';
+      case 'UNQUALIFIED':
+        return 'red';
+      case 'CONVERTED':
+        return 'dark';
+      default:
+        return 'blue';
+    }
+  }
+
+  // Function to get task priority color
+  function getPriorityColor(priority) {
+    switch (priority) {
+      case 'HIGH':
+        return 'red';
+      case 'MEDIUM':
+        return 'yellow';
+      case 'LOW':
+        return 'green';
+      default:
+        return 'green';
+    }
+  }
+
+  async function addComment() {
+    if (!newComment.trim()) return;
+    isSubmittingComment = true;
+    setTimeout(() => {
+      alert(`Comment added: ${newComment}`);
+      newComment = '';
+      isSubmittingComment = false;
+    }, 1000);
   }
 
   // Reactive statement to show toast messages based on form action result
@@ -101,65 +96,6 @@
     showToast = true;
     isConverting = false;
     isSubmittingComment = false;
-  }
-
-  // Function to get the full name of a lead
-  function getFullName(lead: Lead): string {
-    return `${lead.firstName} ${lead.lastName}`.trim();
-  }
-
-  // Function to format date
-  function formatDate(dateString: Date | null): string {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  }
-
-  // Function to map lead status to badge color
-  function getStatusColor(status: Lead['status']): 'blue' | 'purple' | 'green' | 'indigo' | 'dark' | 'red' | 'yellow' | 'pink' | 'primary' | 'none' {
-    switch (status) {
-      case 'NEW':
-        return 'blue';
-      case 'PENDING':
-        return 'purple';
-      case 'CONTACTED':
-        return 'green';
-      case 'QUALIFIED':
-        return 'indigo';
-      case 'UNQUALIFIED':
-        return 'red';
-      case 'CONVERTED':
-        return 'dark';
-      default:
-        return 'blue';
-    }
-  }
-
-  // Function to get task priority color
-  function getPriorityColor(priority: string): 'red' | 'yellow' | 'green' {
-    switch (priority) {
-      case 'HIGH':
-        return 'red';
-      case 'MEDIUM':
-        return 'yellow';
-      case 'LOW':
-        return 'green';
-      default:
-        return 'green';
-    }
-  }
-
-  async function addComment() {
-    if (!newComment.trim()) return;
-    isSubmittingComment = true;
-    setTimeout(() => {
-      alert(`Comment added: ${newComment}`);
-      newComment = '';
-      isSubmittingComment = false;
-    }, 1000);
   }
 </script>
 
@@ -216,9 +152,9 @@
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-2 md:px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+  <main class="px-4 sm:px-6 py-4 pb-8 max-w-5xl mx-auto">
     <!-- Sidebar: Lead Summary -->
-    <aside class="md:col-span-1 space-y-6">
+    <div class="md:col-span-1 space-y-6">
       <!-- Lead Status Card -->
       <Card class="shadow-lg border-0 bg-white/90">
         <div class="flex flex-col items-center py-6">
@@ -383,7 +319,7 @@
           </div>
         </Card>
       {/if}
-    </aside>
+      </div>
 
     <!-- Main Content -->
     <div class="md:col-span-2 space-y-6">

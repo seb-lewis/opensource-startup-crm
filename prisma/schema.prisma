@@ -27,7 +27,6 @@ model User {
   updatedAt       DateTime           @updatedAt
   profilePhoto    String?
   phone           String?
-  title           String?
   department      String?
   isActive        Boolean            @default(true)
   lastLogin       DateTime?
