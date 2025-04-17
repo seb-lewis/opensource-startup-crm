@@ -1,6 +1,5 @@
 import { error, fail } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
-import { getUserFromSession } from '$lib/auth';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params }) {
@@ -112,7 +111,7 @@ export async function load({ params }) {
 export const actions = {
   closeAccount: async ({ params, request, locals }) => {
     try {
-      const user = await getUserFromSession(locals);
+      const user = locals.user;
       
       if (!user) {
         return fail(401, { success: false, message: 'Unauthorized' });
@@ -195,7 +194,7 @@ export const actions = {
   
   reopenAccount: async ({ params, request, locals }) => {
     try {
-      const user = await getUserFromSession(locals);
+      const user = locals.user;
       
       if (!user) {
         return fail(401, { success: false, message: 'Unauthorized' });

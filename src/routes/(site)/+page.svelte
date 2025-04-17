@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  
+  import banner_img from '$lib/assets/images/banner.png';  
   // Define feature cards
   const features = [
     {
@@ -23,11 +23,11 @@
       description: 'Make data-driven decisions with powerful analytics and reporting tools.',
       icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
     },
-    {
-      title: 'Email Integration',
-      description: 'Connect your email and automate communication with clients.',
-      icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'
-    },
+    // {
+    //   title: 'Email Integration',
+    //   description: 'Connect your email and automate communication with clients.',
+    //   icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'
+    // },
     {
       title: 'Mobile Access',
       description: 'Manage your business on the go with our mobile-friendly platform.',
@@ -86,12 +86,10 @@
         The all-in-one CRM solution for managing leads, customers, and sales with ease.
       </p>
       <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-        <a href="/signup" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-white hover:bg-gray-100 shadow-lg">
+        <a href="/login" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-white hover:bg-gray-100 shadow-lg">
           Get Started Free
         </a>
-        <a href="/demo" class="inline-flex items-center justify-center px-6 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-indigo-700">
-          Request Demo
-        </a>
+        
       </div>
     </div>
     <div class="md:w-1/2 flex justify-center md:justify-end">
@@ -99,9 +97,7 @@
         <div class="h-60 bg-gray-200 relative">
           <!-- Dashboard preview image would go here -->
           <div class="absolute inset-0 flex items-center justify-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-            </svg>
+            <img src="{banner_img}" alt="Dashboard Preview" class="w-full h-full object-cover" />
           </div>
         </div>
         <div class="p-4 bg-gray-50 border-t border-gray-200">
@@ -143,7 +139,7 @@
 </section>
 
 <!-- Testimonial Section -->
-<section class="py-16 bg-white">
+<!-- <section class="py-16 bg-white">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-12 sm:text-4xl">
       Trusted by Businesses Worldwide
@@ -190,7 +186,7 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <!-- CTA Section -->
 <section class="bg-blue-700 text-white py-16">
@@ -202,11 +198,11 @@
         </h2>
         <p class="mt-3 max-w-3xl text-lg">
           Start managing your customer relationships more effectively today.
-          Try our CRM free for 14 days, no credit card required.
+          Try our CRM for free, no credit card required.
         </p>
       </div>
       <div class="mt-8 flex lg:mt-0 lg:flex-shrink-0 space-x-4">
-        <a href="/signup" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-gray-100">
+        <a href="/login" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-gray-100">
           Get Started
         </a>
         <a href="/contact" class="inline-flex items-center justify-center px-5 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-blue-800">
@@ -218,7 +214,7 @@
 </section>
 
 <!-- Stats Section -->
-<section class="py-16 bg-gray-50">
+<!-- <section class="py-16 bg-gray-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
       <div class="bg-white rounded-lg shadow-lg p-8 text-center">
@@ -235,4 +231,4 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->

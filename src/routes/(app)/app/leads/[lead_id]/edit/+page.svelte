@@ -110,7 +110,7 @@
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 py-8">
+  <main class="max-w-4xl mx-auto px-6 py-10">
     {#if formSubmitted && !errorMessage}
       <div in:fly={{ y: -20 }} class="mb-8">
         <Toast dismissable color="green" class="mb-5">
@@ -127,7 +127,9 @@
       </div>
     {/if}
 
-    <Card class="shadow-lg border-0 bg-white/95">
+    <p class="text-sm text-gray-600 mb-6">Editing lead: <span class="font-medium">{lead.firstName} {lead.lastName}</span></p>
+
+    <Card class="px-4 sm:px-6 py-4 pb-8 max-w-5xl shadow-lg border border-gray-200 bg-white rounded-lg mx-auto">
       <form 
         method="POST" 
         use:enhance={({ formData }) => {
@@ -154,9 +156,9 @@
           };
         }}
       >
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <!-- Personal Information -->
-          <div class="space-y-4">
+          <div class="space-y-4 bg-gray-50 p-6 rounded-lg border border-gray-200">
             <h3 class="text-lg font-semibold text-blue-900 mb-4">Basic Information</h3>
             
             <div>
@@ -219,7 +221,7 @@
           </div>
           
           <!-- Company Information -->
-          <div class="space-y-4">
+          <div class="space-y-4 bg-gray-50 p-6 rounded-lg border border-gray-200">
             <h3 class="text-lg font-semibold text-blue-900 mb-4">Company Information</h3>
             
             <div>
@@ -256,7 +258,7 @@
           </div>
 
           <!-- Lead Information -->
-          <div class="space-y-4 md:col-span-2">
+          <div class="space-y-4 bg-gray-50 p-6 rounded-lg border border-gray-200 md:col-span-2">
             <h3 class="text-lg font-semibold text-blue-900 mb-4">Lead Details</h3>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

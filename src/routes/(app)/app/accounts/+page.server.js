@@ -12,9 +12,15 @@ export async function load({ locals, url }) {
 
     try {
         // Build the where clause for filtering
-        const where = {
-            organizationId: locals.org.id
-        };
+        const where = {};
+
+        // Add status filter
+        const status = url.searchParams.get('status');
+        if (status === 'open') {
+            where.closedAt = null;
+        } else if (status === 'closed') {
+            where.closedAt = { not: null };
+        }
 
         // Fetch accounts with pagination
         const accounts = await prisma.account.findMany({
