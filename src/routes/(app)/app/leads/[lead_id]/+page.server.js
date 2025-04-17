@@ -23,7 +23,8 @@ export async function load({ params }) {
             author: true
           },
           orderBy: { createdAt: 'desc' }
-        }
+        },
+        contact: true
       }
     });
     
