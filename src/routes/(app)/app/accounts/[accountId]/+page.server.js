@@ -5,18 +5,18 @@ import prisma from '$lib/prisma';
 export async function load({ params, url }) {
   try {
     const accountId = params.accountId;
-    
+
     // Fetch account details
     const account = await prisma.account.findUnique({
       where: {
         id: accountId
       }
     });
-    
+
     if (!account) {
       throw error(404, 'Account not found');
     }
-    
+
     // Fetch account contacts
     const contactRelationships = await prisma.accountContactRelationship.findMany({
       where: {
@@ -26,21 +26,21 @@ export async function load({ params, url }) {
         contact: true
       }
     });
-    
+
     // Format contacts with isPrimary flag
     const contacts = contactRelationships.map(rel => ({
       ...rel.contact,
       isPrimary: rel.isPrimary,
       role: rel.role
     }));
-    
+
     // Fetch account opportunities
     const opportunities = await prisma.opportunity.findMany({
       where: {
         accountId: accountId
       }
     });
-    
+
     // Fetch account comments/notes
     const comments = await prisma.comment.findMany({
       where: {
@@ -62,14 +62,14 @@ export async function load({ params, url }) {
     if (url.searchParams.get('commentsOnly') === '1') {
       return new Response(JSON.stringify({ comments }), { headers: { 'Content-Type': 'application/json' } });
     }
-    
+
     // Fetch account quotes
     const quotes = await prisma.quote.findMany({
       where: {
         accountId: accountId
       }
     });
-    
+
     // Fetch account tasks
     const tasks = await prisma.task.findMany({
       where: {
@@ -84,14 +84,24 @@ export async function load({ params, url }) {
         }
       }
     });
-    
+
     // Fetch account cases
     const cases = await prisma.case.findMany({
       where: {
         accountId: accountId
       }
     });
-    
+
+    // Load users in the same organization for assignment
+    const users = await prisma.user.findMany({
+      where: {
+        organizations: {
+          some: { organizationId: account.organizationId }
+        }
+      },
+      select: { id: true, name: true, email: true }
+    });
+
     return {
       account,
       contacts,
@@ -100,6 +110,7 @@ export async function load({ params, url }) {
       quotes,
       tasks,
       cases,
+      users,
       meta: {
         title: account.name,
         description: `Account details for ${account.name}`
@@ -116,19 +127,19 @@ export const actions = {
   closeAccount: async ({ params, request, locals }) => {
     try {
       const user = locals.user;
-      
+
       if (!user) {
         return fail(401, { success: false, message: 'Unauthorized' });
       }
-      
+
       const { accountId } = params;
       const formData = await request.formData();
       const closureReason = formData.get('closureReason')?.toString();
-      
+
       if (!closureReason) {
         return fail(400, { success: false, message: 'Please provide a reason for closing this account' });
       }
-      
+
       // Fetch the account to verify it exists
       const account = await prisma.account.findUnique({
         where: { id: accountId },
@@ -139,15 +150,15 @@ export const actions = {
           ownerId: true
         }
       });
-      
+
       if (!account) {
         return fail(404, { success: false, message: 'Account not found' });
       }
-      
+
       if (account.closedAt) {
         return fail(400, { success: false, message: 'Account is already closed' });
       }
-      
+
       // Check user permissions (must be the owner, a sales manager, or admin)
       const userOrg = await prisma.userOrganization.findFirst({
         where: {
@@ -155,16 +166,16 @@ export const actions = {
           organizationId: account.organizationId
         }
       });
-      
-      const hasPermission = 
-        user.id === account.ownerId || 
-        userOrg?.role === 'ADMIN' || 
+
+      const hasPermission =
+        user.id === account.ownerId ||
+        userOrg?.role === 'ADMIN' ||
         userOrg?.role === 'SALES_MANAGER';
-        
+
       if (!hasPermission) {
         return fail(403, { success: false, message: 'Permission denied. Only account owners, sales managers, or admins can close accounts.' });
       }
-      
+
       // Update the account to mark it as closed
       const updatedAccount = await prisma.account.update({
         where: { id: accountId },
@@ -173,7 +184,7 @@ export const actions = {
           closureReason
         }
       });
-      
+
       // Log this action in the audit log
       await prisma.auditLog.create({
         data: {
@@ -188,24 +199,24 @@ export const actions = {
           ipAddress: request.headers.get('x-forwarded-for') || 'unknown'
         }
       });
-      
+
       return { success: true };
     } catch (error) {
       console.error('Error closing account:', error);
       return fail(500, { success: false, message: 'An unexpected error occurred' });
     }
   },
-  
+
   reopenAccount: async ({ params, request, locals }) => {
     try {
       const user = locals.user;
-      
+
       if (!user) {
         return fail(401, { success: false, message: 'Unauthorized' });
       }
-      
+
       const { accountId } = params;
-      
+
       // Fetch the account to verify it exists
       const account = await prisma.account.findUnique({
         where: { id: accountId },
@@ -217,15 +228,15 @@ export const actions = {
           ownerId: true
         }
       });
-      
+
       if (!account) {
         return fail(404, { success: false, message: 'Account not found' });
       }
-      
+
       if (!account.closedAt) {
         return fail(400, { success: false, message: 'Account is not closed' });
       }
-      
+
       // Check user permissions (must be the owner, a sales manager, or admin)
       const userOrg = await prisma.userOrganization.findFirst({
         where: {
@@ -233,22 +244,22 @@ export const actions = {
           organizationId: account.organizationId
         }
       });
-      
-      const hasPermission = 
-        user.id === account.ownerId || 
-        userOrg?.role === 'ADMIN' || 
+
+      const hasPermission =
+        user.id === account.ownerId ||
+        userOrg?.role === 'ADMIN' ||
         userOrg?.role === 'SALES_MANAGER';
-        
+
       if (!hasPermission) {
         return fail(403, { success: false, message: 'Permission denied. Only account owners, sales managers, or admins can reopen accounts.' });
       }
-      
+
       // Save the old values for the audit log
       const oldValues = {
         closedAt: account.closedAt,
         closureReason: account.closureReason
       };
-      
+
       // Update the account to mark it as reopened
       const updatedAccount = await prisma.account.update({
         where: { id: accountId },
@@ -257,7 +268,7 @@ export const actions = {
           closureReason: null
         }
       });
-      
+
       // Log this action in the audit log
       await prisma.auditLog.create({
         data: {
@@ -272,7 +283,7 @@ export const actions = {
           ipAddress: request.headers.get('x-forwarded-for') || 'unknown'
         }
       });
-      
+
       return { success: true };
     } catch (error) {
       console.error('Error reopening account:', error);
@@ -372,7 +383,8 @@ export const actions = {
     }
   },
 
-  comment: async ({ request, params }) => {
+  comment: async ({ request, params, locals }) => {
+    const user = locals.user;
     // Fallback: fetch account to get organizationId
     const account = await prisma.account.findUnique({
       where: { id: params.accountId },
@@ -396,5 +408,45 @@ export const actions = {
       }
     });
     return { success: true };
+  },
+
+  addTask: async ({ params, request, locals }) => {
+    try {
+      const user = locals.user;
+      const org = locals.org;
+      if (!user || !org) {
+        return fail(401, { success: false, message: 'Unauthorized' });
+      }
+      const { accountId } = params;
+      const formData = await request.formData();
+      const subject = formData.get('subject')?.toString().trim();
+      const description = formData.get('description')?.toString() || '';
+      const dueDateRaw = formData.get('dueDate');
+      const dueDate = dueDateRaw ? new Date(dueDateRaw.toString()) : null;
+      const priority = formData.get('priority')?.toString() || 'Normal';
+      if (!subject) {
+        return fail(400, { success: false, message: 'Subject is required.' });
+      }
+      // If no ownerId is provided, default to current user
+      // if (!ownerId) ownerId = user.id;
+      console.log(user.id, org.id);
+      const task = await prisma.task.create({
+        data: {
+          subject,
+          description,
+          dueDate,
+          priority,
+          status: 'Open',
+           createdBy:  { connect: { id: user.id    } }, 
+          account: { connect: { id: accountId } },  
+          owner: { connect: { id: user.id } }, 
+          organization: { connect: { id: org.id } }, 
+        }
+      });
+      return { success: true, message: 'Task added successfully.', task };
+    } catch (err) {
+      console.error('Error adding task:', err);
+      return fail(500, { success: false, message: 'Failed to add task.' });
+    }
   }
 };

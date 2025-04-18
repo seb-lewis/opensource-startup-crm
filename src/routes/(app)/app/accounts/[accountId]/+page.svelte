@@ -4,19 +4,21 @@
   import { Tabs, TabItem, Button, Badge, Textarea, Card, Modal } from 'flowbite-svelte';
   import { onMount } from 'svelte';
   import { invalidateAll } from '$app/navigation';
-  
+  import TaskModal from '$lib/components/TaskModal.svelte';
+
   export let data;
   export let form;
-  
+  let users = Array.isArray(data.users) ? data.users : [];
+
   const { account, contacts, opportunities, quotes, tasks, cases } = data;
   let comments = data.comments;
-  
+
   // Form state
   let showCloseModal = false;
   let closureReason = '';
   let closeError = '';
   let isClosing = false;
-  
+
   // Add Contact Modal state
   let showAddContactModal = false;
   let contactForm = {
@@ -43,7 +45,7 @@
     };
     addContactError = '';
   }
-  
+
   async function submitAddContact() {
     addContactError = '';
     if (!contactForm.firstName.trim() || !contactForm.lastName.trim()) {
@@ -79,7 +81,7 @@
       isAddingContact = false;
     }
   }
-  
+
   // Add Opportunity Modal state
   let showAddOpportunityModal = false;
   let opportunityForm = {
@@ -135,7 +137,76 @@
       isAddingOpportunity = false;
     }
   }
-  
+
+  // Task modal state
+  let showTaskModal = false;
+  let selectedTask = null;
+
+  function openTaskModal(task) {
+    selectedTask = task;
+    showTaskModal = true;
+  }
+  function closeTaskModal() {
+    showTaskModal = false;
+    selectedTask = null;
+  }
+
+  // Add Task modal state
+  let showAddTaskModal = false;
+  let addTaskForm = {
+    subject: '',
+    description: '',
+    dueDate: '',
+    priority: 'Normal',
+    ownerId: ''
+  };
+  let addTaskError = '';
+  let isAddingTask = false;
+
+  function resetAddTaskForm() {
+    addTaskForm = {
+      subject: '',
+      description: '',
+      dueDate: '',
+      priority: 'Normal',
+      ownerId: ''
+    };
+    addTaskError = '';
+  }
+
+  async function submitAddTask() {
+    addTaskError = '';
+    if (!addTaskForm.subject.trim()) {
+      addTaskError = 'Subject is required.';
+      return;
+    }
+    isAddingTask = true;
+    try {
+      const formData = new FormData();
+      formData.append('subject', addTaskForm.subject);
+      formData.append('description', addTaskForm.description);
+      formData.append('dueDate', addTaskForm.dueDate);
+      formData.append('priority', addTaskForm.priority);
+      formData.append('ownerId', addTaskForm.ownerId);
+      const res = await fetch(`?/addTask`, {
+        method: 'POST',
+        body: formData
+      });
+      if (res.ok) {
+        showAddTaskModal = false;
+        resetAddTaskForm();
+        await invalidateAll();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        addTaskError = data?.error || data?.message || 'Failed to add task.';
+      }
+    } catch (e) {
+      addTaskError = 'Failed to add task.';
+    } finally {
+      isAddingTask = false;
+    }
+  }
+
   // Format date string
   function formatDate(dateStr) {
     if (!dateStr) return 'N/A';
@@ -145,7 +216,7 @@
       day: 'numeric'
     });
   }
-  
+
   // Format currency
   function formatCurrency(value) {
     if (!value) return '$0';
@@ -155,7 +226,7 @@
       minimumFractionDigits: 0
     }).format(value);
   }
-  
+
   // Determine badge color based on opportunity stage
   function getStageBadgeColor(stage) {
     switch (stage?.toLowerCase()) {
@@ -168,7 +239,7 @@
       default: return 'gray';
     }
   }
-  
+
   // Handle comment submission
   let newComment = '';
   let isSubmittingComment = false;
@@ -205,7 +276,7 @@
       isSubmittingComment = false;
     }
   }
-  
+
   // Determine case status badge color
   function getCaseStatusBadgeColor(status) {
     switch (status?.toLowerCase()) {
@@ -215,7 +286,7 @@
       default: return 'gray';
     }
   }
-  
+
   // Determine quote status badge color
   function getQuoteStatusBadgeColor(status) {
     switch (status?.toLowerCase()) {
@@ -229,7 +300,7 @@
       default: return 'gray';
     }
   }
-  
+
   // Handle form submission errors
   $: {
     if (form?.success === false) {
@@ -672,13 +743,16 @@
       
       <TabItem title="Tasks ({tasks.length})">
         <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
+          <div class="flex justify-between items-center p-4 pb-0">
+            <div></div>
+            <Button color="purple" on:click={() => showAddTaskModal = true}>+ Add Task</Button>
+          </div>
           {#if tasks.length === 0}
             <div class="p-8 text-center">
               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
               </svg>
               <p class="mt-2 text-gray-500 dark:text-gray-400">No tasks found for this account</p>
-              <Button href="/app/tasks/new?accountId={account.id}" color="purple" class="mt-3">Add Task</Button>
             </div>
           {:else}
             <div class="overflow-x-auto relative">
@@ -697,7 +771,7 @@
                   {#each tasks as task}
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                        <a href="/app/tasks/{task.id}" class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline">
+                        <a href="#" class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline" on:click|preventDefault={() => openTaskModal(task)}>
                           {task.subject}
                         </a>
                       </td>
@@ -714,7 +788,7 @@
                       <td class="px-6 py-4 hidden md:table-cell">{formatDate(task.dueDate)}</td>
                       <td class="px-6 py-4 hidden lg:table-cell">{task.owner?.name || 'Unassigned'}</td>
                       <td class="px-6 py-4 text-right">
-                        <a href="/app/tasks/{task.id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a>
+                        <Button size="xs" color="blue" on:click={() => openTaskModal(task)}>View</Button>
                       </td>
                     </tr>
                   {/each}
@@ -780,7 +854,7 @@
         </div>
       </TabItem>
       
-      <TabItem title="Quotes ({quotes.length})">
+      <!-- <TabItem title="Quotes ({quotes.length})">
         <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
           {#if quotes.length === 0}
             <div class="p-8 text-center">
@@ -829,7 +903,7 @@
             </div>
           {/if}
         </div>
-      </TabItem>
+      </TabItem> -->
     </Tabs>
   </div>
 
@@ -953,4 +1027,63 @@
       </div>
     </form>
   </Modal>
+
+  <!-- Add Task Modal -->
+  <Modal bind:open={showAddTaskModal} size="md" autoclose={false} title="Add Task to Account">
+    <form on:submit|preventDefault={submitAddTask}>
+      <div class="grid grid-cols-1 gap-4">
+        <div>
+          <label for="taskSubject" class="block text-sm font-medium mb-1">Subject <span class="text-red-500">*</span></label>
+          <input id="taskSubject" class="w-full border rounded px-3 py-2" bind:value={addTaskForm.subject} required />
+        </div>
+        <div>
+          <label for="taskDescription" class="block text-sm font-medium mb-1">Description</label>
+          <Textarea id="taskDescription" rows="2" bind:value={addTaskForm.description} />
+        </div>
+        <div>
+          <label for="taskDueDate" class="block text-sm font-medium mb-1">Due Date</label>
+          <input id="taskDueDate" class="w-full border rounded px-3 py-2" type="date" bind:value={addTaskForm.dueDate} />
+        </div>
+        <div>
+          <label for="taskPriority" class="block text-sm font-medium mb-1">Priority</label>
+          <select id="taskPriority" class="w-full border rounded px-3 py-2" bind:value={addTaskForm.priority}>
+            <option value="High">High</option>
+            <option value="Normal">Normal</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div>
+          <label for="taskOwner" class="block text-sm font-medium mb-1">Assigned To</label>
+          {#if users.length > 0}
+            <select id="taskOwner" class="w-full border rounded px-3 py-2" bind:value={addTaskForm.ownerId}>
+              <option value="">-- Select User --</option>
+              {#each users as u}
+                <option value={u.id}>{u.name} ({u.email})</option>
+              {/each}
+            </select>
+          {:else}
+            <div class="text-sm text-gray-500">No users available for assignment.</div>
+          {/if}
+        </div>
+      </div>
+      {#if addTaskError}
+        <p class="text-red-600 mt-2">{addTaskError}</p>
+      {/if}
+      <div class="flex justify-end gap-2 mt-6">
+        <Button type="button" color="alternative" on:click={() => { showAddTaskModal = false; resetAddTaskForm(); }}>Cancel</Button>
+        <Button type="submit" color="purple" disabled={isAddingTask}>
+          {#if isAddingTask}
+            Adding...
+          {:else}
+            Add Task
+          {/if}
+        </Button>
+      </div>
+    </form>
+  </Modal>
+
+  <!-- Task Modal for view/edit/close -->
+  {#if showTaskModal && selectedTask}
+    <TaskModal task={selectedTask} boardId={null} on:close={closeTaskModal} />
+  {/if}
 </div>
