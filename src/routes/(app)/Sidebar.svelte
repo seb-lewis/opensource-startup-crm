@@ -36,80 +36,6 @@
 		activeMainSidebar = navigation.to?.url.pathname ?? '';
 	});
 
-	let menu = [
-		{ name: 'Dashboard', icon: 'ChartPieOutline', href: '/app/dashboard' },
-		{ name: 'Leads', icon: 'FunnelOutline', href: '/app/leads' },
-		{ name: 'Contacts', icon: 'UserOutline', href: '/app/contacts' },
-		{
-			name: 'Accounts',
-			icon: 'BuildingOfficeOutline',
-			children: {
-				'All Accounts': '/app/accounts',
-				'New Account': '/app/accounts/new',
-				'Account Opportunities': '/app/accounts/opportunities',
-				'Deleted/Archived Accounts': '/app/accounts/deleted'
-			}
-		},
-		{
-			name: 'Opportunities',
-			icon: 'CurrencyDollarOutline',
-			children: {
-				'All Opportunities': '/app/opportunities',
-				'New Opportunity': '/app/opportunities/new'
-			}
-		},
-		{
-			name: 'Cases',
-			icon: 'LifebuoyOutline',
-			children: {
-				'All Cases': '/app/cases',
-				'New Case': '/app/cases/new'
-			}
-		},
-		{
-			name: 'Tasks',
-			icon: 'ClipboardOutline',
-			children: {
-				'All Tasks': '/app/tasks',
-				'New Task': '/app/tasks/new',
-				Calendar: '/app/tasks/calendar'
-			}
-		},
-		{
-			name: 'Invoices',
-			icon: 'ReceiptOutline',
-			children: {
-				'All Invoices': '/app/invoices',
-				'Create Invoice': '/app/invoices/new'
-			}
-		},
-		{
-			name: 'Reports',
-			icon: 'ChartBarOutline',
-			children: {
-				'Sales Reports': '/app/reports/sales',
-				'Case Stats': '/app/reports/cases',
-				'Invoice Trends': '/app/reports/invoices'
-			}
-		},
-		{
-			name: 'Settings',
-			icon: 'CogOutline',
-			children: {
-				'User Management': '/app/settings/users',
-				'Custom Fields': '/app/settings/fields',
-				Integrations: '/app/settings/integrations'
-			}
-		}
-	];
-	let links = [
-		{
-			label: 'Support',
-			href: 'https://discord.gg/',
-			icon: LifeSaverSolid
-		}
-	];
-	let dropdowns = Object.fromEntries(Object.keys(menu).map((x) => [x, false]));
 </script>
 
 <Sidebar
@@ -193,13 +119,7 @@
 					/>
 				</SidebarDropdownWrapper>
 			</SidebarGroup>
-			<SidebarGroup ulClass={groupClass}>
-				{#each links as { label, href, icon } (label)}
-					<SidebarItem {label} {href} spanClass="ml-3" class={itemClass} target="_blank">
-						<svelte:component this={icon} slot="icon" class={iconClass} />
-					</SidebarItem>
-				{/each}
-			</SidebarGroup>
+			
 		</nav>
 	</SidebarWrapper>
 </Sidebar>
