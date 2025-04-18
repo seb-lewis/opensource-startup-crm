@@ -1,7 +1,6 @@
 # BottleCRM: Free and Open Source Customer Relationship Management
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/ashwin/git-prjs/django-crm/svelte-crm/src/lib/assets/images/logo.png" alt="BottleCRM Logo" width="180" />
   <h3>Powerful, Modern CRM for Everyone</h3>
 </div>
 

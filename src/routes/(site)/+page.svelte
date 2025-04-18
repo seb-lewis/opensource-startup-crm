@@ -89,7 +89,12 @@
         <a href="/login" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-white hover:bg-gray-100 shadow-lg">
           Get Started Free
         </a>
-        
+        <a href="https://github.com/MicroPyramid/svelte-crm" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-indigo-700 transition-colors">
+          <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+          </svg>
+          View on GitHub
+        </a>
       </div>
     </div>
     <div class="md:w-1/2 flex justify-center md:justify-end">
@@ -187,6 +192,91 @@
     </div>
   </div>
 </section> -->
+
+<!-- Open Source Section -->
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="lg:flex lg:items-center lg:justify-between">
+      <div class="lg:w-1/2">
+        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl mb-6">
+          100% Open Source
+        </h2>
+        <p class="text-lg text-gray-600 mb-6">
+          This CRM is completely open-source and hosted on GitHub. You can freely use, modify, and contribute to the project.
+        </p>
+        <ul class="space-y-4">
+          <li class="flex items-start">
+            <svg class="h-6 w-6 text-green-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span class="text-gray-600">Freedom to customize and extend functionality</span>
+          </li>
+          <li class="flex items-start">
+            <svg class="h-6 w-6 text-green-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span class="text-gray-600">No vendor lock-in or hidden charges</span>
+          </li>
+          <li class="flex items-start">
+            <svg class="h-6 w-6 text-green-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span class="text-gray-600">Community-driven development and support</span>
+          </li>
+        </ul>
+        <div class="mt-8">
+          <a href="https://github.com/MicroPyramid/svelte-crm" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+            </svg>
+            Star on GitHub
+          </a>
+          <a href="https://github.com/MicroPyramid/svelte-crm/fork" target="_blank" rel="noopener noreferrer" class="ml-4 inline-flex items-center justify-center px-5 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-100">
+            Fork Project
+          </a>
+        </div>
+      </div>
+      <div class="mt-10 lg:mt-0 lg:w-1/2 lg:pl-10">
+        <div class="bg-gray-100 rounded-lg p-6 border border-gray-200 shadow-md">
+          <div class="flex items-center mb-4">
+            <svg class="h-8 w-8 text-gray-700 mr-3" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+            </svg>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">MicroPyramid/svelte-crm</h3>
+              <p class="text-gray-600">Open Source CRM built with Svelte and Django</p>
+            </div>
+          </div>
+          <div class="flex space-x-4 mb-4">
+            <div class="flex items-center">
+              <svg class="h-5 w-5 text-yellow-400 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"></path>
+              </svg>
+              <span class="text-gray-700 text-sm">Star</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="h-5 w-5 text-gray-600 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M5.559 8.855c.166 1.183.789 3.207 3.087 4.079-2.381.512-4.056 2.776-4.643 3.583 3.747-1.8 6.379-1.297 7.373-1.004-2.636-2.313-1.819-6.689-1.819-6.689 1.21.671 1.931 1.753 2.188 2.63.252-.83.55-1.848.566-2.486-4.71-1.639-6.749-5.483-6.749-5.483-2.13 6.223-3.057 9.916-3.677 11.064-.316-2.006-.717-4.406-.717-4.406s-1.436-3.533-6.17-2.149c2.042 6.606 7.642 8.725 9.639 9.292-1.792-2.341-2.419-4.335-2.694-5.85 1.333-.555 3.939-3.017 4.077-7.345-.174 2.611-.48 4.919-2.462 5.766-.505-1.766-2.309-3.422-3.995-3.778 1.023-.683 1.974-1.356 2.974-2.918-.833 0-1.6.108-2.311.255-1.95.588-2.287 1.625-2.347 1.679-.137.097-.336.243-.53.363l-.323.241c-2.154 1.574-1.893 5.588-.467 9.104"></path>
+              </svg>
+              <span class="text-gray-700 text-sm">Fork</span>
+            </div>
+            <div class="flex items-center">
+              <svg class="h-5 w-5 text-gray-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span class="text-gray-700 text-sm">Active Development</span>
+            </div>
+          </div>
+          <div class="bg-gray-200 p-3 rounded-md text-sm font-mono text-gray-700 overflow-x-auto">
+            $ git clone https://github.com/MicroPyramid/svelte-crm.git<br>
+            $ cd svelte-crm<br>
+            $ npm install
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- CTA Section -->
 <section class="bg-blue-700 text-white py-16">
