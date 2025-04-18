@@ -1,5 +1,5 @@
 <script>
-    import '../../../app.css';
+    import '../../../../app.css'
     import { enhance } from '$app/forms';
     import { Input, Label, Button } from 'flowbite-svelte';
     import { Card } from 'flowbite-svelte';

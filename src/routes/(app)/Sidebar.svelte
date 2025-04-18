@@ -11,7 +11,6 @@
 		SidebarItem,
 		SidebarWrapper
 	} from 'flowbite-svelte';
-	import { LifeSaverSolid } from 'flowbite-svelte-icons';
 
 	export let drawerHidden = false;
 
@@ -21,8 +20,6 @@
 
 	let iconClass =
 		'flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white';
-	let itemClass =
-		'flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700';
 	let groupClass = 'pt-2 space-y-2';
 
 	$: mainSidebarUrl = $page.url.pathname;
@@ -53,7 +50,7 @@
 				<SidebarItem
 					label="Dashboard"
 					href="/app"
-					class={`${itemClass} ${mainSidebarUrl === '/app' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					class={`${mainSidebarUrl === '/app' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					spanClass="ml-3"
 				>
 					<svelte:fragment slot="icon">
@@ -63,16 +60,17 @@
 						/>
 					</svelte:fragment>
 				</SidebarItem>
+				
 				<SidebarDropdownWrapper label="Leads">
 					<SidebarDropdownItem
 						label="Open Leads"
 						href="/app/leads/open"
-						class={`${itemClass} ${mainSidebarUrl === '/app/leads/open' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+						class={`${mainSidebarUrl === '/app/leads/open' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 					<SidebarDropdownItem
 						label="Create Lead"
 						href="/app/leads/new"
-						class={`${itemClass} ${mainSidebarUrl === '/app/leads/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+						class={`${mainSidebarUrl === '/app/leads/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 				</SidebarDropdownWrapper>
 
@@ -80,29 +78,29 @@
 					<SidebarDropdownItem
 						label="All Accounts"
 						href="/app/accounts"
-						class={`${itemClass} ${mainSidebarUrl === '/app/accounts' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+						class={`${mainSidebarUrl === '/app/accounts' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 					<SidebarDropdownItem
 						label="New Account"
 						href="/app/accounts/new"
-						class={`${itemClass} ${mainSidebarUrl === '/app/accounts/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+						class={`${mainSidebarUrl === '/app/accounts/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 					<SidebarDropdownItem
 						label="Account Opportunities"
 						href="/app/accounts/opportunities"
-						class={`${itemClass} ${mainSidebarUrl === '/app/accounts/opportunities' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+						class={`${mainSidebarUrl === '/app/accounts/opportunities' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 				</SidebarDropdownWrapper>
 				<SidebarDropdownWrapper label="Cases">
 					<SidebarDropdownItem
 						label="All Cases"
 						href="/app/cases"
-						class={`${itemClass} ${mainSidebarUrl === '/app/cases' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+						class={`${mainSidebarUrl === '/app/cases' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 					<SidebarDropdownItem
 						label="New Case"
 						href="/app/cases/new"
-						class={`${itemClass} ${mainSidebarUrl === '/app/cases/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+						class={`${mainSidebarUrl === '/app/cases/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 				</SidebarDropdownWrapper>
 
@@ -110,12 +108,12 @@
 					<SidebarDropdownItem
 						label="Boards"
 						href="/app/tasks"
-						class={`${itemClass} ${mainSidebarUrl === '/app/tasks' ? 'bg-blue-100 font-semibold dark:bg-blue-700' : ''}`}
+						class={`${mainSidebarUrl === '/app/tasks' ? 'bg-blue-100 font-semibold dark:bg-blue-700' : ''}`}
 					/>
 					<SidebarDropdownItem
 						label="Calendar"
 						href="/app/tasks/calendar"
-						class={`${itemClass} ${mainSidebarUrl === '/app/tasks/calendar' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+						class={`${mainSidebarUrl === '/app/tasks/calendar' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 				</SidebarDropdownWrapper>
 			</SidebarGroup>

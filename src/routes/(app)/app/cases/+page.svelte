@@ -42,8 +42,8 @@
   </div>
   <div class="mb-4 flex flex-wrap gap-4 items-end">
     <div>
-      <label class="block text-xs font-semibold mb-1">Status</label>
-      <select class="select select-bordered" bind:value={statusFilter} on:change={onFilterChange}>
+      <label for="status" class="block text-xs font-semibold mb-1">Status</label>
+      <select id="status" class="select select-bordered" bind:value={statusFilter} on:change={onFilterChange}>
         <option value="">All</option>
         {#each statusOptions as s}
           <option value={s}>{s}</option>
@@ -51,8 +51,8 @@
       </select>
     </div>
     <div>
-      <label class="block text-xs font-semibold mb-1">Assigned To</label>
-      <select class="select select-bordered" bind:value={assignedFilter} on:change={onFilterChange}>
+      <label for="assigned" class="block text-xs font-semibold mb-1">Assigned To</label>
+      <select id="assigned" class="select select-bordered" bind:value={assignedFilter} on:change={onFilterChange}>
         <option value="">All</option>
         {#each assignedOptions as a}
           <option value={a}>{a}</option>
@@ -60,8 +60,8 @@
       </select>
     </div>
     <div>
-      <label class="block text-xs font-semibold mb-1">Account</label>
-      <select class="select select-bordered" bind:value={accountFilter} on:change={onFilterChange}>
+      <label for="account" class="block text-xs font-semibold mb-1">Account</label>
+      <select id="account" class="select select-bordered" bind:value={accountFilter} on:change={onFilterChange}>
         <option value="">All</option>
         {#each accountOptions as acc}
           <option value={acc}>{acc}</option>

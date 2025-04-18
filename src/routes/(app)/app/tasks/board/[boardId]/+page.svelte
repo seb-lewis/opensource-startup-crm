@@ -321,7 +321,7 @@
   position: relative;
   transition: box-shadow 0.18s, background 0.18s;
 }
-.kanban-task-card:active, .kanban-task-card.dragging {
+.kanban-task-card:active {
   background: #e4f0f6;
   box-shadow: 0 8px 24px 0 rgba(9,30,66,.18);
 }
