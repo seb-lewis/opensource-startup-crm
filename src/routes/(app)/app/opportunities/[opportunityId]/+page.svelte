@@ -63,6 +63,5 @@
 <style>
   @media (max-width: 640px) {
     .max-w-2xl { max-width: 100%; padding: 0.5rem; }
-    .grid-cols-2 { grid-template-columns: 1fr !important; }
   }
 </style>

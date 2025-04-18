@@ -1,32 +1,32 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { getLead, updateLead } from '$lib/api';
+	// import { getLead, updateLead } from '$lib/api';
 	import type { Lead } from '$lib/types';
 
 	let lead: Lead | null = null;
 	let error: string | null = null;
 
-	onMount(async () => {
-		const id = $page.params.id;
-		try {
-			lead = await getLead(id);
-		} catch (err) {
-			error = 'Failed to load lead details';
-		}
-	});
+	// onMount(async () => {
+	// 	const id = $page.params.id;
+	// 	try {
+	// 		lead = await getLead(id);
+	// 	} catch (err) {
+	// 		error = 'Failed to load lead details';
+	// 	}
+	// });
 
-	async function handleSubmit(event: Event) {
-		event.preventDefault();
-		if (lead) {
-			try {
-				await updateLead(lead);
-				// Redirect or show success message
-			} catch (err) {
-				error = 'Failed to update lead';
-			}
-		}
-	}
+	// async function handleSubmit(event: Event) {
+	// 	event.preventDefault();
+	// 	if (lead) {
+	// 		try {
+	// 			await updateLead(lead);
+	// 			// Redirect or show success message
+	// 		} catch (err) {
+	// 			error = 'Failed to update lead';
+	// 		}
+	// 	}
+	// }
 </script>
 
 <svelte:head>
