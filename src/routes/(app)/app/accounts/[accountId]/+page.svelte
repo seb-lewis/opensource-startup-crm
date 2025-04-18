@@ -771,7 +771,7 @@
                   {#each tasks as task}
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                        <a href="#" class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline" on:click|preventDefault={() => openTaskModal(task)}>
+                        <a href="." class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline" on:click|preventDefault={() => openTaskModal(task)}>
                           {task.subject}
                         </a>
                       </td>

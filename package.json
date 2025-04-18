@@ -49,7 +49,7 @@
 		"@prisma/client": "6.5.0",
 		"axios": "^1.8.4",
 		"date-fns": "^4.1.0",
-		"flowbite-svelte-blocks": "^2.0.0",
+		"flowbite-svelte-blocks": "^1.1.4",
 		"flowbite-svelte-icons": "^2.1.1",
 		"svelte-fa": "^4.0.3",
 		"uuid": "^11.1.0"
