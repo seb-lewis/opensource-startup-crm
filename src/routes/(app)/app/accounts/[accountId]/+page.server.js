@@ -323,5 +323,48 @@ export const actions = {
       console.error('Error adding contact:', err);
       return fail(500, { success: false, message: 'Failed to add contact.' });
     }
+  },
+
+  addOpportunity: async ({ params, request, locals }) => {
+    try {
+      // @ts-ignore
+      const user = locals.user;
+      // @ts-ignore
+      const org = locals.org;
+      if (!user || !org) {
+        return fail(401, { success: false, message: 'Unauthorized' });
+      }
+      const { accountId } = params;
+      const formData = await request.formData();
+      const name = formData.get('name')?.toString().trim();
+      const amountRaw = formData.get('amount');
+      const amount = amountRaw ? parseFloat(amountRaw.toString()) : null;
+      const stageRaw = formData.get('stage');
+      const stage = stageRaw ? stageRaw.toString() : 'PROSPECTING';
+      const closeDateRaw = formData.get('closeDate');
+      const closeDate = closeDateRaw ? new Date(closeDateRaw.toString()) : null;
+      const probabilityRaw = formData.get('probability');
+      const probability = probabilityRaw ? parseFloat(probabilityRaw.toString()) : null;
+      if (!name) {
+        return fail(400, { success: false, message: 'Opportunity name is required.' });
+      }
+      // Create the opportunity
+      await prisma.opportunity.create({
+        data: {
+          name,
+          amount,
+          stage,
+          closeDate,
+          probability,
+          account: { connect: { id: accountId } },
+          owner: { connect: { id: user.id } },
+          organization: { connect: { id: org.id } }
+        }
+      });
+      return { success: true, message: 'Opportunity added successfully.' };
+    } catch (err) {
+      console.error('Error adding opportunity:', err);
+      return fail(500, { success: false, message: 'Failed to add opportunity.' });
+    }
   }
 };

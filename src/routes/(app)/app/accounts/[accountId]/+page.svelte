@@ -80,6 +80,62 @@
     }
   }
   
+  // Add Opportunity Modal state
+  let showAddOpportunityModal = false;
+  let opportunityForm = {
+    name: '',
+    amount: '',
+    stage: 'PROSPECTING',
+    closeDate: '',
+    probability: ''
+  };
+  let addOpportunityError = '';
+  let isAddingOpportunity = false;
+
+  function resetOpportunityForm() {
+    opportunityForm = {
+      name: '',
+      amount: '',
+      stage: 'PROSPECTING',
+      closeDate: '',
+      probability: ''
+    };
+    addOpportunityError = '';
+  }
+
+  async function submitAddOpportunity() {
+    addOpportunityError = '';
+    if (!opportunityForm.name.trim()) {
+      addOpportunityError = 'Opportunity name is required.';
+      return;
+    }
+    isAddingOpportunity = true;
+    try {
+      const formData = new FormData();
+      formData.append('name', opportunityForm.name);
+      formData.append('amount', opportunityForm.amount);
+      formData.append('stage', opportunityForm.stage);
+      formData.append('closeDate', opportunityForm.closeDate);
+      formData.append('probability', opportunityForm.probability);
+      const res = await fetch(`/app/accounts/${account.id}?/addOpportunity`, {
+        method: 'POST',
+        body: formData
+      });
+      if (res.ok) {
+        showAddOpportunityModal = false;
+        resetOpportunityForm();
+        await invalidateAll();
+      } else {
+        const data = await res.json();
+        addOpportunityError = data?.message || 'Failed to add opportunity.';
+      }
+    } catch (e) {
+      addOpportunityError = 'Failed to add opportunity.';
+    } finally {
+      isAddingOpportunity = false;
+    }
+  }
+  
   // Format date string
   function formatDate(dateStr) {
     if (!dateStr) return 'N/A';
@@ -427,14 +483,12 @@
             </svg>
             Add Contact
           </Button>
-          
-          <Button href="/app/opportunities/new?accountId={account.id}" color="green" class="w-full justify-center mt-3">
+          <Button on:click={() => showAddOpportunityModal = true} color="green" class="w-full justify-center mt-3">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
             Add Opportunity
           </Button>
-
           <Button href="/app/cases/new?accountId={account.id}" color="red" class="w-full justify-center mt-3">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
@@ -831,6 +885,54 @@
             Adding...
           {:else}
             Add Contact
+          {/if}
+        </Button>
+      </div>
+    </form>
+  </Modal>
+
+  <!-- Add Opportunity Modal -->
+  <Modal bind:open={showAddOpportunityModal} size="md" autoclose={false} title="Add Opportunity to Account">
+    <form on:submit|preventDefault={submitAddOpportunity}>
+      <div class="grid grid-cols-1 gap-4">
+        <div>
+          <label for="oppName" class="block text-sm font-medium mb-1">Name <span class="text-red-500">*</span></label>
+          <input id="oppName" class="w-full border rounded px-3 py-2" bind:value={opportunityForm.name} required />
+        </div>
+        <div>
+          <label for="oppAmount" class="block text-sm font-medium mb-1">Amount</label>
+          <input id="oppAmount" class="w-full border rounded px-3 py-2" type="number" bind:value={opportunityForm.amount} min="0" />
+        </div>
+        <div>
+          <label for="oppStage" class="block text-sm font-medium mb-1">Stage</label>
+          <select id="oppStage" class="w-full border rounded px-3 py-2" bind:value={opportunityForm.stage}>
+            <option value="PROSPECTING">Prospecting</option>
+            <option value="QUALIFICATION">Qualification</option>
+            <option value="PROPOSAL">Proposal</option>
+            <option value="NEGOTIATION">Negotiation</option>
+            <option value="CLOSED_WON">Closed Won</option>
+            <option value="CLOSED_LOST">Closed Lost</option>
+          </select>
+        </div>
+        <div>
+          <label for="oppCloseDate" class="block text-sm font-medium mb-1">Close Date</label>
+          <input id="oppCloseDate" class="w-full border rounded px-3 py-2" type="date" bind:value={opportunityForm.closeDate} />
+        </div>
+        <div>
+          <label for="oppProbability" class="block text-sm font-medium mb-1">Probability (%)</label>
+          <input id="oppProbability" class="w-full border rounded px-3 py-2" type="number" min="0" max="100" bind:value={opportunityForm.probability} />
+        </div>
+      </div>
+      {#if addOpportunityError}
+        <p class="text-red-600 mt-2">{addOpportunityError}</p>
+      {/if}
+      <div class="flex justify-end gap-2 mt-6">
+        <Button type="button" color="alternative" on:click={() => { showAddOpportunityModal = false; resetOpportunityForm(); }}>Cancel</Button>
+        <Button type="submit" color="green" disabled={isAddingOpportunity}>
+          {#if isAddingOpportunity}
+            Adding...
+          {:else}
+            Add Opportunity
           {/if}
         </Button>
       </div>
