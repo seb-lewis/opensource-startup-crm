@@ -220,54 +220,56 @@ export const actions = {
   },
   
   // Action to add a comment to the lead
-  addComment: async ({ params, request }) => {
+  addComment: async ({ params, request, locals }) => {
     const lead_id = params.lead_id;
     const data = await request.formData();
     const comment = data.get('comment');
-    
-    if (!comment || comment.trim() === '') {
+    const commentValue = typeof comment === 'string' ? comment : String(comment);
+    if (!commentValue.trim()) {
       return fail(400, {
         status: 'error',
         message: 'Comment cannot be empty'
       });
     }
-    
     try {
-      // For now, we'll use a fixed user ID. In a real app, you would use the logged-in user's ID
-      const CURRENT_USER_ID = 'user_01'; // Replace with actual user auth
-      
+      // Use the logged-in user from locals
+      const user = locals.user;
+      if (!user) {
+        return fail(401, {
+          status: 'error',
+          message: 'You must be logged in to comment.'
+        });
+      }
       // Get the lead to obtain its organization ID
       const lead = await prisma.lead.findUnique({
         where: { id: lead_id },
         select: { organizationId: true }
       });
-      
       if (!lead) {
         return fail(404, {
           status: 'error',
           message: 'Lead not found'
         });
       }
-      
-      const newComment = await prisma.comment.create({
+      await prisma.comment.create({
         data: {
-          body: comment,
-          lead: {
-            connect: { id: lead_id }
-          },
-          author: {
-            connect: { id: CURRENT_USER_ID }
-          },
-          organization: {
-            connect: { id: lead.organizationId }
-          }
+          body: commentValue,
+          lead: { connect: { id: lead_id } },
+          author: { connect: { id: user.id } },
+          organization: { connect: { id: lead.organizationId } }
         }
       });
-      
+      // Refetch comments for immediate update
+      const updatedLead = await prisma.lead.findUnique({
+        where: { id: lead_id },
+        include: {
+          comments: { include: { author: true }, orderBy: { createdAt: 'desc' } }
+        }
+      });
       return {
         status: 'success',
         message: 'Comment added successfully',
-        comment: newComment
+        comments: updatedLead?.comments || []
       };
     } catch (err) {
       console.error('Error adding comment:', err);

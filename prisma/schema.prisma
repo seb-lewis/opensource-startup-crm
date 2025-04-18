@@ -352,6 +352,7 @@ model Case {
   origin         String? // Email, Web, Phone
   type           String? // Problem, Feature Request, Question
   reason         String? // Example: "User didn't attend training, Complex functionality"
+  dueDate        DateTime?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   closedAt       DateTime?
