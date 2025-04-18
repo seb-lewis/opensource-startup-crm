@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +17,7 @@ jobs:
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          
+
       - name: Add host key to known_hosts
         run: |
           mkdir -p ~/.ssh
@@ -25,13 +25,25 @@ jobs:
 
       - name: Install pnpm
         run: npm install -g pnpm
-          
-      - name: Deploy to server
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Sync build to server
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd ${{ secrets.PROJECT_PATH }} && \
-          git pull origin main && \
-          pnpm i && \
+          rsync -avz --delete --exclude='.env' ./build/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.PROJECT_PATH }}/build/
+          rsync -avz --delete --exclude='.env' ./prisma/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.PROJECT_PATH }}/prisma/
+          rsync -avz --delete --exclude='.env' ./package.json ./pnpm-lock.yaml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.PROJECT_PATH }}/
+
+      - name: Deploy on server
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "set -e; cd ${{ secrets.PROJECT_PATH }} && \
+          pnpm install --frozen-lockfile && \
           npx prisma migrate deploy && \
-          npx prisma generate && \
-          pnpm run build && \
           pm2 restart all"
