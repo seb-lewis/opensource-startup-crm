@@ -171,27 +171,38 @@
   
   // Handle comment submission
   let newComment = '';
+  let isSubmittingComment = false;
+  let commentError = '';
+
   async function submitComment() {
+    commentError = '';
     if (!newComment.trim()) return;
-    
+    isSubmittingComment = true;
     try {
-      const response = await fetch(`/api/accounts/${account.id}/comments`, {
+      const formData = new FormData();
+      formData.append('body', newComment);
+      const res = await fetch(`?/comment`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: newComment, isPrivate: false })
+        body: formData
       });
-      
-      if (response.ok) {
-        // Refresh comments
-        const commentsResponse = await fetch(`/api/accounts/${account.id}/comments`);
-        if (commentsResponse.ok) {
-          const newComments = await commentsResponse.json();
-          comments = newComments.items || [];
-          newComment = '';
+      if (res.ok) {
+        // Instead of invalidateAll, fetch comments directly for instant update
+        const commentsRes = await fetch(window.location.pathname + '?commentsOnly=1');
+        if (commentsRes.ok) {
+          const data = await commentsRes.json();
+          if (Array.isArray(data.comments)) {
+            comments = data.comments;
+          }
         }
+        newComment = '';
+      } else {
+        const data = await res.json().catch(() => ({}));
+        commentError = data?.error || data?.message || 'Failed to add comment.';
       }
     } catch (err) {
-      console.error('Error posting comment:', err);
+      commentError = 'Failed to add comment.';
+    } finally {
+      isSubmittingComment = false;
     }
   }
   
@@ -623,11 +634,15 @@
           <div class="mb-6">
             <label for="comment" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Add a note</label>
             <Textarea id="comment" rows="3" placeholder="Write your note here..." bind:value={newComment} />
+            {#if commentError}
+              <p class="text-red-600 mt-2">{commentError}</p>
+            {/if}
             <div class="mt-2 flex justify-end">
-              <Button size="sm" color="blue" on:click={submitComment}>Add Note</Button>
+              <Button size="sm" color="blue" on:click={submitComment} disabled={isSubmittingComment}>
+                {#if isSubmittingComment}Adding...{:else}Add Note{/if}
+              </Button>
             </div>
           </div>
-          
           {#if comments.length === 0}
             <div class="p-8 text-center">
               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

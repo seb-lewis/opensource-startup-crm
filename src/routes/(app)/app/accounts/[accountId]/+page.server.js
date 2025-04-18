@@ -2,7 +2,7 @@ import { error, fail } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ params }) {
+export async function load({ params, url }) {
   try {
     const accountId = params.accountId;
     
@@ -58,6 +58,10 @@ export async function load({ params }) {
         createdAt: 'desc'
       }
     });
+    // If ?commentsOnly=1, return just comments as JSON
+    if (url.searchParams.get('commentsOnly') === '1') {
+      return new Response(JSON.stringify({ comments }), { headers: { 'Content-Type': 'application/json' } });
+    }
     
     // Fetch account quotes
     const quotes = await prisma.quote.findMany({
@@ -366,5 +370,31 @@ export const actions = {
       console.error('Error adding opportunity:', err);
       return fail(500, { success: false, message: 'Failed to add opportunity.' });
     }
+  },
+
+  comment: async ({ request, params }) => {
+    // Fallback: fetch account to get organizationId
+    const account = await prisma.account.findUnique({
+      where: { id: params.accountId },
+      select: { organizationId: true, ownerId: true }
+    });
+    if (!account) {
+      return fail(404, { error: 'Account not found.' });
+    }
+    // Use the account owner as the author if no user is available (for demo/dev only)
+    const authorId = account.ownerId;
+    const organizationId = account.organizationId;
+    const form = await request.formData();
+    const body = form.get('body')?.toString().trim();
+    if (!body) return fail(400, { error: 'Comment cannot be empty.' });
+    await prisma.comment.create({
+      data: {
+        body,
+        authorId,
+        organizationId,
+        accountId: params.accountId
+      }
+    });
+    return { success: true };
   }
 };
