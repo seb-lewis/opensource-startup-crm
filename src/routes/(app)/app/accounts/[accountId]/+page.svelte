@@ -2,19 +2,211 @@
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { Tabs, TabItem, Button, Badge, Textarea, Card, Modal } from 'flowbite-svelte';
-  
+  import { onMount } from 'svelte';
+  import { invalidateAll } from '$app/navigation';
+  import TaskModal from '$lib/components/TaskModal.svelte';
+
   export let data;
   export let form;
-  
+  let users = Array.isArray(data.users) ? data.users : [];
+
   const { account, contacts, opportunities, quotes, tasks, cases } = data;
   let comments = data.comments;
-  
+
   // Form state
   let showCloseModal = false;
   let closureReason = '';
   let closeError = '';
   let isClosing = false;
-  
+
+  // Add Contact Modal state
+  let showAddContactModal = false;
+  let contactForm = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    title: '',
+    isPrimary: false,
+    role: ''
+  };
+  let addContactError = '';
+  let isAddingContact = false;
+
+  function resetContactForm() {
+    contactForm = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      title: '',
+      isPrimary: false,
+      role: ''
+    };
+    addContactError = '';
+  }
+
+  async function submitAddContact() {
+    addContactError = '';
+    if (!contactForm.firstName.trim() || !contactForm.lastName.trim()) {
+      addContactError = 'First and last name are required.';
+      return;
+    }
+    isAddingContact = true;
+    try {
+      // Use form-encoded data for SvelteKit form actions
+      const formData = new FormData();
+      formData.append('firstName', contactForm.firstName);
+      formData.append('lastName', contactForm.lastName);
+      formData.append('email', contactForm.email);
+      formData.append('phone', contactForm.phone);
+      formData.append('title', contactForm.title);
+      formData.append('isPrimary', contactForm.isPrimary ? 'true' : '');
+      formData.append('role', contactForm.role);
+      const res = await fetch(`/app/accounts/${account.id}?/addContact`, {
+        method: 'POST',
+        body: formData
+      });
+      if (res.ok) {
+        showAddContactModal = false;
+        resetContactForm();
+        await invalidateAll();
+      } else {
+        const data = await res.json();
+        addContactError = data?.message || 'Failed to add contact.';
+      }
+    } catch (e) {
+      addContactError = 'Failed to add contact.';
+    } finally {
+      isAddingContact = false;
+    }
+  }
+
+  // Add Opportunity Modal state
+  let showAddOpportunityModal = false;
+  let opportunityForm = {
+    name: '',
+    amount: '',
+    stage: 'PROSPECTING',
+    closeDate: '',
+    probability: ''
+  };
+  let addOpportunityError = '';
+  let isAddingOpportunity = false;
+
+  function resetOpportunityForm() {
+    opportunityForm = {
+      name: '',
+      amount: '',
+      stage: 'PROSPECTING',
+      closeDate: '',
+      probability: ''
+    };
+    addOpportunityError = '';
+  }
+
+  async function submitAddOpportunity() {
+    addOpportunityError = '';
+    if (!opportunityForm.name.trim()) {
+      addOpportunityError = 'Opportunity name is required.';
+      return;
+    }
+    isAddingOpportunity = true;
+    try {
+      const formData = new FormData();
+      formData.append('name', opportunityForm.name);
+      formData.append('amount', opportunityForm.amount);
+      formData.append('stage', opportunityForm.stage);
+      formData.append('closeDate', opportunityForm.closeDate);
+      formData.append('probability', opportunityForm.probability);
+      const res = await fetch(`/app/accounts/${account.id}?/addOpportunity`, {
+        method: 'POST',
+        body: formData
+      });
+      if (res.ok) {
+        showAddOpportunityModal = false;
+        resetOpportunityForm();
+        await invalidateAll();
+      } else {
+        const data = await res.json();
+        addOpportunityError = data?.message || 'Failed to add opportunity.';
+      }
+    } catch (e) {
+      addOpportunityError = 'Failed to add opportunity.';
+    } finally {
+      isAddingOpportunity = false;
+    }
+  }
+
+  // Task modal state
+  let showTaskModal = false;
+  let selectedTask = null;
+
+  function openTaskModal(task) {
+    selectedTask = task;
+    showTaskModal = true;
+  }
+  function closeTaskModal() {
+    showTaskModal = false;
+    selectedTask = null;
+  }
+
+  // Add Task modal state
+  let showAddTaskModal = false;
+  let addTaskForm = {
+    subject: '',
+    description: '',
+    dueDate: '',
+    priority: 'Normal',
+    ownerId: ''
+  };
+  let addTaskError = '';
+  let isAddingTask = false;
+
+  function resetAddTaskForm() {
+    addTaskForm = {
+      subject: '',
+      description: '',
+      dueDate: '',
+      priority: 'Normal',
+      ownerId: ''
+    };
+    addTaskError = '';
+  }
+
+  async function submitAddTask() {
+    addTaskError = '';
+    if (!addTaskForm.subject.trim()) {
+      addTaskError = 'Subject is required.';
+      return;
+    }
+    isAddingTask = true;
+    try {
+      const formData = new FormData();
+      formData.append('subject', addTaskForm.subject);
+      formData.append('description', addTaskForm.description);
+      formData.append('dueDate', addTaskForm.dueDate);
+      formData.append('priority', addTaskForm.priority);
+      formData.append('ownerId', addTaskForm.ownerId);
+      const res = await fetch(`?/addTask`, {
+        method: 'POST',
+        body: formData
+      });
+      if (res.ok) {
+        showAddTaskModal = false;
+        resetAddTaskForm();
+        await invalidateAll();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        addTaskError = data?.error || data?.message || 'Failed to add task.';
+      }
+    } catch (e) {
+      addTaskError = 'Failed to add task.';
+    } finally {
+      isAddingTask = false;
+    }
+  }
+
   // Format date string
   function formatDate(dateStr) {
     if (!dateStr) return 'N/A';
@@ -24,7 +216,7 @@
       day: 'numeric'
     });
   }
-  
+
   // Format currency
   function formatCurrency(value) {
     if (!value) return '$0';
@@ -34,7 +226,7 @@
       minimumFractionDigits: 0
     }).format(value);
   }
-  
+
   // Determine badge color based on opportunity stage
   function getStageBadgeColor(stage) {
     switch (stage?.toLowerCase()) {
@@ -47,33 +239,44 @@
       default: return 'gray';
     }
   }
-  
+
   // Handle comment submission
   let newComment = '';
+  let isSubmittingComment = false;
+  let commentError = '';
+
   async function submitComment() {
+    commentError = '';
     if (!newComment.trim()) return;
-    
+    isSubmittingComment = true;
     try {
-      const response = await fetch(`/api/accounts/${account.id}/comments`, {
+      const formData = new FormData();
+      formData.append('body', newComment);
+      const res = await fetch(`?/comment`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: newComment, isPrivate: false })
+        body: formData
       });
-      
-      if (response.ok) {
-        // Refresh comments
-        const commentsResponse = await fetch(`/api/accounts/${account.id}/comments`);
-        if (commentsResponse.ok) {
-          const newComments = await commentsResponse.json();
-          comments = newComments.items || [];
-          newComment = '';
+      if (res.ok) {
+        // Instead of invalidateAll, fetch comments directly for instant update
+        const commentsRes = await fetch(window.location.pathname + '?commentsOnly=1');
+        if (commentsRes.ok) {
+          const data = await commentsRes.json();
+          if (Array.isArray(data.comments)) {
+            comments = data.comments;
+          }
         }
+        newComment = '';
+      } else {
+        const data = await res.json().catch(() => ({}));
+        commentError = data?.error || data?.message || 'Failed to add comment.';
       }
     } catch (err) {
-      console.error('Error posting comment:', err);
+      commentError = 'Failed to add comment.';
+    } finally {
+      isSubmittingComment = false;
     }
   }
-  
+
   // Determine case status badge color
   function getCaseStatusBadgeColor(status) {
     switch (status?.toLowerCase()) {
@@ -83,7 +286,7 @@
       default: return 'gray';
     }
   }
-  
+
   // Determine quote status badge color
   function getQuoteStatusBadgeColor(status) {
     switch (status?.toLowerCase()) {
@@ -97,7 +300,7 @@
       default: return 'gray';
     }
   }
-  
+
   // Handle form submission errors
   $: {
     if (form?.success === false) {
@@ -110,15 +313,15 @@
   <!-- Back Button and Header -->
   <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
     <div class="flex items-center mb-4 md:mb-0">
-      <button 
+      <a 
         class="mr-3 inline-flex items-center text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500"
-        on:click={() => history.back()}
+        href="/app/accounts"
       >
         <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
         Back
-      </button>
+      </a>
       <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{account.name}</h1>
     </div>
     
@@ -356,20 +559,18 @@
         </div>
         
         <div class="mt-6">
-          <Button href="/app/contacts/new?accountId={account.id}" color="blue" class="w-full justify-center">
+          <Button on:click={() => showAddContactModal = true} color="blue" class="w-full justify-center">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
             </svg>
             Add Contact
           </Button>
-          
-          <Button href="/app/opportunities/new?accountId={account.id}" color="green" class="w-full justify-center mt-3">
+          <Button on:click={() => showAddOpportunityModal = true} color="green" class="w-full justify-center mt-3">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
             Add Opportunity
           </Button>
-
           <Button href="/app/cases/new?accountId={account.id}" color="red" class="w-full justify-center mt-3">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
@@ -504,11 +705,15 @@
           <div class="mb-6">
             <label for="comment" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Add a note</label>
             <Textarea id="comment" rows="3" placeholder="Write your note here..." bind:value={newComment} />
+            {#if commentError}
+              <p class="text-red-600 mt-2">{commentError}</p>
+            {/if}
             <div class="mt-2 flex justify-end">
-              <Button size="sm" color="blue" on:click={submitComment}>Add Note</Button>
+              <Button size="sm" color="blue" on:click={submitComment} disabled={isSubmittingComment}>
+                {#if isSubmittingComment}Adding...{:else}Add Note{/if}
+              </Button>
             </div>
           </div>
-          
           {#if comments.length === 0}
             <div class="p-8 text-center">
               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -538,13 +743,16 @@
       
       <TabItem title="Tasks ({tasks.length})">
         <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
+          <div class="flex justify-between items-center p-4 pb-0">
+            <div></div>
+            <Button color="purple" on:click={() => showAddTaskModal = true}>+ Add Task</Button>
+          </div>
           {#if tasks.length === 0}
             <div class="p-8 text-center">
               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
               </svg>
               <p class="mt-2 text-gray-500 dark:text-gray-400">No tasks found for this account</p>
-              <Button href="/app/tasks/new?accountId={account.id}" color="purple" class="mt-3">Add Task</Button>
             </div>
           {:else}
             <div class="overflow-x-auto relative">
@@ -563,7 +771,7 @@
                   {#each tasks as task}
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                        <a href="/app/tasks/{task.id}" class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline">
+                        <a href="#" class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline" on:click|preventDefault={() => openTaskModal(task)}>
                           {task.subject}
                         </a>
                       </td>
@@ -580,7 +788,7 @@
                       <td class="px-6 py-4 hidden md:table-cell">{formatDate(task.dueDate)}</td>
                       <td class="px-6 py-4 hidden lg:table-cell">{task.owner?.name || 'Unassigned'}</td>
                       <td class="px-6 py-4 text-right">
-                        <a href="/app/tasks/{task.id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a>
+                        <Button size="xs" color="blue" on:click={() => openTaskModal(task)}>View</Button>
                       </td>
                     </tr>
                   {/each}
@@ -646,7 +854,7 @@
         </div>
       </TabItem>
       
-      <TabItem title="Quotes ({quotes.length})">
+      <!-- <TabItem title="Quotes ({quotes.length})">
         <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
           {#if quotes.length === 0}
             <div class="p-8 text-center">
@@ -695,7 +903,7 @@
             </div>
           {/if}
         </div>
-      </TabItem>
+      </TabItem> -->
     </Tabs>
   </div>
 
@@ -722,4 +930,160 @@
       </div>
     </form>
   </Modal>
+
+  <!-- Add Contact Modal -->
+  <Modal bind:open={showAddContactModal} size="md" autoclose={false} title="Add Contact to Account">
+    <form on:submit|preventDefault={submitAddContact}>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="firstName" class="block text-sm font-medium mb-1">First Name <span class="text-red-500">*</span></label>
+          <input id="firstName" class="w-full border rounded px-3 py-2" bind:value={contactForm.firstName} required />
+        </div>
+        <div>
+          <label for="lastName" class="block text-sm font-medium mb-1">Last Name <span class="text-red-500">*</span></label>
+          <input id="lastName" class="w-full border rounded px-3 py-2" bind:value={contactForm.lastName} required />
+        </div>
+        <div class="md:col-span-2">
+          <label for="email" class="block text-sm font-medium mb-1">Email</label>
+          <input id="email" class="w-full border rounded px-3 py-2" type="email" bind:value={contactForm.email} />
+        </div>
+        <div class="md:col-span-2">
+          <label for="phone" class="block text-sm font-medium mb-1">Phone</label>
+          <input id="phone" class="w-full border rounded px-3 py-2" type="tel" bind:value={contactForm.phone} />
+        </div>
+        <div class="md:col-span-2">
+          <label for="title" class="block text-sm font-medium mb-1">Title</label>
+          <input id="title" class="w-full border rounded px-3 py-2" bind:value={contactForm.title} />
+        </div>
+        <div class="md:col-span-2 flex items-center gap-3">
+          <input id="isPrimary" type="checkbox" bind:checked={contactForm.isPrimary} />
+          <label for="isPrimary" class="text-sm">Primary Contact</label>
+        </div>
+        <div class="md:col-span-2">
+          <label for="role" class="block text-sm font-medium mb-1">Role</label>
+          <input id="role" class="w-full border rounded px-3 py-2" bind:value={contactForm.role} />
+        </div>
+      </div>
+      {#if addContactError}
+        <p class="text-red-600 mt-2">{addContactError}</p>
+      {/if}
+      <div class="flex justify-end gap-2 mt-6">
+        <Button type="button" color="alternative" on:click={() => { showAddContactModal = false; resetContactForm(); }}>Cancel</Button>
+        <Button type="submit" color="blue" disabled={isAddingContact}>
+          {#if isAddingContact}
+            Adding...
+          {:else}
+            Add Contact
+          {/if}
+        </Button>
+      </div>
+    </form>
+  </Modal>
+
+  <!-- Add Opportunity Modal -->
+  <Modal bind:open={showAddOpportunityModal} size="md" autoclose={false} title="Add Opportunity to Account">
+    <form on:submit|preventDefault={submitAddOpportunity}>
+      <div class="grid grid-cols-1 gap-4">
+        <div>
+          <label for="oppName" class="block text-sm font-medium mb-1">Name <span class="text-red-500">*</span></label>
+          <input id="oppName" class="w-full border rounded px-3 py-2" bind:value={opportunityForm.name} required />
+        </div>
+        <div>
+          <label for="oppAmount" class="block text-sm font-medium mb-1">Amount</label>
+          <input id="oppAmount" class="w-full border rounded px-3 py-2" type="number" bind:value={opportunityForm.amount} min="0" />
+        </div>
+        <div>
+          <label for="oppStage" class="block text-sm font-medium mb-1">Stage</label>
+          <select id="oppStage" class="w-full border rounded px-3 py-2" bind:value={opportunityForm.stage}>
+            <option value="PROSPECTING">Prospecting</option>
+            <option value="QUALIFICATION">Qualification</option>
+            <option value="PROPOSAL">Proposal</option>
+            <option value="NEGOTIATION">Negotiation</option>
+            <option value="CLOSED_WON">Closed Won</option>
+            <option value="CLOSED_LOST">Closed Lost</option>
+          </select>
+        </div>
+        <div>
+          <label for="oppCloseDate" class="block text-sm font-medium mb-1">Close Date</label>
+          <input id="oppCloseDate" class="w-full border rounded px-3 py-2" type="date" bind:value={opportunityForm.closeDate} />
+        </div>
+        <div>
+          <label for="oppProbability" class="block text-sm font-medium mb-1">Probability (%)</label>
+          <input id="oppProbability" class="w-full border rounded px-3 py-2" type="number" min="0" max="100" bind:value={opportunityForm.probability} />
+        </div>
+      </div>
+      {#if addOpportunityError}
+        <p class="text-red-600 mt-2">{addOpportunityError}</p>
+      {/if}
+      <div class="flex justify-end gap-2 mt-6">
+        <Button type="button" color="alternative" on:click={() => { showAddOpportunityModal = false; resetOpportunityForm(); }}>Cancel</Button>
+        <Button type="submit" color="green" disabled={isAddingOpportunity}>
+          {#if isAddingOpportunity}
+            Adding...
+          {:else}
+            Add Opportunity
+          {/if}
+        </Button>
+      </div>
+    </form>
+  </Modal>
+
+  <!-- Add Task Modal -->
+  <Modal bind:open={showAddTaskModal} size="md" autoclose={false} title="Add Task to Account">
+    <form on:submit|preventDefault={submitAddTask}>
+      <div class="grid grid-cols-1 gap-4">
+        <div>
+          <label for="taskSubject" class="block text-sm font-medium mb-1">Subject <span class="text-red-500">*</span></label>
+          <input id="taskSubject" class="w-full border rounded px-3 py-2" bind:value={addTaskForm.subject} required />
+        </div>
+        <div>
+          <label for="taskDescription" class="block text-sm font-medium mb-1">Description</label>
+          <Textarea id="taskDescription" rows="2" bind:value={addTaskForm.description} />
+        </div>
+        <div>
+          <label for="taskDueDate" class="block text-sm font-medium mb-1">Due Date</label>
+          <input id="taskDueDate" class="w-full border rounded px-3 py-2" type="date" bind:value={addTaskForm.dueDate} />
+        </div>
+        <div>
+          <label for="taskPriority" class="block text-sm font-medium mb-1">Priority</label>
+          <select id="taskPriority" class="w-full border rounded px-3 py-2" bind:value={addTaskForm.priority}>
+            <option value="High">High</option>
+            <option value="Normal">Normal</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div>
+          <label for="taskOwner" class="block text-sm font-medium mb-1">Assigned To</label>
+          {#if users.length > 0}
+            <select id="taskOwner" class="w-full border rounded px-3 py-2" bind:value={addTaskForm.ownerId}>
+              <option value="">-- Select User --</option>
+              {#each users as u}
+                <option value={u.id}>{u.name} ({u.email})</option>
+              {/each}
+            </select>
+          {:else}
+            <div class="text-sm text-gray-500">No users available for assignment.</div>
+          {/if}
+        </div>
+      </div>
+      {#if addTaskError}
+        <p class="text-red-600 mt-2">{addTaskError}</p>
+      {/if}
+      <div class="flex justify-end gap-2 mt-6">
+        <Button type="button" color="alternative" on:click={() => { showAddTaskModal = false; resetAddTaskForm(); }}>Cancel</Button>
+        <Button type="submit" color="purple" disabled={isAddingTask}>
+          {#if isAddingTask}
+            Adding...
+          {:else}
+            Add Task
+          {/if}
+        </Button>
+      </div>
+    </form>
+  </Modal>
+
+  <!-- Task Modal for view/edit/close -->
+  {#if showTaskModal && selectedTask}
+    <TaskModal task={selectedTask} boardId={null} on:close={closeTaskModal} />
+  {/if}
 </div>
