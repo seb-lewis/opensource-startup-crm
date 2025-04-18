@@ -51,6 +51,7 @@
 		"date-fns": "^4.1.0",
 		"flowbite-svelte-blocks": "^1.1.4",
 		"flowbite-svelte-icons": "^2.1.1",
+		"marked": "^15.0.8",
 		"svelte-fa": "^4.0.3",
 		"uuid": "^11.1.0"
 	}
