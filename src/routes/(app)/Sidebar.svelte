@@ -116,6 +116,19 @@
 						class={`${mainSidebarUrl === '/app/tasks/calendar' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 				</SidebarDropdownWrapper>
+
+				<SidebarDropdownWrapper label="Invoices">
+					<SidebarDropdownItem
+						label="All Invoices"
+						href="/app/invoices"
+						class={`${mainSidebarUrl === '/app/invoices' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="Create Invoice"
+						href="/app/invoices/new"
+						class={`${mainSidebarUrl === '/app/invoices/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+				</SidebarDropdownWrapper>
 			</SidebarGroup>
 			
 		</nav>
