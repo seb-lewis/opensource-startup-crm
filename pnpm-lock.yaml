@@ -29,6 +29,9 @@ importers:
       flowbite-svelte-icons:
         specifier: ^2.1.1
         version: 2.1.1(svelte@5.27.0)(tailwind-merge@3.2.0)
+      marked:
+        specifier: ^15.0.8
+        version: 15.0.8
       svelte-fa:
         specifier: ^4.0.3
         version: 4.0.3(svelte@5.27.0)
@@ -1203,6 +1206,11 @@ packages:
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
+
+  marked@15.0.8:
+    resolution: {integrity: sha512-rli4l2LyZqpQuRve5C0rkn6pj3hT8EWPC+zkAxFTAJLxRbENfTAhEQq9itrmf1Y81QtAX5D/MYlGlIomNgj9lA==}
+    engines: {node: '>= 18'}
+    hasBin: true
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -2607,6 +2615,8 @@ snapshots:
   magic-string@0.30.17:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  marked@15.0.8: {}
 
   math-intrinsics@1.1.0: {}
 
