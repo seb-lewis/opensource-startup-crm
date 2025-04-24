@@ -11,6 +11,7 @@ export async function load({ locals, cookies }) {
     delete locals.user
     await cookies.delete('session', { path: '/' });
   }
-  throw redirect(303, '/bounce');
+  console.log('sending to login');
+  throw redirect(303, '/login');
 
 }

@@ -20,7 +20,7 @@
     }
 </script>
 
-<div class="p-4 max-w-4xl mx-auto">
+<div class="relative p-4 max-w-4xl mx-auto">
     <h1 class="text-2xl font-bold mb-6">Select an Organization</h1>
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -46,6 +46,6 @@
     {/if}
 </div>
 
-<SpeedDial href="/org/new" defaultClass="absolute end-6 bottom-6">
+<SpeedDial href="/org/new" defaultClass="absolute end-6 bottom-6 z-50 bg-red-500">
     <SpeedDialButton name="Create New Organization" />
 </SpeedDial>
