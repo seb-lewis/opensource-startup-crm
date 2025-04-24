@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'SALES_REP', 'SALES_MANAGER', 'SUPPORT_REP', 'MARKETING', 'READ_ONLY');
+CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'SALES_REP', 'SUPPORT_REP', 'READ_ONLY', 'SU');
 
 -- CreateEnum
 CREATE TYPE "LeadSource" AS ENUM ('WEB', 'PHONE_INQUIRY', 'PARTNER_REFERRAL', 'COLD_CALL', 'TRADE_SHOW', 'EMPLOYEE_REFERRAL', 'ADVERTISEMENT', 'OTHER');
@@ -16,21 +16,24 @@ CREATE TYPE "CaseStatus" AS ENUM ('OPEN', 'IN_PROGRESS', 'CLOSED');
 -- CreateEnum
 CREATE TYPE "QuoteStatus" AS ENUM ('DRAFT', 'NEEDS_REVIEW', 'IN_REVIEW', 'APPROVED', 'REJECTED', 'PRESENTED', 'ACCEPTED');
 
+-- CreateEnum
+CREATE TYPE "AuditAction" AS ENUM ('CREATE', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'EXPORT', 'IMPORT', 'VIEW', 'OTHER');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT,
-    "password" TEXT NOT NULL,
+    "session_id" TEXT,
     "role" "UserRole" NOT NULL DEFAULT 'READ_ONLY',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "profilePhoto" TEXT,
     "phone" TEXT,
-    "title" TEXT,
     "department" TEXT,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "lastLoginAt" TIMESTAMP(3),
+    "lastLogin" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -71,7 +74,13 @@ CREATE TABLE "Account" (
     "industry" TEXT,
     "website" TEXT,
     "phone" TEXT,
-    "addressId" TEXT,
+    "street" TEXT,
+    "city" TEXT,
+    "state" TEXT,
+    "postalCode" TEXT,
+    "country" TEXT,
+    "latitude" DOUBLE PRECISION,
+    "longitude" DOUBLE PRECISION,
     "annualRevenue" DOUBLE PRECISION,
     "description" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -81,6 +90,12 @@ CREATE TABLE "Account" (
     "tickerSymbol" TEXT,
     "rating" TEXT,
     "sicCode" TEXT,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedById" TEXT,
+    "closedAt" TIMESTAMP(3),
+    "closureReason" TEXT,
     "ownerId" TEXT NOT NULL,
     "organizationId" TEXT NOT NULL,
 
@@ -96,13 +111,18 @@ CREATE TABLE "Contact" (
     "phone" TEXT,
     "title" TEXT,
     "department" TEXT,
+    "street" TEXT,
+    "city" TEXT,
+    "state" TEXT,
+    "postalCode" TEXT,
+    "country" TEXT,
+    "latitude" DOUBLE PRECISION,
+    "longitude" DOUBLE PRECISION,
     "description" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "accountId" TEXT,
     "ownerId" TEXT NOT NULL,
     "organizationId" TEXT NOT NULL,
-    "addressId" TEXT,
 
     CONSTRAINT "Contact_pkey" PRIMARY KEY ("id")
 );
@@ -243,6 +263,7 @@ CREATE TABLE "Case" (
     "origin" TEXT,
     "type" TEXT,
     "reason" TEXT,
+    "dueDate" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "closedAt" TIMESTAMP(3),
@@ -298,8 +319,16 @@ CREATE TABLE "Quote" (
     "discountAmount" DECIMAL(18,2) NOT NULL DEFAULT 0.00,
     "taxAmount" DECIMAL(18,2) NOT NULL DEFAULT 0.00,
     "grandTotal" DECIMAL(18,2) NOT NULL DEFAULT 0.00,
-    "billingAddressId" TEXT,
-    "shippingAddressId" TEXT,
+    "billingStreet" TEXT,
+    "billingCity" TEXT,
+    "billingState" TEXT,
+    "billingPostalCode" TEXT,
+    "billingCountry" TEXT,
+    "shippingStreet" TEXT,
+    "shippingCity" TEXT,
+    "shippingState" TEXT,
+    "shippingPostalCode" TEXT,
+    "shippingCountry" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "preparedById" TEXT NOT NULL,
@@ -327,17 +356,116 @@ CREATE TABLE "QuoteLineItem" (
 );
 
 -- CreateTable
-CREATE TABLE "Address" (
+CREATE TABLE "AccountContactRelationship" (
     "id" TEXT NOT NULL,
-    "street" TEXT,
-    "city" TEXT,
-    "state" TEXT,
-    "postalCode" TEXT,
-    "country" TEXT,
-    "latitude" DOUBLE PRECISION,
-    "longitude" DOUBLE PRECISION,
+    "role" TEXT,
+    "isPrimary" BOOLEAN NOT NULL DEFAULT false,
+    "startDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "endDate" TIMESTAMP(3),
+    "description" TEXT,
+    "accountId" TEXT NOT NULL,
+    "contactId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Address_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "AccountContactRelationship_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "AuditLog" (
+    "id" TEXT NOT NULL,
+    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "action" "AuditAction" NOT NULL,
+    "entityType" TEXT NOT NULL,
+    "entityId" TEXT,
+    "description" TEXT,
+    "oldValues" JSONB,
+    "newValues" JSONB,
+    "ipAddress" TEXT,
+    "userAgent" TEXT,
+    "userId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+
+    CONSTRAINT "AuditLog_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Board" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "ownerId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Board_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BoardMember" (
+    "id" TEXT NOT NULL,
+    "boardId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "role" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "BoardMember_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BoardColumn" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "order" INTEGER NOT NULL,
+    "boardId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "BoardColumn_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BoardTask" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "order" INTEGER NOT NULL,
+    "columnId" TEXT NOT NULL,
+    "assigneeId" TEXT,
+    "dueDate" TIMESTAMP(3),
+    "completed" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "BoardTask_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BoardTaskActivity" (
+    "id" TEXT NOT NULL,
+    "taskId" TEXT NOT NULL,
+    "authorId" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "BoardTaskActivity_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BlogPost" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "excerpt" TEXT,
+    "published" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "authorId" TEXT NOT NULL,
+
+    CONSTRAINT "BlogPost_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -357,7 +485,13 @@ CREATE TABLE "_CaseToSolution" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_user_id_key" ON "User"("user_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_session_id_key" ON "User"("session_id");
 
 -- CreateIndex
 CREATE INDEX "UserOrganization_userId_idx" ON "UserOrganization"("userId");
@@ -402,6 +536,36 @@ CREATE INDEX "QuoteLineItem_quoteId_idx" ON "QuoteLineItem"("quoteId");
 CREATE INDEX "QuoteLineItem_productId_idx" ON "QuoteLineItem"("productId");
 
 -- CreateIndex
+CREATE INDEX "AccountContactRelationship_contactId_idx" ON "AccountContactRelationship"("contactId");
+
+-- CreateIndex
+CREATE INDEX "AccountContactRelationship_accountId_idx" ON "AccountContactRelationship"("accountId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "AccountContactRelationship_contactId_accountId_key" ON "AccountContactRelationship"("contactId", "accountId");
+
+-- CreateIndex
+CREATE INDEX "AuditLog_timestamp_idx" ON "AuditLog"("timestamp");
+
+-- CreateIndex
+CREATE INDEX "AuditLog_entityType_entityId_idx" ON "AuditLog"("entityType", "entityId");
+
+-- CreateIndex
+CREATE INDEX "AuditLog_userId_idx" ON "AuditLog"("userId");
+
+-- CreateIndex
+CREATE INDEX "AuditLog_organizationId_idx" ON "AuditLog"("organizationId");
+
+-- CreateIndex
+CREATE INDEX "AuditLog_action_idx" ON "AuditLog"("action");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BoardMember_boardId_userId_key" ON "BoardMember"("boardId", "userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BlogPost_slug_key" ON "BlogPost"("slug");
+
+-- CreateIndex
 CREATE INDEX "_ContactToOpportunity_B_index" ON "_ContactToOpportunity"("B");
 
 -- CreateIndex
@@ -414,19 +578,13 @@ ALTER TABLE "UserOrganization" ADD CONSTRAINT "UserOrganization_userId_fkey" FOR
 ALTER TABLE "UserOrganization" ADD CONSTRAINT "UserOrganization_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Account" ADD CONSTRAINT "Account_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Address"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Account" ADD CONSTRAINT "Account_deletedById_fkey" FOREIGN KEY ("deletedById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Contact" ADD CONSTRAINT "Contact_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Address"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Contact" ADD CONSTRAINT "Contact_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "Account"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Contact" ADD CONSTRAINT "Contact_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -543,12 +701,6 @@ ALTER TABLE "Comment" ADD CONSTRAINT "Comment_accountId_fkey" FOREIGN KEY ("acco
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Quote" ADD CONSTRAINT "QuoteBillingAddress_fk" FOREIGN KEY ("billingAddressId") REFERENCES "Address"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Quote" ADD CONSTRAINT "QuoteShippingAddress_fk" FOREIGN KEY ("shippingAddressId") REFERENCES "Address"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Quote" ADD CONSTRAINT "Quote_preparedById_fkey" FOREIGN KEY ("preparedById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -568,6 +720,48 @@ ALTER TABLE "QuoteLineItem" ADD CONSTRAINT "QuoteLineItem_quoteId_fkey" FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE "QuoteLineItem" ADD CONSTRAINT "QuoteLineItem_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AccountContactRelationship" ADD CONSTRAINT "AccountContactRelationship_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "Account"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AccountContactRelationship" ADD CONSTRAINT "AccountContactRelationship_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AuditLog" ADD CONSTRAINT "AuditLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AuditLog" ADD CONSTRAINT "AuditLog_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Board" ADD CONSTRAINT "Board_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Board" ADD CONSTRAINT "Board_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BoardMember" ADD CONSTRAINT "BoardMember_boardId_fkey" FOREIGN KEY ("boardId") REFERENCES "Board"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BoardMember" ADD CONSTRAINT "BoardMember_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BoardColumn" ADD CONSTRAINT "BoardColumn_boardId_fkey" FOREIGN KEY ("boardId") REFERENCES "Board"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BoardTask" ADD CONSTRAINT "BoardTask_columnId_fkey" FOREIGN KEY ("columnId") REFERENCES "BoardColumn"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BoardTask" ADD CONSTRAINT "BoardTask_assigneeId_fkey" FOREIGN KEY ("assigneeId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BoardTaskActivity" ADD CONSTRAINT "BoardTaskActivity_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "BoardTask"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BoardTaskActivity" ADD CONSTRAINT "BoardTaskActivity_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BlogPost" ADD CONSTRAINT "BlogPost_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_ContactToOpportunity" ADD CONSTRAINT "_ContactToOpportunity_A_fkey" FOREIGN KEY ("A") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE CASCADE;
