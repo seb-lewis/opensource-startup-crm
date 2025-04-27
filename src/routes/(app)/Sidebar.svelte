@@ -50,7 +50,7 @@
 				<SidebarItem
 					label="Dashboard"
 					href="/app"
-					class={`${mainSidebarUrl === '/app' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					class={`${mainSidebarUrl === '/app' ? 'flex p-2 items-center rounded-lg bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					spanClass="ml-3"
 				>
 					<svelte:fragment slot="icon">
