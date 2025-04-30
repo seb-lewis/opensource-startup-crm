@@ -9,147 +9,239 @@
 		faUserShield,
 		faUserTie
 	} from '@fortawesome/free-solid-svg-icons';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
-export let data;
-let org = data.organization;
-let editing = false;
-let formOrg = { name: org.name, domain: org.domain || '', description: org.description || '' };
-function startEdit() {
-    formOrg = { name: org.name, domain: org.domain || '', description: org.description || '' };
-    editing = true;
-}
-function cancelEdit() {
-    editing = false;
-}
+	import { faPen, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+
+	export let data;
+	let org = data.organization;
+	let editing = false;
+	let formOrg = { name: org.name, domain: org.domain || '', description: org.description || '' };
+	function startEdit() {
+		formOrg = { name: org.name, domain: org.domain || '', description: org.description || '' };
+		editing = true;
+	}
+	function cancelEdit() {
+		editing = false;
+	}
+// Get logged-in user id from data (must be provided by server load)
+let loggedInUserId = data.user?.id;
 let users = Array.isArray(data.users)
-    ? data.users.map(u => ({
-        id: u.user.id,
-        name: u.user.name || u.user.email,
-        email: u.user.email,
-        role: u.role,
-        joined: u.joinedAt ? (typeof u.joinedAt === 'string' ? u.joinedAt.slice(0, 10) : new Date(u.joinedAt).toISOString().slice(0, 10)) : '',
-        avatar: u.user.profilePhoto || ''
-    }))
+    ? data.users.map((u) => ({
+            id: u.user.id,
+            name: u.user.name || u.user.email,
+            email: u.user.email,
+            role: u.role,
+            joined: u.joinedAt
+                ? typeof u.joinedAt === 'string'
+                    ? u.joinedAt.slice(0, 10)
+                    : new Date(u.joinedAt).toISOString().slice(0, 10)
+                : '',
+            avatar: u.user.profilePhoto || '',
+            isSelf: loggedInUserId === u.user.id,
+            editingRole: false
+        }))
     : [];
 
 	// Map roles to icons (cover all UserRole enum values)
-const roleIcons = {
-    ADMIN: faUserShield,
-    USER: faUser,
-    SALES_REP: faUserTie,
-    SUPPORT_REP: faUser,
-    READ_ONLY: faUser
-};
+	const roleIcons = {
+		ADMIN: faUserShield,
+		USER: faUser,
+		SALES_REP: faUserTie,
+		SUPPORT_REP: faUser,
+		READ_ONLY: faUser
+	};
 </script>
 
-
 <div class="mx-auto max-w-5xl p-6">
-   <!-- Organization Details -->
-   <div class="mb-8 flex flex-col items-center gap-6 rounded-lg bg-white p-6 shadow sm:flex-row relative">
-       <button
-           type="button"
-           class="absolute top-4 right-4 text-gray-400 hover:text-blue-600"
-           on:click={startEdit}
-           aria-label="Edit"
-           style:display={editing ? 'none' : 'inline-block'}
-       >
-           <Fa icon={faPen} class="h-5 w-5" />
-       </button>
-       {#if editing}
-           <form method="POST" action="?/update" class="w-full">
-               <h1 class="flex items-center gap-2 text-2xl font-bold text-gray-800">
-                   <Fa icon={faBuilding} class="h-6 w-6 text-blue-500" />
-                   <input name="name" type="text" bind:value={formOrg.name} required class="font-bold text-gray-800 bg-transparent border-b border-gray-300 focus:outline-none focus:border-blue-500 w-auto min-w-[120px]" />
-               </h1>
-               <div class="mt-2 flex flex-wrap gap-4 text-gray-500">
-                   <span class="flex items-center gap-1">
-                       <Fa icon={faGlobe} class="h-4 w-4" />
-                       <input name="domain" type="text" bind:value={formOrg.domain} placeholder="Domain" class="text-blue-600 bg-transparent border-b border-gray-200 focus:outline-none focus:border-blue-500 w-auto min-w-[100px]" />
-                   </span>
-                   <span class="flex items-center gap-1">
-                       <Fa icon={faUsers} class="h-4 w-4" />
-                       {org.industry}
-                   </span>
-               </div>
-               <textarea name="description" rows="2" bind:value={formOrg.description} class="mt-3 text-gray-600 bg-transparent border-b border-gray-200 focus:outline-none focus:border-blue-500 w-full resize-none" placeholder="Description"></textarea>
-               <div class="mt-4 flex gap-2">
-                   <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
-                   <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300" on:click={cancelEdit}>Cancel</button>
-               </div>
-           </form>
-       {:else}
-           <div class="w-full">
-               <h1 class="flex items-center gap-2 text-2xl font-bold text-gray-800">
-                   <Fa icon={faBuilding} class="h-6 w-6 text-blue-500" />
-                   <span>{org.name}</span>
-               </h1>
-               <div class="mt-2 flex flex-wrap gap-4 text-gray-500">
-                   <span class="flex items-center gap-1">
-                       <Fa icon={faGlobe} class="h-4 w-4" />
-                       <span class="text-blue-600">{org.domain || '—'}</span>
-                   </span>
-                   <span class="flex items-center gap-1">
-                       <Fa icon={faUsers} class="h-4 w-4" />
-                       {org.industry}
-                   </span>
-               </div>
-               {#if org.description}
-                   <p class="mt-3 text-gray-600 whitespace-pre-line">{org.description}</p>
-               {/if}
-           </div>
-       {/if}
-   </div>
+   <!-- Logout Icon Top Right -->
+    <div class="absolute top-4 right-4 z-10">
+        <a href="/logout" title="Logout" class="text-gray-500 hover:text-red-600 transition">
+            <Fa icon={faSignOutAlt} class="w-6 h-6" /> Logout
+        </a>
+    </div>
+	<!-- Organization Details -->
+	<div
+		class="relative mb-8 flex flex-col items-center gap-6 rounded-lg bg-white p-6 shadow sm:flex-row"
+	>
+		<button
+			type="button"
+			class="absolute top-4 right-4 text-gray-400 hover:text-blue-600"
+			on:click={startEdit}
+			aria-label="Edit"
+			style:display={editing ? 'none' : 'inline-block'}
+		>
+			<Fa icon={faPen} class="h-5 w-5" />
+		</button>
+		{#if editing}
+			<form method="POST" action="?/update" class="w-full">
+				<h1 class="flex items-center gap-2 text-2xl font-bold text-gray-800">
+					<Fa icon={faBuilding} class="h-6 w-6 text-blue-500" />
+					<input
+						name="name"
+						type="text"
+						bind:value={formOrg.name}
+						required
+						class="w-auto min-w-[120px] border-b border-gray-300 bg-transparent font-bold text-gray-800 focus:border-blue-500 focus:outline-none"
+					/>
+				</h1>
+				<div class="mt-2 flex flex-wrap gap-4 text-gray-500">
+					<span class="flex items-center gap-1">
+						<Fa icon={faGlobe} class="h-4 w-4" />
+						<input
+							name="domain"
+							type="text"
+							bind:value={formOrg.domain}
+							placeholder="Domain"
+							class="w-auto min-w-[100px] border-b border-gray-200 bg-transparent text-blue-600 focus:border-blue-500 focus:outline-none"
+						/>
+					</span>
+					<span class="flex items-center gap-1">
+						<Fa icon={faUsers} class="h-4 w-4" />
+						{org.industry}
+					</span>
+				</div>
+				<textarea
+					name="description"
+					rows="2"
+					bind:value={formOrg.description}
+					class="mt-3 w-full resize-none border-b border-gray-200 bg-transparent text-gray-600 focus:border-blue-500 focus:outline-none"
+					placeholder="Description"
+				></textarea>
+				<div class="mt-4 flex gap-2">
+					<button type="submit" class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+						>Save</button
+					>
+					<button
+						type="button"
+						class="rounded bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
+						on:click={cancelEdit}>Cancel</button
+					>
+				</div>
+			</form>
+		{:else}
+			<div class="w-full">
+				<h1 class="flex items-center gap-2 text-2xl font-bold text-gray-800">
+					<Fa icon={faBuilding} class="h-6 w-6 text-blue-500" />
+					<span>{org.name}</span>
+				</h1>
+				<div class="mt-2 flex flex-wrap gap-4 text-gray-500">
+					<span class="flex items-center gap-1">
+						<Fa icon={faGlobe} class="h-4 w-4" />
+						<span class="text-blue-600">{org.domain || '—'}</span>
+					</span>
+					<span class="flex items-center gap-1">
+						<Fa icon={faUsers} class="h-4 w-4" />
+						{org.industry}
+					</span>
+				</div>
+				{#if org.description}
+					<p class="mt-3 whitespace-pre-line text-gray-600">{org.description}</p>
+				{/if}
+			</div>
+		{/if}
+	</div>
 
 	<!-- Users Table -->
-	<div class="rounded-lg bg-white p-6 shadow">
-		<h2 class="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-800">
-			<Fa icon={faUsers} class="h-5 w-5 text-blue-500" /> Users
-		</h2>
-		<div class="overflow-x-auto">
-			<table class="min-w-full divide-y divide-gray-200">
-				<thead>
-					<tr>
-						<th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-						<th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-						<th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
-						<th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Joined</th>
-					</tr>
-				</thead>
-				<tbody class="divide-y divide-gray-100">
-					{#each users as user}
-						<tr>
-							<td class="px-4 py-3 whitespace-nowrap">
-								<div class="flex items-center gap-2">
-									{#if user.avatar}
-										<img
-											src={user.avatar}
-											alt={user.name}
-											class="h-8 w-8 rounded-full bg-gray-100 object-cover"
-										/>
-									{:else}
-										<div
-											class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-400"
-										>
-											<Fa icon={faUser} class="h-4 w-4" />
-										</div>
-									{/if}
-									<span class="font-medium text-gray-800">{user.name}</span>
-								</div>
-							</td>
-							<td class="px-4 py-3 text-gray-600">{user.email}</td>
-							<td class="px-4 py-3">
-								<span
-									class="inline-flex items-center gap-1 rounded bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800"
-								>
-									<Fa icon={roleIcons[user.role] || faUser} class="h-3.5 w-3.5" />
-									{user.role}
-								</span>
-							</td>
-							<td class="px-4 py-3 text-gray-500">{user.joined}</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</div>
-	</div>
+<div class="rounded-lg bg-white p-6 shadow">
+    <h2 class="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-800">
+        <Fa icon={faUsers} class="h-5 w-5 text-blue-500" /> Users
+    </h2>
+    <!-- Add User Form -->
+    <form method="POST" action="?/add_user" class="mb-4 flex flex-wrap items-end gap-2 bg-gray-50 p-3 rounded">
+        <div>
+            <label for="add-user-email" class="block text-xs font-semibold text-gray-600 mb-1">Email</label>
+            <input id="add-user-email" name="email" type="email" required class="border rounded px-2 py-1 text-sm" placeholder="user@email.com" />
+        </div>
+        <div>
+            <label for="add-user-role" class="block text-xs font-semibold text-gray-600 mb-1">Role</label>
+            <select id="add-user-role" name="role" class="border rounded px-2 py-1 text-sm">
+                <option value="USER">User</option>
+                <option value="ADMIN">Admin</option>
+                <option value="SALES_REP">Sales Rep</option>
+                <option value="SUPPORT_REP">Support Rep</option>
+                <option value="READ_ONLY">Read Only</option>
+            </select>
+        </div>
+        <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">Add User</button>
+    </form>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Joined</th>
+                    <th class="px-4 py-2"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {#each users as user, i}
+                    <tr>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="flex items-center gap-2">
+                                {#if user.avatar}
+                                    <img
+                                        src={user.avatar}
+                                        alt={user.name}
+                                        class="h-8 w-8 rounded-full bg-gray-100 object-cover"
+                                    />
+                                {:else}
+                                    <div
+                                        class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-400"
+                                    >
+                                        <Fa icon={faUser} class="h-4 w-4" />
+                                    </div>
+                                {/if}
+                                <span class="font-medium text-gray-800">{user.name}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-gray-600">{user.email}</td>
+                        <td class="px-4 py-3">
+                            {#if user.isSelf}
+                                <span class="inline-flex items-center gap-1 rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-400" title="You cannot edit your own role">
+                                    <Fa icon={roleIcons[user.role] || faUser} class="h-3.5 w-3.5" />
+                                    {user.role}
+                                </span>
+                            {:else}
+                                {#if user.editingRole}
+                                    <form method="POST" action="?/edit_role" class="flex items-center gap-1">
+                                        <input type="hidden" name="user_id" value={user.id} />
+                                        <select name="role" class="border rounded px-1 py-0.5 text-xs">
+                                            <option value="USER" selected={user.role === 'USER'}>User</option>
+                                            <option value="ADMIN" selected={user.role === 'ADMIN'}>Admin</option>
+                                            <option value="SALES_REP" selected={user.role === 'SALES_REP'}>Sales Rep</option>
+                                            <option value="SUPPORT_REP" selected={user.role === 'SUPPORT_REP'}>Support Rep</option>
+                                            <option value="READ_ONLY" selected={user.role === 'READ_ONLY'}>Read Only</option>
+                                        </select>
+                                        <button type="submit" class="text-blue-600 text-xs px-2 py-0.5 rounded hover:bg-blue-50">Save</button>
+                                        <button type="button" class="text-gray-400 text-xs px-2 py-0.5 rounded hover:bg-gray-100" on:click={() => { users[i].editingRole = false }}>Cancel</button>
+                                    </form>
+                                {:else}
+                                    <span class="inline-flex items-center gap-1 rounded bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800">
+                                        <Fa icon={roleIcons[user.role] || faUser} class="h-3.5 w-3.5" />
+                                        {user.role}
+                                        <button type="button" class="ml-1 text-gray-400 hover:text-blue-600" title="Edit Role" on:click={() => { users[i].editingRole = true }}>
+                                            <Fa icon={faPen} class="h-3 w-3" />
+                                        </button>
+                                    </span>
+                                {/if}
+                            {/if}
+                        </td>
+                        <td class="px-4 py-3 text-gray-500">{user.joined}</td>
+                        <td class="px-4 py-3">
+                            {#if user.isSelf}
+                                <span class="text-gray-300 text-xs px-2 py-1 rounded cursor-not-allowed">Remove</span>
+                            {:else}
+                                <form method="POST" action="?/remove_user" on:submit={() => confirm('Remove this user from organization?') || event.preventDefault()}>
+                                    <input type="hidden" name="user_id" value={user.id} />
+                                    <button type="submit" class="text-red-500 hover:text-red-700 text-xs px-2 py-1 rounded">Remove</button>
+                                </form>
+                            {/if}
+                        </td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
+    </div>
+</div>
 </div>
