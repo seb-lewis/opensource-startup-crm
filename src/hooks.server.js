@@ -31,13 +31,24 @@ export async function handle({ event, resolve }) {
 	      }
 	    });
 	    
-	    if (userOrg) {
-	      // User has access to this organization, set it in locals
-	      event.locals.org = userOrg.organization;
-	    } else {
-	      // User doesn't have access to this organization, redirect to logout
-	      throw redirect(307, '/logout');
-	    }
+      if (userOrg) {
+        // User has access to this organization, set it in locals
+        event.locals.org = userOrg.organization;
+        // Also set org_name from cookie if available
+        const orgName = event.cookies.get('org_name');
+        if (orgName) {
+          try {
+            event.locals.org_name = decodeURIComponent(orgName);
+          } catch (e) {
+            event.locals.org_name = orgName;
+          }
+        } else {
+          event.locals.org_name = userOrg.organization.name;
+        }
+      } else {
+        // User doesn't have access to this organization, redirect to logout
+        throw redirect(307, '/logout');
+      }
 	  }
 	}
   
