@@ -12,7 +12,9 @@
     // Function to handle organization selection
     function selectOrg(org) {
         if (browser) {
+            // Set both org id and org name in cookies
             document.cookie = `org=${org.id}; path=/; SameSite=Strict`;
+            document.cookie = `org_name=${encodeURIComponent(org.name)}; path=/; SameSite=Strict`;
 
             // Redirect to homepage
             goto('/app');
