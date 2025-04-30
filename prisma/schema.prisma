@@ -9,10 +9,10 @@ datasource db {
 
 enum UserRole {
   ADMIN
+  USER
   SALES_REP
   SUPPORT_REP
   READ_ONLY
-  SU
 }
 
 model User {
@@ -80,10 +80,10 @@ model Organization {
 }
 
 model UserOrganization {
-  id        String   @id @default(uuid())
-  role      UserRole @default(READ_ONLY)
-  isPrimary Boolean  @default(false)
-  joinedAt  DateTime @default(now())
+  id       String   @id @default(uuid())
+  role     UserRole @default(READ_ONLY)
+  // isPrimary Boolean  @default(false)
+  joinedAt DateTime @default(now())
 
   // Relationships
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
