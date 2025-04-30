@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Deploy (Docker)
 
 on:
   push:
@@ -8,10 +8,31 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.8.0
@@ -23,27 +44,13 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Generate Prisma client
-        run: npx prisma generate
-
-      - name: Build project
-        run: pnpm run build
-
-      - name: Sync build to server
+      - name: Deploy on server (pull and restart container)
         run: |
-          rsync -avz --delete --exclude='.env' ./build/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.PROJECT_PATH }}/build/
-          rsync -avz --delete --exclude='.env' ./prisma/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.PROJECT_PATH }}/prisma/
-          rsync -avz --delete --exclude='.env' ./package.json ./pnpm-lock.yaml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.PROJECT_PATH }}/
-
-      - name: Deploy on server
-        run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "set -e; cd ${{ secrets.PROJECT_PATH }} && \
-          pnpm install --frozen-lockfile && \
-          npx prisma migrate deploy && \
-          pm2 restart all"
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && \
+          docker pull ghcr.io/${{ github.repository }}:latest && \
+          docker stop svelte-crm || true && docker rm svelte-crm || true && \
+          docker run -d --name svelte-crm --restart always -p 3000:3000 \
+            -e NODE_ENV=production \
+            -e DATABASE_URL=\"${{ secrets.DATABASE_URL }}\" \
+            --env-file ${{ secrets.ENV_FILE_PATH:-/home/${{ secrets.SERVER_USER }}/.env }} \
+            ghcr.io/${{ github.repository }}:latest"

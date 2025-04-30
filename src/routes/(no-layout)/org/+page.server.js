@@ -23,8 +23,7 @@ export async function load({ cookies, locals }) {
         id: userOrg.organization.id,
         name: userOrg.organization.name,
         logo: userOrg.organization.logo,
-        role: userOrg.role,
-        isPrimary: userOrg.isPrimary
+        role: userOrg.role
     }));
     
     return { orgs };

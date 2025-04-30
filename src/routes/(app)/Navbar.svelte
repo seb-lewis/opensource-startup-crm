@@ -15,12 +15,13 @@
 	import '../../app.css';
 	import imgLogo from '$lib/assets/images/logo.png';
 
-	export let fluid = true;
-	export let drawerHidden = false;
-	export let list = false;
-	export let name = 'Neil Sims';
-	export let email = "";
-	export let userPic = '';
+export let org_name = 'BottleCRM';
+export let fluid = true;
+export let drawerHidden = false;
+export let list = false;
+export let name = 'Neil Sims';
+export let email = "";
+export let userPic = '';
 </script>
 
 <Navbar {fluid} class="text-black" color="default" let:NavContainer>
@@ -28,14 +29,14 @@
 		onClick={() => (drawerHidden = !drawerHidden)}
 		class="m-0 me-3 md:block lg:hidden"
 	/>
-	<NavBrand href="/" class={list ? 'w-40' : 'lg:w-60'}>
-		<img src={imgLogo} class="me-2.5 h-6 sm:h-8" alt="BottleCRM" />
-		<span
-			class="ml-px self-center text-xl font-semibold whitespace-nowrap sm:text-2xl dark:text-white"
-		>
-			BottleCRM
-		</span>
-	</NavBrand>
+<NavBrand href="/" class={list ? 'w-40' : 'lg:w-60'}>
+    <img src={imgLogo} class="me-2.5 h-6 sm:h-8" alt="BottleCRM" />
+    <span
+        class="ml-px self-center text-xl font-semibold whitespace-nowrap sm:text-2xl dark:text-white"
+    >
+        {org_name}
+    </span>
+</NavBrand>
 	<div class="hidden lg:block lg:ps-3">
 		{#if list}
 			<NavUl class="ml-2" activeUrl="/" activeClass="text-primary-600 dark:text-primary-500">
@@ -70,6 +71,7 @@
 			<DropdownHeader>
 				<span class="block text-sm">{name}</span>
 				<span class="block truncate text-sm font-medium">{email}</span>
+				<span class="block truncate text-sm font-medium"><a href="/org">All Organizations</a></span>
 			</DropdownHeader>
 			<DropdownItem href="/logout">Sign out</DropdownItem>
 		</Dropdown>

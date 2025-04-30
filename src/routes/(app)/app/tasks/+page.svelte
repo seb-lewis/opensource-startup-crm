@@ -24,11 +24,7 @@
 </div>
 
 <style>
-:global(body) {
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
-  min-height: 100vh;
-}
+
 .board-bg {
   padding: 2.5rem 0 2rem 0;
   min-height: 100vh;

@@ -39,7 +39,7 @@
 	class={drawerHidden ? 'hidden' : ''}
 	activeUrl={mainSidebarUrl}
 	activeClass="bg-gray-100 dark:bg-gray-700"
-	asideClass="fixed inset-0 z-30 flex-none h-full w-64 lg:h-auto border-e border-gray-200 dark:border-gray-600 lg:overflow-y-visible lg:pt-16 lg:block"
+	asideClass="fixed inset-0 z-30 flex-none h-full w-64 lg:h-auto border-e border-gray-200 dark:border-gray-600 lg:overflow-y-visible lg:pt-15 lg:block"
 >
 	<h4 class="sr-only">Main menu</h4>
 	<SidebarWrapper
@@ -50,7 +50,7 @@
 				<SidebarItem
 					label="Dashboard"
 					href="/app"
-					class={`${mainSidebarUrl === '/app' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					class={`${mainSidebarUrl === '/app' ? 'flex p-2 items-center rounded-lg bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					spanClass="ml-3"
 				>
 					<svelte:fragment slot="icon">
@@ -114,6 +114,19 @@
 						label="Calendar"
 						href="/app/tasks/calendar"
 						class={`${mainSidebarUrl === '/app/tasks/calendar' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+				</SidebarDropdownWrapper>
+
+				<SidebarDropdownWrapper label="Invoices">
+					<SidebarDropdownItem
+						label="All Invoices"
+						href="/app/invoices"
+						class={`${mainSidebarUrl === '/app/invoices' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					/>
+					<SidebarDropdownItem
+						label="Create Invoice"
+						href="/app/invoices/new"
+						class={`${mainSidebarUrl === '/app/invoices/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 				</SidebarDropdownWrapper>
 			</SidebarGroup>

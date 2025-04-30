@@ -55,8 +55,7 @@ export const actions = {
           data: {
             userId: user.id,
             organizationId: newOrg.id,
-            role: 'ADMIN',
-            isPrimary: true
+            role: 'ADMIN'
           }
         });
 
