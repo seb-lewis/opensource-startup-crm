@@ -2,6 +2,8 @@
     import '../../../app.css'
     import { SpeedDial, SpeedDialButton, Card, Button } from 'flowbite-svelte';
     import { BuildingSolid } from 'flowbite-svelte-icons';
+    import { Fa } from 'svelte-fa';
+    import { faCog } from '@fortawesome/free-solid-svg-icons';
     import { goto } from '$app/navigation';
     import { browser } from '$app/environment';
     
@@ -32,8 +34,13 @@
                     <div class="p-2 bg-blue-100 rounded-lg">
                         <BuildingSolid class="text-blue-600 w-6 h-6" />
                     </div>
-                    <div>
+                    <div class="flex items-center gap-2">
                         <h5 class="text-lg font-semibold text-gray-900">{org.name}</h5>
+                        {#if org.role === 'ADMIN'}
+                            <a href={`/org/${org.id}`} title="Organization Settings" on:click|stopPropagation>
+                                <Fa icon={faCog} class="text-gray-500 hover:text-blue-600 w-5 h-5 ml-1" />
+                            </a>
+                        {/if}
                     </div>
                 </div>
                 <Button color="blue" class="w-full mt-3">Select</Button>

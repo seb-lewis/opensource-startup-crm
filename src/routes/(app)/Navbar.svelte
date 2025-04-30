@@ -71,6 +71,7 @@ export let userPic = '';
 			<DropdownHeader>
 				<span class="block text-sm">{name}</span>
 				<span class="block truncate text-sm font-medium">{email}</span>
+				<span class="block truncate text-sm font-medium"><a href="/org">All Organizations</a></span>
 			</DropdownHeader>
 			<DropdownItem href="/logout">Sign out</DropdownItem>
 		</Dropdown>
