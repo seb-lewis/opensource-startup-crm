@@ -110,11 +110,11 @@
 						href="/app/tasks/list"
 						class={`${mainSidebarUrl === '/app/tasks/list' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
-					<SidebarDropdownItem
+					<!-- <SidebarDropdownItem
 						label="Boards"
 						href="/app/tasks"
 						class={`${mainSidebarUrl === '/app/tasks' ? 'bg-blue-100 font-semibold dark:bg-blue-700' : ''}`}
-					/>
+					/> -->
 					<SidebarDropdownItem
 						label="Calendar"
 						href="/app/tasks/calendar"
@@ -122,7 +122,7 @@
 					/>
 				</SidebarDropdownWrapper>
 
-				<SidebarDropdownWrapper label="Invoices">
+				<!-- <SidebarDropdownWrapper label="Invoices">
 					<SidebarDropdownItem
 						label="All Invoices"
 						href="/app/invoices"
@@ -133,7 +133,7 @@
 						href="/app/invoices/new"
 						class={`${mainSidebarUrl === '/app/invoices/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
-				</SidebarDropdownWrapper>
+				</SidebarDropdownWrapper> -->
 			</SidebarGroup>
 			
 		</nav>
