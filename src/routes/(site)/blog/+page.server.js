@@ -7,7 +7,7 @@ export async function load({ url }) {
     const page = parseInt(url.searchParams.get('page') || '1', 10);
     const pageSize = 5; // Number of posts per page
     const skip = (page - 1) * pageSize;
-    console.log('Page:', page, 'Skip:', skip, 'Page Size:', pageSize);
+    // console.log('Page:', page, 'Skip:', skip, 'Page Size:', pageSize);
     // Fetch posts with pagination
     const posts = await prisma.blogPost.findMany({
       // Temporarily showing all posts for testing
@@ -35,7 +35,7 @@ export async function load({ url }) {
       take: pageSize
     });
     
-    console.log('Fetched Posts:', posts);
+    // console.log('Fetched Posts:', posts);
     // Get total count for pagination
     const totalPosts = await prisma.blogPost.count({
       // Temporarily counting all posts for testing

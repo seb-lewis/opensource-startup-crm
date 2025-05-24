@@ -19,19 +19,6 @@
         priority: t.priority
       });
     }
-    for (const t of data.boardTasks) {
-      if (!t.dueDate) continue;
-      const date = (typeof t.dueDate === 'string' ? t.dueDate : t.dueDate?.toISOString?.())?.slice(0, 10);
-      if (!tasksByDate[date]) tasksByDate[date] = [];
-      tasksByDate[date].push({
-        id: t.id,
-        title: t.title,
-        description: t.description,
-        type: 'Board',
-        completed: t.completed,
-        boardId: t.column.boardId
-      });
-    }
   }
 
   // Calendar logic
@@ -58,7 +45,6 @@
   function selectDay(date) {
     if (date) {
       const formatted = formatDate(date);
-      console.log('Clicked date:', date, 'Formatted:', formatted);
       selectedDate = formatted;
       selectedTasks = tasksByDate[selectedDate] || [];
     }
@@ -200,21 +186,17 @@ h2 {
       <ul class="task-list">
         {#each selectedTasks as task}
           <li class="task-item">
-            <div>
-              <strong>{task.title}</strong>
-              <span class="badge {task.type === 'CRM' ? 'badge-crm' : 'badge-board'}">{task.type}</span>
-              {#if task.type === 'CRM'}
+            <a href="/app/tasks/{task.id}" style="text-decoration: none; color: inherit;">
+              <div>
+                <strong>{task.title}</strong>
+                <span class="badge badge-crm">{task.type}</span>
                 <span class="badge {task.priority === 'High' ? 'badge-priority-high' : task.priority === 'Medium' ? 'badge-priority-medium' : 'badge-priority-low'}">{task.priority}</span>
-              {/if}
-            </div>
-            <div style="font-size:0.95em; color:#64748b;">{task.description}</div>
-            <div style="font-size:0.9em; margin-top:0.2em;">
-              {#if task.type === 'CRM'}
+              </div>
+              <div style="font-size:0.95em; color:#64748b;">{task.description}</div>
+              <div style="font-size:0.9em; margin-top:0.2em;">
                 <span>Status: <b>{task.status}</b></span>
-              {:else}
-                <span>Status: <b>{task.completed ? 'Completed' : 'Open'}</b></span>
-              {/if}
-            </div>
+              </div>
+            </a>
           </li>
         {/each}
       </ul>

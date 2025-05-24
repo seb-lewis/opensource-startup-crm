@@ -1,9 +1,12 @@
 import prisma from '$lib/prisma';
 import { fail, redirect } from '@sveltejs/kit';
 
-export async function load({ params }) {
+export async function load({ params, locals }) {
+  const org = locals.org;
+  const user = locals.user;
+
   const contact = await prisma.contact.findUnique({
-    where: { id: params.contactId }
+    where: { id: params.contactId, organizationId: org.id }
   });
   if (!contact) {
     return fail(404, { message: 'Contact not found' });
@@ -22,7 +25,10 @@ export async function load({ params }) {
 }
 
 export const actions = {
-  default: async ({ request, params }) => {
+  default: async ({ request, params, locals }) => {
+    const org = locals.org;
+    const user = locals.user;
+
     const formData = await request.formData();
     const firstName = formData.get('firstName')?.toString().trim();
     const lastName = formData.get('lastName')?.toString().trim();
@@ -35,6 +41,14 @@ export const actions = {
 
     if (!firstName || !lastName) {
       return fail(400, { message: 'First and last name are required.' });
+    }
+
+
+    const contact = await prisma.contact.findUnique({
+      where: { id: params.contactId, organizationId: org.id }
+    });
+    if (!contact) {
+      return fail(404, { message: 'Contact not found' });
     }
 
     // Update contact

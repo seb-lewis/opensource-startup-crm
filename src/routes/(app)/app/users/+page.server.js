@@ -46,7 +46,6 @@ export const actions = {
     update: async ({ request, params, locals }) => {
         const org_id = locals.org.id; // Changed from params.org_id
         const user = locals.user;
-        if (!user) return fail(401, { error: 'Unauthorized' });
 
         // Only ADMIN can update
         const userOrg = await prisma.userOrganization.findFirst({
@@ -90,7 +89,6 @@ export const actions = {
     add_user: async ({ request, params, locals }) => {
         const org_id = locals.org.id; // Changed from params.org_id
         const user = locals.user;
-        if (!user) return fail(401, { error: 'Unauthorized' });
 
         // Only ADMIN can add
         const userOrg = await prisma.userOrganization.findFirst({
@@ -131,7 +129,6 @@ export const actions = {
     edit_role: async ({ request, params, locals }) => {
         const org_id = locals.org.id; // Changed from params.org_id
         const user = locals.user;
-        if (!user) return fail(401, { error: 'Unauthorized' });
 
         // Only ADMIN can edit
         const userOrg = await prisma.userOrganization.findFirst({
@@ -179,7 +176,6 @@ export const actions = {
     remove_user: async ({ request, params, locals }) => {
         const org_id = locals.org.id; // Changed from params.org_id
         const user = locals.user;
-        if (!user) return fail(401, { error: 'Unauthorized' });
 
         // Only ADMIN can remove
         const userOrg = await prisma.userOrganization.findFirst({

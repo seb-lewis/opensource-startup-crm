@@ -8,8 +8,6 @@
     export let data;
     export let form; // This contains the result of your form action
     
-    console.log('Data:', data);
-    console.log('Form result:', form);
     
     // Handle form submission success
     $: if (form?.data) {

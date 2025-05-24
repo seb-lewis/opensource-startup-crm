@@ -1,10 +1,11 @@
 import prisma from '$lib/prisma';
 import { fail, redirect, error } from '@sveltejs/kit';
 
-export async function load({ params }) {
+export async function load({ params, locals }) {
+  const org = locals.org;
   const caseId = params.caseId;
   const caseItem = await prisma.case.findUnique({
-    where: { id: caseId },
+    where: { id: caseId, organizationId: org.id },
     include: {
       owner: { select: { id: true, name: true } },
       account: { select: { id: true, name: true } }
@@ -20,7 +21,8 @@ export async function load({ params }) {
 }
 
 export const actions = {
-  update: async ({ request, params }) => {
+  update: async ({ request, params, locals }) => {
+    const org = locals.org;
     const form = await request.formData();
     const subject = form.get('title')?.toString().trim();
     const description = form.get('description')?.toString().trim();
@@ -32,6 +34,13 @@ export const actions = {
     if (!subject || !accountId || !ownerId) {
       return fail(400, { error: 'Missing required fields.' });
     }
+    // Validate case is part of the organization
+    const caseExists = await prisma.case.findFirst({
+      where: { id: params.caseId, organizationId: org.id }
+    });
+    if (!caseExists) {
+      return fail(404, { error: 'Case not found or does not belong to this organization.' });
+    } 
     await prisma.case.update({
       where: { id: params.caseId },
       data: { subject, description, accountId, dueDate, priority, ownerId }

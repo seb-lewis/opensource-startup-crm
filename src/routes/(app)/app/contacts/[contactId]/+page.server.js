@@ -1,8 +1,9 @@
 import prisma from '$lib/prisma';
 
-export async function load({ params }) {
+export async function load({ params, locals }) {
+  const org = locals.org;
   const contact = await prisma.contact.findUnique({
-    where: { id: params.contactId }
+    where: { id: params.contactId, organizationId: org.id },
   });
 
   if (!contact) {
