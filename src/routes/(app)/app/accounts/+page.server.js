@@ -1,8 +1,9 @@
 import { error } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 
-export async function load({ locals, url }) {
-    
+export async function load({ locals, url, params }) {
+    const org = locals.org;
+
     const page = parseInt(url.searchParams.get('page') || '1');
     const limit = parseInt(url.searchParams.get('limit') || '10');
     const sort = url.searchParams.get('sort') || 'name';
@@ -12,7 +13,7 @@ export async function load({ locals, url }) {
 
     try {
         // Build the where clause for filtering
-        const where = {};
+        const where = {organizationId: org.id};
 
         // Add status filter
         const status = url.searchParams.get('status');

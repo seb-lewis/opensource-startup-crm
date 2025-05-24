@@ -2,14 +2,17 @@ import { error, fail } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ params, url }) {
+export async function load({ params, url, locals }) {
+  const user = locals.user;
+  const org = locals.org;
   try {
     const accountId = params.accountId;
 
     // Fetch account details
     const account = await prisma.account.findUnique({
       where: {
-        id: accountId
+        id: accountId,
+        organizationId: org.id
       }
     });
 
@@ -127,10 +130,7 @@ export const actions = {
   closeAccount: async ({ params, request, locals }) => {
     try {
       const user = locals.user;
-
-      if (!user) {
-        return fail(401, { success: false, message: 'Unauthorized' });
-      }
+      const org = locals.org;
 
       const { accountId } = params;
       const formData = await request.formData();
@@ -142,7 +142,7 @@ export const actions = {
 
       // Fetch the account to verify it exists
       const account = await prisma.account.findUnique({
-        where: { id: accountId },
+        where: { id: accountId, organizationId: org.id },
         select: {
           id: true,
           closedAt: true,
@@ -169,8 +169,7 @@ export const actions = {
 
       const hasPermission =
         user.id === account.ownerId ||
-        userOrg?.role === 'ADMIN' ||
-        userOrg?.role === 'SALES_MANAGER';
+        userOrg?.role === 'ADMIN';
 
       if (!hasPermission) {
         return fail(403, { success: false, message: 'Permission denied. Only account owners, sales managers, or admins can close accounts.' });
@@ -210,16 +209,13 @@ export const actions = {
   reopenAccount: async ({ params, request, locals }) => {
     try {
       const user = locals.user;
-
-      if (!user) {
-        return fail(401, { success: false, message: 'Unauthorized' });
-      }
+      const org = locals.org;
 
       const { accountId } = params;
 
       // Fetch the account to verify it exists
       const account = await prisma.account.findUnique({
-        where: { id: accountId },
+        where: { id: accountId, organizationId: org.id },
         select: {
           id: true,
           closedAt: true,
@@ -247,8 +243,7 @@ export const actions = {
 
       const hasPermission =
         user.id === account.ownerId ||
-        userOrg?.role === 'ADMIN' ||
-        userOrg?.role === 'SALES_MANAGER';
+        userOrg?.role === 'ADMIN';
 
       if (!hasPermission) {
         return fail(403, { success: false, message: 'Permission denied. Only account owners, sales managers, or admins can reopen accounts.' });
@@ -294,9 +289,8 @@ export const actions = {
   addContact: async ({ params, request, locals }) => {
     try {
       const user = locals.user;
-      if (!user) {
-        return fail(401, { success: false, message: 'Unauthorized' });
-      }
+      const org = locals.org;
+      
       const { accountId } = params;
       let data;
       // Support both JSON and form submissions
@@ -312,6 +306,14 @@ export const actions = {
       if (!firstName || !lastName) {
         return fail(400, { success: false, message: 'First and last name are required.' });
       }
+
+      // check if the account exists and belongs to the organization
+      const account = await prisma.account.findUnique({
+        where: { id: accountId, organizationId: org.id }
+      });
+      if (!account) {
+        return fail(404, { success: false, message: 'Account not found or does not belong to this organization.' });
+      }
       // Create the contact
       const contact = await prisma.contact.create({
         data: {
@@ -321,7 +323,7 @@ export const actions = {
           phone: data.phone?.toString() || null,
           title: data.title?.toString() || null,
           ownerId: user.id,
-          organizationId: (await prisma.account.findUnique({ where: { id: accountId }, select: { organizationId: true } })).organizationId
+          organizationId: org.id,
         }
       });
       // Link contact to account
@@ -342,13 +344,9 @@ export const actions = {
 
   addOpportunity: async ({ params, request, locals }) => {
     try {
-      // @ts-ignore
       const user = locals.user;
-      // @ts-ignore
       const org = locals.org;
-      if (!user || !org) {
-        return fail(401, { success: false, message: 'Unauthorized' });
-      }
+     
       const { accountId } = params;
       const formData = await request.formData();
       const name = formData.get('name')?.toString().trim();
@@ -363,6 +361,15 @@ export const actions = {
       if (!name) {
         return fail(400, { success: false, message: 'Opportunity name is required.' });
       }
+
+      // chek if the account exists and belongs to the organization
+      const account = await prisma.account.findUnique({
+        where: { id: accountId, organizationId: org.id }
+      });
+      if (!account) {
+        return fail(404, { success: false, message: 'Account not found or does not belong to this organization.' });
+      }
+
       // Create the opportunity
       await prisma.opportunity.create({
         data: {
@@ -385,9 +392,10 @@ export const actions = {
 
   comment: async ({ request, params, locals }) => {
     const user = locals.user;
+    const org = locals.org;
     // Fallback: fetch account to get organizationId
     const account = await prisma.account.findUnique({
-      where: { id: params.accountId },
+      where: { id: params.accountId, organizationId: org.id },
       select: { organizationId: true, ownerId: true }
     });
     if (!account) {
@@ -414,9 +422,7 @@ export const actions = {
     try {
       const user = locals.user;
       const org = locals.org;
-      if (!user || !org) {
-        return fail(401, { success: false, message: 'Unauthorized' });
-      }
+      
       const { accountId } = params;
       const formData = await request.formData();
       const subject = formData.get('subject')?.toString().trim();
@@ -426,6 +432,14 @@ export const actions = {
       const priority = formData.get('priority')?.toString() || 'Normal';
       if (!subject) {
         return fail(400, { success: false, message: 'Subject is required.' });
+      }
+
+      // Check if the account exists and belongs to the organization
+      const account = await prisma.account.findUnique({
+        where: { id: accountId, organizationId: org.id }
+      });
+      if (!account) {
+        return fail(404, { success: false, message: 'Account not found or does not belong to this organization.' });
       }
       // If no ownerId is provided, default to current user
       // if (!ownerId) ownerId = user.id;
