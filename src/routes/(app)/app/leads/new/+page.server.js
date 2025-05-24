@@ -8,10 +8,6 @@ export async function load({ locals }) {
   const user = locals.user;
   const org = locals.org;
 
-  if (!user || !org) {
-    throw redirect(307, '/login');
-  }
-
   // Get data for dropdowns
   return {
     data: {
@@ -71,9 +67,6 @@ export const actions = {
     const user = locals.user;
     const org = locals.org;
 
-    if (!user || !org) {
-      return fail(401, { error: 'Unauthorized' });
-    }
 
     // Get the submitted form data
     const formData = await request.formData();

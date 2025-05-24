@@ -1,12 +1,13 @@
 import prisma  from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 
-export async function load({ params }) {
+export async function load({ params, locals }) {
+  const org = locals.org;
   try {
     const accountId = params.accountId;
     
     const account = await prisma.account.findUnique({
-      where: { id: accountId },
+      where: { id: accountId, organizationId: org.id },
       select: {
         id: true,
         name: true,
@@ -72,13 +73,14 @@ export async function load({ params }) {
 }
 
 export const actions = {
-  default: async ({ params }) => {
+  default: async ({ params, locals }) => {
     try {
       const accountId = params.accountId;
+      const org = locals.org;
 
       // Check if account exists first
       const account = await prisma.account.findUnique({
-        where: { id: accountId },
+        where: { id: accountId, organizationId: org.id },
         include: {
           _count: {
             select: {

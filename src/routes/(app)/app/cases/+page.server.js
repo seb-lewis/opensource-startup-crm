@@ -2,6 +2,8 @@ import { fail, redirect, error } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 
 export async function load({ url, locals }) {
+  const org = locals.org;
+  const user = locals.user;
   // Filters from query params
   const status = url.searchParams.get('status') || undefined;
   const assigned = url.searchParams.get('assigned') || undefined;
@@ -23,7 +25,7 @@ export async function load({ url, locals }) {
   const statusOptions = ['OPEN', 'IN_PROGRESS', 'CLOSED'];
 
   const cases = await prisma.case.findMany({
-    where,
+    where: { organizationId: org.id },
     include: {
       owner: { select: { id: true, name: true } },
       account: { select: { id: true, name: true } },

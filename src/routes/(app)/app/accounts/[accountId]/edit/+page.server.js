@@ -2,9 +2,9 @@ import { fail, redirect, error } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ params }) {
+export async function load({ params, locals }) {
   const account = await prisma.account.findUnique({
-    where: { id: params.accountId }
+    where: { id: params.accountId, organizationId: locals.org.id }
   });
   if (!account) throw error(404, 'Account not found');
   return { account };
@@ -12,7 +12,8 @@ export async function load({ params }) {
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-  default: async ({ request, params }) => {
+  default: async ({ request, params, locals }) => {
+    const org = locals.org;
     const form = await request.formData();
     const name = form.get('name');
     const industry = form.get('industry');
@@ -25,7 +26,7 @@ export const actions = {
     }
 
     await prisma.account.update({
-      where: { id: params.accountId },
+      where: { id: params.accountId, organizationId: org.id },
       data: { name, industry, type, website, phone }
     });
     throw redirect(303, `/app/accounts/${params.accountId}`);
