@@ -1,77 +1,71 @@
 import { error, fail } from '@sveltejs/kit';
 import { PrismaClient } from '@prisma/client';
+import { z } from 'zod'; // For input validation
 
 const prisma = new PrismaClient();
 
-export async function load({ params }) {
+// Input validation schemas
+const commentSchema = z.object({
+  comment: z.string().min(1, 'Comment cannot be empty').max(1000, 'Comment too long').trim()
+});
+
+export async function load({ params, locals }) {
   const lead_id = params.lead_id;
-  
-  try {
-    // Fetch lead with owner information
-    const lead = await prisma.lead.findUnique({
-      where: { id: lead_id },
-      include: {
-        owner: true,
-        tasks: {
-          orderBy: { createdAt: 'desc' }
+  const org = locals.org;
+
+  const lead = await prisma.lead.findUnique({
+    where: { id: lead_id, organizationId: org.id },
+    include: {
+      owner: true,
+      tasks: {
+        orderBy: { createdAt: 'desc' }
+      },
+      events: {
+        orderBy: { startDate: 'asc' }
+      },
+      comments: {
+        include: {
+          author: true
         },
-        events: {
-          orderBy: { startDate: 'asc' }
-        },
-        comments: {
-          include: {
-            author: true
-          },
-          orderBy: { createdAt: 'desc' }
-        },
-        contact: true
-      }
-    });
-    console.log('Lead:', lead);
-    if (!lead) {
-      throw error(404, 'Lead not found');
+        orderBy: { createdAt: 'desc' }
+      },
+      contact: true
     }
-    
-    return {
-      lead
-    };
-  } catch (err) {
-    console.error('Error fetching lead:', err);
-    throw error(500, 'Failed to load lead details');
+  });
+
+  if (!lead) {
+    throw error(404, 'Lead not found');
   }
+
+  console.log('Loaded lead:', lead);
+  return {
+    lead
+  };
 }
 
-// Add form actions
 export const actions = {
-  // Action to convert a lead to contact/account/opportunity
-  convert: async ({ params }) => {
+  convert: async ({ params, locals }) => {
     const lead_id = params.lead_id;
-    
+    const user = locals.user;
+    const org = locals.org;
+
     try {
-      // Get the lead to convert with organization data
       const lead = await prisma.lead.findUnique({
-        where: { id: lead_id },
+        where: { id: lead_id, organizationId: org.id },
         include: {
           organization: true,
           owner: true
         }
       });
-      
+
       if (!lead) {
-        return fail(404, {
-          status: 'error',
-          message: 'Lead not found'
-        });
+        return fail(404, { status: 'error', message: 'Lead not found' });
       }
-      
+
       if (lead.status === 'CONVERTED') {
-        return {
-          status: 'success',
-          message: 'Lead already converted'
-        };
+        return { status: 'success', message: 'Lead already converted' };
       }
-      
-      // Create a new contact from the lead
+
       const contact = await prisma.contact.create({
         data: {
           firstName: lead.firstName,
@@ -80,17 +74,11 @@ export const actions = {
           phone: lead.phone,
           title: lead.title,
           description: lead.description,
-          // Connect to the required relationships
-          owner: {
-            connect: { id: lead.ownerId }
-          },
-          organization: {
-            connect: { id: lead.organizationId }
-          }
+          owner: { connect: { id: lead.ownerId } },
+          organization: { connect: { id: lead.organizationId } }
         }
       });
-      
-      // Create a new account if company info exists
+
       let accountId = null;
       let account = null;
       if (lead.company) {
@@ -98,96 +86,60 @@ export const actions = {
           data: {
             name: lead.company,
             industry: lead.industry,
-            // Connect to the required relationships
-            owner: {
-              connect: { id: lead.ownerId }
-            },
-            organization: {
-              connect: { id: lead.organizationId }
-            }
+            owner: { connect: { id: lead.ownerId } },
+            organization: { connect: { id: lead.organizationId } }
           }
         });
         accountId = account.id;
-        
-        // Create the relationship between account and contact using AccountContactRelationship model
+
         await prisma.accountContactRelationship.create({
           data: {
-            account: {
-              connect: { id: account.id }
-            },
-            contact: {
-              connect: { id: contact.id }
-            },
+            account: { connect: { id: account.id } },
+            contact: { connect: { id: contact.id } },
             isPrimary: true,
             role: 'Primary Contact'
           }
         });
       }
-      
-      // Create an opportunity
-      // First build the common data for the opportunity
+
       const opportunityData = {
         name: `${lead.company || lead.firstName + ' ' + lead.lastName} Opportunity`,
         stage: 'PROSPECTING',
         amount: 0,
-        closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
-        
-        // Connect to the required relationships
-        contacts: {
-          connect: { id: contact.id }
-        },
-        owner: {
-          connect: { id: lead.ownerId }
-        },
-        organization: {
-          connect: { id: lead.organizationId }
-        }
+        closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        contacts: { connect: { id: contact.id } },
+        owner: { connect: { id: lead.ownerId } },
+        organization: { connect: { id: lead.organizationId } }
       };
-      
-      // According to the schema, an opportunity must be connected to an account
-      // If no account was created, we'll need to create a placeholder account
+
       if (!accountId) {
         const placeholderAccount = await prisma.account.create({
           data: {
             name: `${lead.firstName} ${lead.lastName} Account`,
-            // Connect to the required relationships
-            owner: {
-              connect: { id: lead.ownerId }
-            },
-            organization: {
-              connect: { id: lead.organizationId }
-            }
+            owner: { connect: { id: lead.ownerId } },
+            organization: { connect: { id: lead.organizationId } }
           }
         });
-        
+
         accountId = placeholderAccount.id;
         account = placeholderAccount;
-        
-        // Create relationship between contact and placeholder account
+
         await prisma.accountContactRelationship.create({
           data: {
-            account: {
-              connect: { id: placeholderAccount.id }
-            },
-            contact: {
-              connect: { id: contact.id }
-            },
+            account: { connect: { id: placeholderAccount.id } },
+            contact: { connect: { id: contact.id } },
             isPrimary: true,
             role: 'Primary Contact'
           }
         });
       }
-      
-      // Now add the account to the opportunity data
-      opportunityData.account = {
-        connect: { id: accountId }
-      };
-      
+
+      opportunityData.account = { connect: { id: accountId } };
+
       const opportunity = await prisma.opportunity.create({
         data: opportunityData
       });
-      
-      // Update the lead as converted
+
       await prisma.lead.update({
         where: { id: lead_id },
         data: {
@@ -197,12 +149,10 @@ export const actions = {
           convertedContactId: contact.id,
           convertedAccountId: accountId,
           convertedOpportunityId: opportunity.id,
-          contact: {
-            connect: { id: contact.id }
-          }
+          contact: { connect: { id: contact.id } }
         }
       });
-      
+
       return {
         status: 'success',
         message: 'Lead successfully converted',
@@ -211,72 +161,60 @@ export const actions = {
         opportunity
       };
     } catch (err) {
-      console.error('Error converting lead:', err);
-      return fail(500, {
-        status: 'error',
-        message: 'Failed to convert lead: ' + (err.message || 'Unknown error')
-      });
+      console.error('Error converting lead:', err.message);
+      return fail(500, { status: 'error', message: 'Failed to convert lead' });
     }
   },
-  
-  // Action to add a comment to the lead
+
   addComment: async ({ params, request, locals }) => {
     const lead_id = params.lead_id;
+    const user = locals.user;
+    const org = locals.org;
+
+
+    // Validate form data
     const data = await request.formData();
     const comment = data.get('comment');
-    const commentValue = typeof comment === 'string' ? comment : String(comment);
-    if (!commentValue.trim()) {
-      return fail(400, {
-        status: 'error',
-        message: 'Comment cannot be empty'
-      });
-    }
+    
     try {
-      // Use the logged-in user from locals
-      const user = locals.user;
-      if (!user) {
-        return fail(401, {
-          status: 'error',
-          message: 'You must be logged in to comment.'
-        });
-      }
-      // Get the lead to obtain its organization ID
+      const validatedComment = commentSchema.parse({ comment });
+      
       const lead = await prisma.lead.findUnique({
-        where: { id: lead_id },
+        where: { id: lead_id, organizationId: org.id },
         select: { organizationId: true }
       });
+
       if (!lead) {
-        return fail(404, {
-          status: 'error',
-          message: 'Lead not found'
-        });
+        return fail(404, { status: 'error', message: 'Lead not found' });
       }
+
       await prisma.comment.create({
         data: {
-          body: commentValue,
+          body: validatedComment.comment,
           lead: { connect: { id: lead_id } },
           author: { connect: { id: user.id } },
           organization: { connect: { id: lead.organizationId } }
         }
       });
-      // Refetch comments for immediate update
+
       const updatedLead = await prisma.lead.findUnique({
         where: { id: lead_id },
         include: {
           comments: { include: { author: true }, orderBy: { createdAt: 'desc' } }
         }
       });
+
       return {
         status: 'success',
         message: 'Comment added successfully',
         comments: updatedLead?.comments || []
       };
     } catch (err) {
-      console.error('Error adding comment:', err);
-      return fail(500, {
-        status: 'error',
-        message: 'Failed to add comment'
-      });
+      console.error('Error adding comment:', err.message);
+      if (err instanceof z.ZodError) {
+        return fail(400, { status: 'error', message: err.errors[0].message });
+      }
+      return fail(500, { status: 'error', message: 'Failed to add comment' });
     }
   }
 };
