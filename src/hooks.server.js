@@ -46,8 +46,13 @@ export async function handle({ event, resolve }) {
           event.locals.org_name = userOrg.organization.name;
         }
       } else {
-        // User doesn't have access to this organization, redirect to logout
-        throw redirect(307, '/logout');
+        // User doesn't have access to this organization or orgId is stale.
+        // Clear the invalid org cookies.
+        event.cookies.delete('org', { path: '/' });
+        event.cookies.delete('org_name', { path: '/' });
+        // Redirect to the organization selection page.
+        // The user is still authenticated.
+        throw redirect(307, '/org');
       }
 	  }
 	}

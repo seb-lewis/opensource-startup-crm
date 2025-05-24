@@ -3,7 +3,11 @@
 declare global {
 	namespace App {
 		// interface Error {}
-		// interface Locals {}
+		interface Locals {
+			user?: any; // You might want to replace 'any' with a more specific type for user
+			org?: any; // You might want to replace 'any' with a more specific type for org
+			org_name?: string;
+		}
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
