@@ -8,9 +8,6 @@ export async function load({ cookies, locals }) {
   const user = locals.user;
   const org = locals.org;
   
-  if (!user || !org) {
-    throw redirect(307, '/login');
-  }
   
   // Fetch open leads for the user's organization
   // We're considering NEW, PENDING, CONTACTED, and QUALIFIED statuses as "open"

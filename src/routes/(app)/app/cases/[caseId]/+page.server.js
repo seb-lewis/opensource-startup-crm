@@ -1,10 +1,11 @@
 import prisma from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 
-export async function load({ params }) {
+export async function load({ params, locals }) {
+  const org = locals.org;
   const caseId = params.caseId;
   const caseItem = await prisma.case.findUnique({
-    where: { id: caseId },
+    where: { id: caseId, organizationId: org.id },
     include: {
       owner: { select: { id: true, name: true } },
       account: { select: { id: true, name: true } },
@@ -20,6 +21,15 @@ export async function load({ params }) {
 
 export const actions = {
   comment: async ({ request, params, locals }) => {
+    const org = locals.org;
+
+    // check if the case is related to the organization
+    const caseExists = await prisma.case.findFirst({
+      where: { id: params.caseId, organizationId: org.id }
+    });
+    if (!caseExists) {
+      return fail(404, { error: 'Case not found or does not belong to this organization.' });
+    }
     const form = await request.formData();
     const body = form.get('body')?.toString().trim();
     if (!body) return fail(400, { error: 'Comment cannot be empty.' });

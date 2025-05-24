@@ -46,6 +46,7 @@
 	"dependencies": {
 		"@fortawesome/free-brands-svg-icons": "^6.7.2",
 		"@fortawesome/free-solid-svg-icons": "^6.7.2",
+		"@lucide/svelte": "^0.511.0",
 		"@prisma/client": "6.5.0",
 		"axios": "^1.8.4",
 		"date-fns": "^4.1.0",
@@ -53,6 +54,7 @@
 		"flowbite-svelte-icons": "^2.1.1",
 		"marked": "^15.0.8",
 		"svelte-fa": "^4.0.3",
-		"uuid": "^11.1.0"
+		"uuid": "^11.1.0",
+		"zod": "^3.25.28"
 	}
 }

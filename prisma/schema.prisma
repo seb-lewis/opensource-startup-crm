@@ -30,8 +30,8 @@ model User {
   contacts          Contact[]
   leads             Lead[]
   opportunities     Opportunity[]
-  tasks             Task[]
-  events            Event[]
+  tasks             Task[] // Tasks created by user
+  events            Event[] // Events created by user
   ownedTasks        Task[]              @relation("TaskOwner")
   ownedEvents       Event[]             @relation("EventOwner")
   cases             Case[]
@@ -281,6 +281,7 @@ model Task {
   caseId         String?
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
+  comments       Comment[]    @relation("TaskComments")
 }
 
 model Event {
@@ -404,6 +405,8 @@ model Comment {
   accountId      String?
   contact        Contact?     @relation(fields: [contactId], references: [id])
   contactId      String?
+  task           Task?        @relation("TaskComments", fields: [taskId], references: [id])
+  taskId         String?
 }
 
 model Quote {
