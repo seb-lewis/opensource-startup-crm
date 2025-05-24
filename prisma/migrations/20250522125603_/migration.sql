@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'SALES_REP', 'SUPPORT_REP', 'READ_ONLY', 'SU');
+CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'USER');
 
 -- CreateEnum
 CREATE TYPE "LeadSource" AS ENUM ('WEB', 'PHONE_INQUIRY', 'PARTNER_REFERRAL', 'COLD_CALL', 'TRADE_SHOW', 'EMPLOYEE_REFERRAL', 'ADVERTISEMENT', 'OTHER');
@@ -26,7 +26,6 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "name" TEXT,
     "session_id" TEXT,
-    "role" "UserRole" NOT NULL DEFAULT 'READ_ONLY',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "profilePhoto" TEXT,
@@ -57,8 +56,7 @@ CREATE TABLE "Organization" (
 -- CreateTable
 CREATE TABLE "UserOrganization" (
     "id" TEXT NOT NULL,
-    "role" "UserRole" NOT NULL DEFAULT 'READ_ONLY',
-    "isPrimary" BOOLEAN NOT NULL DEFAULT false,
+    "role" "UserRole" NOT NULL DEFAULT 'USER',
     "joinedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT NOT NULL,
     "organizationId" TEXT NOT NULL,
