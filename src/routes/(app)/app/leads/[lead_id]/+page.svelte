@@ -1,9 +1,9 @@
 <script>
-  import { Badge, Button, Card, Spinner, Tabs, TabItem, Textarea, Toast } from 'flowbite-svelte';
-  import { fly, fade, scale } from 'svelte/transition';
+  import { Badge, Button, Spinner, Tabs, TabItem, Textarea, Toast } from 'flowbite-svelte';
+  import { fly } from 'svelte/transition';
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
-  import { goto } from '$app/navigation';
+  import { UserCircle, Edit3, CheckCircle, Mail, Phone, Info, Star, Clock, MessageSquare, FileText, Users, Link as LinkIcon, ChevronRight } from '@lucide/svelte';
 
   export let data;
   export let form;
@@ -12,7 +12,7 @@
   let newComment = '';
   let isSubmittingComment = false;
   let isConverting = false;
-  
+
   // Toast state variables
   let showToast = false;
   let toastMessage = '';
@@ -25,7 +25,7 @@
 
   // Function to format date
   function formatDate(dateString) {
-    if (!dateString) return '';
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -49,45 +49,33 @@
       case 'CONVERTED':
         return 'dark';
       default:
-        return 'blue';
+        return 'gray'; // Default to gray for unknown statuses
     }
   }
+  
+  const enhanceConvertForm = () => {
+    isConverting = true;
+    return async ({ update }) => {
+      await update({ reset: false });
+    };
+  };
 
-  // Function to get task priority color
-  function getPriorityColor(priority) {
-    switch (priority) {
-      case 'HIGH':
-        return 'red';
-      case 'MEDIUM':
-        return 'yellow';
-      case 'LOW':
-        return 'green';
-      default:
-        return 'green';
-    }
-  }
-
-  async function addComment() {
-    if (!newComment.trim()) return;
+  const enhanceCommentForm = () => {
     isSubmittingComment = true;
-    setTimeout(() => {
-      alert(`Comment added: ${newComment}`);
-      newComment = '';
-      isSubmittingComment = false;
-    }, 1000);
-  }
+    return async ({ update }) => {
+      await update({ reset: false });
+    };
+  };
 
-  // Reactive statement to show toast messages based on form action result
+
   $: if (form?.status === 'success') {
     toastMessage = form.message || 'Action completed successfully!';
     toastType = 'success';
     showToast = true;
-    invalidateAll();
+    invalidateAll(); // This reloads all data, including lead and comments
     isConverting = false;
     isSubmittingComment = false;
-    
-    // Reset comment field if the comment was successfully added
-    if (form.comment) {
+    if (form.commentAdded) { // Assuming the server action returns { commentAdded: true }
       newComment = '';
     }
   } else if (form?.status === 'error') {
@@ -99,317 +87,226 @@
   }
 </script>
 
-<!-- Use Toast component properly -->
 {#if showToast}
-  <Toast dismissable bind:open={showToast} color={toastType === 'success' ? 'green' : toastType === 'error' ? 'red' : 'blue'} position="top-right">
+  <Toast dismissable bind:open={showToast} color={toastType === 'success' ? 'green' : toastType === 'error' ? 'red' : 'blue'} position="top-right" class="mt-4 mr-4 fixed z-50">
     <span class="font-medium">{toastMessage}</span>
   </Toast>
 {/if}
 
-<div class="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 pb-12">
-  <!-- Sticky Top Bar -->
-  <header class="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-blue-100 shadow-sm">
-    <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-      <div class="flex items-center gap-3">
-        <a href="/app/leads/open" aria-label="Back to leads list" class="text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 rounded-full p-2 transition-all duration-200">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-        </a>
-        <h1 class="text-xl md:text-2xl font-bold text-blue-900 tracking-tight truncate">{getFullName(lead)}</h1>
-        <Badge color={getStatusColor(lead.status)} class="ml-2 text-xs font-medium px-3 py-1">{lead.status}</Badge>
-      </div>
-      <div class="flex gap-2">
-        {#if lead.status !== 'CONVERTED'}
-          <!-- Use a form for the convert action -->
-          <form method="POST" action="?/convert" use:enhance={() => {
-            isConverting = true; // Set loading state on submit
-            return async ({ update }) => {
-              // This runs after the action completes
-              await update({ reset: false }); // Update form prop without resetting the page
-              // isConverting will be reset by the reactive statement above
-            };
-          }}>
-            <Button type="submit" color="green" size="sm" disabled={isConverting} class="shadow-sm hover:shadow transition-all duration-200">
-              {#if isConverting}
-                <Spinner size="sm" class="mr-1.5" /> Converting...
-              {:else}
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                </svg>
-                Convert
-              {/if}
+<div class="min-h-screen bg-slate-100 dark:bg-gray-950">
+  <main class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Main Content Area -->
+      <div class="flex-1 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8">
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb" class="mb-6">
+          <ol class="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+            <li><a href="/app/leads" class="hover:text-blue-600 dark:hover:text-blue-400">Leads</a></li>
+            <li><ChevronRight class="h-4 w-4 text-slate-400 dark:text-slate-500" /></li>
+            <li aria-current="page" class="font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[200px] sm:max-w-xs md:max-w-md">{getFullName(lead)}</li>
+          </ol>
+        </nav>
+
+        <!-- Lead Header -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-8">
+          <div class="flex-shrink-0 bg-blue-600 text-white p-3 rounded-full shadow-md ring-4 ring-white dark:ring-gray-800">
+            <UserCircle class="w-16 h-16 sm:w-20 sm:h-20" />
+          </div>
+          <div class="flex-grow">
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-1">{getFullName(lead)}</h1>
+            <div class="flex items-center gap-2">
+              <p class="text-slate-600 dark:text-slate-400 text-lg">Lead</p>
+              <Badge color={getStatusColor(lead.status)} class="text-xs font-medium px-2 py-0.5 rounded-md">{lead.status}</Badge>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto pt-2 sm:pt-0">
+            {#if lead.status !== 'CONVERTED'}
+              <form method="POST" action="?/convert" use:enhance={enhanceConvertForm} class="w-full sm:w-auto">
+                <Button type="submit" color="blue" class="w-full shadow-md" disabled={isConverting}>
+                  {#if isConverting}
+                    <Spinner size="4" class="mr-1.5" /> Converting...
+                  {:else}
+                    <CheckCircle class="w-5 h-5 mr-1.5" /> Convert Lead
+                  {/if}
+                </Button>
+              </form>
+            {/if}
+            <Button color="alternative" href="/app/leads/{lead.id}/edit" class="w-full sm:w-auto shadow-md" disabled={isConverting || lead.status === 'CONVERTED'}>
+              <Edit3 class="w-5 h-5 mr-1.5" /> Edit
             </Button>
-          </form>
-        {/if}
-        <Button color="light" size="sm" href="/app/leads/{lead.id}/edit" disabled={isConverting || lead.status === 'CONVERTED'} class="shadow-sm hover:shadow transition-all duration-200">
-          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-          </svg>
-          Edit
-        </Button>
-      </div>
-    </div>
-  </header>
-
-  <main class="px-4 sm:px-6 py-6 pb-8 max-w-7xl mx-auto">
-    <!-- Responsive grid: sidebar + main content -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Sidebar: Lead Summary -->
-      <div class="space-y-6 md:col-span-1">
-        <!-- Lead Status Card -->
-        <Card class="shadow-lg border-0 bg-white/95 overflow-visible">
-          <div class="flex flex-col items-center py-8 relative">
-            <div class="absolute -top-8 bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-5 rounded-xl shadow-lg transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-              <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-              </svg>
-            </div>
-            <div class="mt-10">
-              <h2 class="mt-2 text-2xl font-bold text-blue-900 tracking-tight">{getFullName(lead)}</h2>
-              <div class="flex justify-center mt-2">
-                <Badge color={getStatusColor(lead.status)} class="px-3 py-1 text-sm">{lead.status}</Badge>
-              </div>
-              {#if lead.title}
-                <div class="text-sm text-blue-700 mt-1">{lead.title}</div>
-              {/if}
-              {#if lead.company}
-                <div class="text-sm text-gray-500 mt-1">{lead.company}</div>
-              {/if}
-            </div>
           </div>
+        </div>
+
+        <!-- Tabs Section -->
+        <div class="border-b border-slate-200 dark:border-gray-700 mb-6">
           
-          <!-- Contact Info -->
-          <div class="border-t border-blue-100 pt-5 px-5 space-y-4 mt-3">
-            <h3 class="text-sm font-semibold text-blue-800 uppercase tracking-wider">Contact Information</h3>
-            {#if lead.email}
-              <div class="flex items-center gap-3 p-3 bg-blue-50/80 rounded-lg hover:bg-blue-100/80 transition-colors duration-200">
-                <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
-                </div>
-                <a href="mailto:{lead.email}" class="text-blue-700 hover:text-blue-900 hover:underline font-medium">{lead.email}</a>
-              </div>
-            {/if}
-            {#if lead.phone}
-              <div class="flex items-center gap-3 p-3 bg-green-50/80 rounded-lg hover:bg-green-100/80 transition-colors duration-200">
-                <div class="bg-green-100 p-2 rounded-lg text-green-600">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                  </svg>
-                </div>
-                <a href="tel:{lead.phone}" class="text-green-700 hover:text-green-900 hover:underline font-medium">{lead.phone}</a>
-              </div>
-            {/if}
-          </div>
-
-          <!-- Lead Details -->
-          <div class="border-t border-blue-100 pt-5 px-5 space-y-4 mt-3">
-            <h3 class="text-sm font-semibold text-blue-800 uppercase tracking-wider">Lead Details</h3>
-            <div class="space-y-3 bg-gray-50/80 rounded-lg p-4">
-              {#if lead.leadSource}
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600 font-medium">Source</span>
-                  <span class="font-medium capitalize bg-blue-100 text-blue-800 px-3 py-1 rounded-md text-sm">{lead.leadSource.replace('_', ' ').toLowerCase()}</span>
-                </div>
-              {/if}
-              {#if lead.industry}
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600 font-medium">Industry</span>
-                  <span class="font-medium bg-purple-100 text-purple-800 px-3 py-1 rounded-md text-sm">{lead.industry}</span>
-                </div>
-              {/if}
-              {#if lead.rating}
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600 font-medium">Rating</span>
-                  <div class="flex gap-1">
-                    {#each Array(parseInt(lead.rating) || 0) as _, i}
-                      <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
+              <div class="space-y-6">
+                <section>
+                  <h2 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Lead Information</h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-0">
+                    {#each [
+                      { label: 'Full Name', value: getFullName(lead) },
+                      { label: 'Company', value: lead.company },
+                      { label: 'Email', value: lead.email, href: `mailto:${lead.email}` },
+                      { label: 'Phone', value: lead.phone, href: `tel:${lead.phone}` },
+                      { label: 'Lead Source', value: lead.leadSource?.replace('_', ' ')?.toLowerCase(), capitalize: true },
+                      { label: 'Industry', value: lead.industry }
+                    ] as item}
+                      {#if item.value}
+                        <div class="py-3 border-b border-slate-200 dark:border-gray-700">
+                          <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium mb-0.5">{item.label}</p>
+                          {#if item.href}
+                            <a href={item.href} class="text-blue-600 dark:text-blue-400 hover:underline text-sm"><p class="text-slate-800 dark:text-slate-100 text-sm {item.capitalize ? 'capitalize' : ''}">{item.value}</p></a>
+                          {:else}
+                            <p class="text-slate-800 dark:text-slate-100 text-sm {item.capitalize ? 'capitalize' : ''}">{item.value}</p>
+                          {/if}
+                        </div>
+                      {/if}
                     {/each}
                   </div>
-                </div>
-              {/if}
-            </div>
-          </div>
+                </section>
 
-          <!-- Timeline -->
-          <div class="border-t border-blue-100 pt-5 px-5 space-y-4 mt-3">
-            <h3 class="text-sm font-semibold text-blue-800 uppercase tracking-wider">Timeline</h3>
-            <div class="space-y-4 relative before:absolute before:left-2 before:top-0 before:bottom-0 before:w-0.5 before:bg-blue-100">
-              <div class="flex gap-4 items-center">
-                <div class="h-5 w-5 rounded-full bg-blue-200 border-2 border-blue-500 z-10"></div>
-                <div class="flex justify-between w-full items-center">
-                  <span class="text-gray-600 font-medium">Created</span>
-                  <span class="font-medium text-sm bg-blue-50 text-blue-800 px-3 py-1 rounded-md">{formatDate(lead.createdAt)}</span>
-                </div>
+                <section>
+                  <h2 class="text-lg font-semibold text-slate-800 dark:text-white mb-4">Additional Details</h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-0">
+                    {#if lead.rating}
+                    <div class="py-3 border-b border-slate-200 dark:border-gray-700">
+                      <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium mb-0.5">Rating</p>
+                      <span class="flex mt-1">
+                        {#each Array(parseInt(lead.rating) || 0) as _, i}
+                          <Star class="w-4 h-4 text-yellow-400 fill-current" />
+                        {/each}
+                        {#each Array(5 - (parseInt(lead.rating) || 0)) as _, i}
+                           <Star class="w-4 h-4 text-gray-300 dark:text-gray-600 fill-current" />
+                        {/each}
+                      </span>
+                    </div>
+                    {/if}
+                    {#if lead.annualRevenue}
+                    <div class="py-3 border-b border-slate-200 dark:border-gray-700">
+                      <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium mb-0.5">Annual Revenue</p>
+                      <p class="text-slate-800 dark:text-slate-100 text-sm">${lead.annualRevenue.toLocaleString()}</p>
+                    </div>
+                    {/if}
+                    {#if lead.address}
+                    <div class="py-3 border-b border-slate-200 dark:border-gray-700 md:col-span-2">
+                      <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium mb-0.5">Address</p>
+                      <p class="text-slate-800 dark:text-slate-100 text-sm whitespace-pre-line">{lead.address}</p>
+                    </div>
+                    {/if}
+                  </div>
+                </section>
+                
+                <section>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-0">
+                    <div class="py-3 border-b border-slate-200 dark:border-gray-700">
+                      <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium mb-0.5">Status</p>
+                      <p class="text-slate-800 dark:text-slate-100 text-sm font-medium">{lead.status}</p>
+                    </div>
+                     <div class="py-3 border-b border-slate-200 dark:border-gray-700">
+                      <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium mb-0.5">Lead Owner</p>
+                      <p class="text-slate-800 dark:text-slate-100 text-sm">{lead.owner?.name || 'Unassigned'}</p>
+                    </div>
+                    <div class="py-3 border-b border-slate-200 dark:border-gray-700">
+                      <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium mb-0.5">Created At</p>
+                      <p class="text-slate-800 dark:text-slate-100 text-sm">{formatDate(lead.createdAt)}</p>
+                    </div>
+                    <div class="py-3 border-b border-slate-200 dark:border-gray-700">
+                      <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium mb-0.5">Updated At</p>
+                      <p class="text-slate-800 dark:text-slate-100 text-sm">{formatDate(lead.updatedAt)}</p>
+                    </div>
+                    {#if lead.isConverted && lead.convertedAt}
+                      <div class="py-3 border-b border-slate-200 dark:border-gray-700">
+                        <p class="text-xs text-green-500 dark:text-green-400 uppercase tracking-wider font-medium mb-0.5">Converted At</p>
+                        <p class="text-green-700 dark:text-green-300 text-sm font-medium">{formatDate(lead.convertedAt)}</p>
+                      </div>
+                    {/if}
+                  </div>
+                </section>
               </div>
-              <div class="flex gap-4 items-center">
-                <div class="h-5 w-5 rounded-full bg-blue-200 border-2 border-blue-500 z-10"></div>
-                <div class="flex justify-between w-full items-center">
-                  <span class="text-gray-600 font-medium">Updated</span>
-                  <span class="font-medium text-sm bg-blue-50 text-blue-800 px-3 py-1 rounded-md">{formatDate(lead.updatedAt)}</span>
-                </div>
+              <div class="prose prose-sm max-w-none dark:prose-invert text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-gray-700/30 p-4 rounded-md border border-slate-200 dark:border-gray-700">
+                {@html lead.description}
               </div>
-              {#if lead.isConverted && lead.convertedAt}
-                <div class="flex gap-4 items-center">
-                  <div class="h-5 w-5 rounded-full bg-green-200 border-2 border-green-500 z-10"></div>
-                  <div class="flex justify-between w-full items-center">
-                    <span class="text-green-700 font-medium">Converted</span>
-                    <span class="font-medium text-sm bg-green-50 text-green-800 px-3 py-1 rounded-md">{formatDate(lead.convertedAt)}</span>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="w-full lg:w-[32rem] bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 space-y-6 self-start">
+        <div>
+          <h2 class="text-xl font-semibold text-slate-800 dark:text-white mb-6">Notes</h2>
+          
+          <form method="POST" action="?/addComment" use:enhance={enhanceCommentForm} class="mb-6">
+            <Textarea name="comment" bind:value={newComment} placeholder="Add a note or log activity..." rows={3}
+                      class="w-full bg-slate-50 dark:bg-gray-700 border-slate-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 dark:text-white dark:placeholder-gray-400 rounded-lg shadow-sm text-sm" />
+            <div class="flex justify-end mt-3">
+              <Button type="submit" size="sm" color="blue" disabled={!newComment.trim() || isSubmittingComment}
+                      class="rounded-md shadow-sm">
+                {#if isSubmittingComment}
+                  <Spinner size="4" class="mr-2" /> Adding...
+                {:else}
+                  <MessageSquare class="w-4 h-4 mr-1.5" /> Add Note
+                {/if}
+              </Button>
+            </div>
+          </form>
+          
+          <div class="space-y-6">
+            {#if lead.comments && lead.comments.length > 0}
+              {#each lead.comments as comment, i (comment.id || i)}
+                <div class="relative flex gap-4 pl-2" in:fly={{ y: 10, delay: i * 60, duration: 200 }}>
+                  <div class="absolute left-[calc(1rem-1px)] top-0 h-full w-0.5 bg-slate-200 dark:bg-gray-700 transform -translate-x-1/2"></div>
+                  <div class="relative z-10 flex-shrink-0">
+                    {#if comment.author?.avatarUrl}
+                      <img src={comment.author.avatarUrl} alt={comment.author.name} class="w-8 h-8 rounded-full object-cover shadow-sm ring-2 ring-white dark:ring-gray-800" />
+                    {:else}
+                      <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-gray-600 flex items-center justify-center text-slate-500 dark:text-slate-400 shadow-sm ring-2 ring-white dark:ring-gray-800">
+                        <UserCircle class="w-5 h-5" />
+                      </div>
+                    {/if}
+                  </div>
+                  <div class="flex-1 pb-4 border-b border-slate-200 dark:border-gray-700 last:border-b-0">
+                    <div class="flex items-center justify-between mb-0.5">
+                      <p class="text-slate-800 dark:text-slate-100 text-sm font-medium">{comment.author?.name || 'Unknown User'}</p>
+                      <p class="text-slate-500 dark:text-slate-400 text-xs">{formatDate(comment.createdAt)}</p>
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">{comment.body}</p>
                   </div>
                 </div>
-              {/if}
-            </div>
+              {/each}
+            {:else}
+              <div class="text-center py-8 border-2 border-dashed border-slate-300 dark:border-gray-600 rounded-lg bg-slate-50 dark:bg-gray-700/30">
+                <MessageSquare class="w-10 h-10 mx-auto mb-3 text-slate-400 dark:text-slate-500" />
+                <p class="text-md font-medium text-slate-700 dark:text-slate-300">No activity yet</p>
+                <p class="text-sm mt-1 text-slate-500 dark:text-slate-400">Be the first to add a note or log an interaction.</p>
+              </div>
+            {/if}
           </div>
-        </Card>
+        </div>
 
-        <!-- Owner Card -->
-        <Card class="shadow-lg border-0 bg-white/95 hover:shadow-xl transition-shadow duration-300">
-          <h3 class="text-base font-semibold mb-4 text-blue-900 border-b pb-3">Lead Owner</h3>
-          <div class="flex items-center gap-4 p-2">
-            <div class="bg-gradient-to-br from-blue-400 to-blue-600 text-white p-3 rounded-lg shadow-md">
-              <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-              </svg>
-            </div>
-            <div>
-              <div class="font-medium text-lg">{lead.owner?.name || 'Unassigned'}</div>
-              {#if lead.owner?.email}
-                <div class="text-sm text-gray-500">{lead.owner.email}</div>
-              {/if}
-            </div>
-          </div>
-          <Button size="xs" color="alternative" class="w-full mt-4 shadow-sm hover:shadow transition-all duration-200">Change Owner</Button>
-        </Card>
-
-        <!-- Related Contact -->
         {#if lead.convertedContactId && lead.contact}
-          <Card class="shadow-lg border-0 bg-white/95 hover:shadow-xl transition-shadow duration-300">
-            <h3 class="text-base font-semibold mb-4 text-blue-900 border-b pb-3">Related Contact</h3>
-            <div class="border rounded-lg p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200" in:scale={{ duration: 200 }}>
-              <div class="font-medium text-gray-900 text-lg">{lead.contact.firstName} {lead.contact.lastName}</div>
+          <div>
+            <h2 class="text-xl font-semibold text-slate-800 dark:text-white mb-4 pt-4 border-t border-slate-200 dark:border-gray-700">Related Contact</h2>
+            <div class="border border-slate-200 dark:border-gray-700 rounded-lg p-4 bg-slate-50 dark:bg-gray-700/50">
+              <div class="font-medium text-slate-900 dark:text-white text-md">{lead.contact.firstName} {lead.contact.lastName}</div>
               {#if lead.contact.email}
-                <div class="text-sm text-gray-600 mt-1 flex items-center gap-2">
-                  <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
+                <div class="text-sm text-slate-600 dark:text-slate-400 mt-1 flex items-center gap-2">
+                  <Mail class="w-4 h-4 text-slate-400 dark:text-slate-500" />
                   {lead.contact.email}
                 </div>
               {/if}
               {#if lead.contact.phone}
-                <div class="text-sm text-gray-600 mt-1 flex items-center gap-2">
-                  <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                  </svg>
+                <div class="text-sm text-slate-600 dark:text-slate-400 mt-1 flex items-center gap-2">
+                  <Phone class="w-4 h-4 text-slate-400 dark:text-slate-500" />
                   {lead.contact.phone}
                 </div>
               {/if}
-              <Button size="xs" href={`/app/contacts/${lead.contact.id}`} class="w-full mt-3 shadow-sm hover:shadow transition-all duration-200">
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                </svg>
+              <Button size="xs" color="light" href={`/app/contacts/${lead.contact.id}`} class="w-full mt-4 shadow-sm">
                 View Contact
               </Button>
             </div>
-          </Card>
+          </div>
         {/if}
-      </div>
-
-      <!-- Main Content -->
-      <div class="space-y-6 md:col-span-2">
-        <!-- Description Card -->
-        {#if lead.description}
-          <Card class="shadow-lg border-0 bg-white/95 hover:shadow-xl transition-shadow duration-300">
-            <div class="flex items-center gap-3 border-b pb-3 mb-4">
-              <div class="bg-blue-100 p-2 rounded-lg text-blue-700">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-              </div>
-              <h3 class="text-lg font-semibold text-blue-900">Description</h3>
-            </div>
-            <div class="prose max-w-none text-gray-700 bg-gray-50/80 p-5 rounded-lg border border-gray-100">
-              {lead.description}
-            </div>
-          </Card>
-        {/if}
-
-        <!-- Tabs Section -->
-        <Card class="shadow-lg border-0 bg-white/95 hover:shadow-xl transition-shadow duration-300">
-          <Tabs style="pills" contentClass="p-0 mt-4">
-            <TabItem open title="Comments">
-              <div class="p-4">
-                <div class="mb-6">
-                  <form method="POST" action="?/addComment" use:enhance={({ update }) => {
-                    isSubmittingComment = true;
-                    return async ({ result }) => {
-                      isSubmittingComment = false;
-                      if (result?.type === 'success' && result?.data?.comments) {
-                        lead.comments = result.data.comments;
-                        newComment = '';
-                      }
-                      await update({ reset: false });
-                    };
-                  }}>
-                    <Textarea name="comment" bind:value={newComment} placeholder="Add a comment..." rows={3} 
-                              class="focus:border-blue-500 focus:ring-blue-500 bg-blue-50/50" />
-                    <div class="flex justify-end mt-3">
-                      <Button type="submit" size="sm" color="blue" disabled={!newComment || isSubmittingComment}
-                              class="px-4 py-2 transition-all duration-200 hover:shadow shadow-sm">
-                        {#if isSubmittingComment}
-                          <Spinner size="sm" class="mr-2" />
-                        {:else}
-                          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                          </svg>
-                        {/if}
-                        Add Comment
-                      </Button>
-                    </div>
-                  </form>
-                </div>
-
-                <div class="space-y-4">
-                  {#each lead.comments as comment, i}
-                    <div class="border rounded-lg p-5 hover:shadow-md transition-shadow bg-white" in:fly={{ y: 20, delay: i * 80, duration: 300 }}>
-                      <div class="flex items-start gap-4">
-                        <div class="bg-gradient-to-br from-blue-400 to-blue-600 text-white p-3 rounded-lg shadow-sm">
-                          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                        <div class="flex-1">
-                          <div class="flex items-center justify-between pb-2 border-b">
-                            <div class="font-medium text-lg">{comment.author?.name || 'Unknown'}</div>
-                            <div class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md">{formatDate(comment.createdAt)}</div>
-                          </div>
-                          <p class="mt-3 text-gray-700 whitespace-pre-line">{comment.text || comment.content || ''}</p>
-                        </div>
-                      </div>
-                    </div>
-                  {/each}
-                  
-                  {#if !lead.comments || lead.comments.length === 0}
-                    <div class="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                      <div class="text-gray-400 flex flex-col items-center">
-                        <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
-                        </svg>
-                        <p class="text-lg font-medium">No comments yet</p>
-                        <p class="text-sm mt-1">Be the first to add a comment to this lead</p>
-                      </div>
-                    </div>
-                  {/if}
-                </div>
-              </div>
-            </TabItem>
-          </Tabs>
-        </Card>
-      </div>
+      </aside>
     </div>
   </main>
 </div>
