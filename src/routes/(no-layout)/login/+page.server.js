@@ -30,7 +30,6 @@ export async function load({ params, url, cookies }) {
   const code = url.searchParams.get('code')
   const redirect_uri = env.GOOGLE_LOGIN_DOMAIN + '/login'
 
-  console.log('code', code)
     // Check if the user is already authenticated
   if (code != null) {
     params = {
@@ -53,7 +52,6 @@ export async function load({ params, url, cookies }) {
 
     const session_id = uuidv4()
     
-    console.log('user_info', user_info)
     const user = await prisma.user.upsert({
       where: { email: user_info.email },
       update: { 

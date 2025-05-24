@@ -2,7 +2,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Fa from 'svelte-fa';
-	import { faPieChart } from '@fortawesome/free-solid-svg-icons';
+	import { faPieChart, faQuestion } from '@fortawesome/free-solid-svg-icons';
 	import {
 		Sidebar,
 		SidebarDropdownItem,
@@ -134,6 +134,20 @@
 						class={`${mainSidebarUrl === '/app/invoices/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
 					/>
 				</SidebarDropdownWrapper> -->
+
+				<SidebarItem
+					label="Support"
+					href="/app/support"
+					class={`${mainSidebarUrl === '/app/support' ? 'flex p-2 items-center rounded-lg bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					spanClass="ml-3"
+				>
+					<svelte:fragment slot="icon">
+						<Fa
+							icon={faQuestion}
+							class={`${iconClass} ${mainSidebarUrl === '/app/support' ? 'text-gray-900 dark:text-white' : ''}`}
+						/>
+					</svelte:fragment>
+				</SidebarItem>
 			</SidebarGroup>
 			
 		</nav>

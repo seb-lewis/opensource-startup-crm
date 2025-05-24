@@ -58,7 +58,6 @@
   function selectDay(date) {
     if (date) {
       const formatted = formatDate(date);
-      console.log('Clicked date:', date, 'Formatted:', formatted);
       selectedDate = formatted;
       selectedTasks = tasksByDate[selectedDate] || [];
     }
