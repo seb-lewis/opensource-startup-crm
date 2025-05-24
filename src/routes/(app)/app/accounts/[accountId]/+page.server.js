@@ -429,7 +429,7 @@ export const actions = {
       }
       // If no ownerId is provided, default to current user
       // if (!ownerId) ownerId = user.id;
-      console.log(user.id, org.id);
+      // console.log(user.id, org.id);
       const task = await prisma.task.create({
         data: {
           subject,

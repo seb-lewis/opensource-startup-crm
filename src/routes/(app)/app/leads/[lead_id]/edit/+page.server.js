@@ -3,12 +3,12 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function load({ params }) {
+export async function load({ params, locals }) {
   const { lead_id } = params;
-  
-  try {
+  const org = locals.org;
+
     const lead = await prisma.lead.findUnique({
-      where: { id: lead_id },
+      where: { id: lead_id, organizationId: org.id },
       include: {
         owner: true,
         contact: true
@@ -19,30 +19,58 @@ export async function load({ params }) {
       throw error(404, 'Lead not found');
     }
     
-    const users = await prisma.user.findMany({
-      where: { isActive: true },
-      orderBy: { name: 'asc' }
+    const users = await prisma.userOrganization.findMany({
+      where: {  organizationId: org.id }
     });
     
     return {
       lead,
       users
     };
-  } catch (err) {
-    console.error('Error loading lead:', err);
-    throw error(500, 'Failed to load lead data');
-  }
+ 
 }
 
 export const actions = {
   default: async ({ request, params, locals }) => {
     const { lead_id } = params;
     const formData = await request.formData();
-    
-    // Get org from locals
     const org = locals.org;
-    if (!org) {
-      return { success: false, error: 'Organization not found in session.' };
+
+    const leadEmail = formData.get('email');
+
+    // Check if leadEmail is a non-empty string before proceeding
+    if (typeof leadEmail === 'string' && leadEmail.trim() !== '') {
+      // Step 1: Find the user by email
+      const user = await prisma.user.findUnique({
+        where: { email: leadEmail },
+        select: { id: true }, // Select only the user ID
+      });
+
+      if (user) {
+        // Step 2: Find the UserOrganization record using the user's ID and organization ID
+        // This uses the compound unique key @@unique([userId, organizationId])
+        const userOrgMembership = await prisma.userOrganization.findUnique({
+          where: {
+            userId_organizationId: {
+              userId: user.id,
+              organizationId: org.id,
+            },
+          },
+          select: { id: true } // Fetch only id to confirm existence
+        });
+        if (!userOrgMembership) {
+          return {
+            success: false,
+            error: 'User is not part of this organization.'
+          };
+        } 
+        // If userOrgMembership exists, validation passes.
+      } else {
+        return {
+          success: false,
+          error: 'User with this email does not exist.'
+        };
+      }
     }
 
     const updatedLead = {
