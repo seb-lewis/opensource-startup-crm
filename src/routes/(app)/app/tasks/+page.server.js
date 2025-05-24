@@ -3,7 +3,6 @@ import prisma from '$lib/prisma';
 export async function load({ locals }) {
   const user = locals.user;
   const org = locals.org;
-  if (!user || !org) return { status: 302, redirect: '/login' };
   const boards = await prisma.board.findMany({
     where: { ownerId: user.id, organizationId: org.id },
     select: { id: true, name: true },
@@ -16,7 +15,6 @@ export const actions = {
   create: async ({ request, locals }) => {
     const user = locals.user;
     const org = locals.org;
-    if (!user || !org) return { status: 401 };
     const form = await request.formData();
     const name = form.get('name')?.toString();
     if (!name) return { status: 400 };
