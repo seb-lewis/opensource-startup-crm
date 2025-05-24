@@ -33,7 +33,7 @@ BottleCRM is a free, open-source Customer Relationship Management solution desig
 
 ### Prerequisites
 
-- Node.js (v16 or newer)
+- Node.js (v20 or newer)
 - npm, pnpm, or yarn package manager
 - A database (PostgreSQL recommended)
 
@@ -41,17 +41,13 @@ BottleCRM is a free, open-source Customer Relationship Management solution desig
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/bottlecrm.git
-cd bottlecrm
+git clone https://github.com/micropyramid/svelte-crm.git
+cd svelte-crm
 ```
 
 2. Install dependencies:
 ```bash
-npm install
-# or
 pnpm install
-# or
-yarn
 ```
 
 3. Configure your environment variables (see `.env.example`)
@@ -63,18 +59,8 @@ npx prisma migrate dev
 
 5. Start the development server:
 ```bash
-npm run dev
-# or
-npm run dev -- --open
+pnpm run dev
 ```
-
-## 🔧 Building for Production
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
 
 ## 💬 Community and Feedback
 
