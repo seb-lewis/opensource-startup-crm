@@ -157,7 +157,7 @@
 <div
 	hidden={drawerHidden}
 	class="fixed inset-0 z-20 bg-gray-900/50 dark:bg-gray-900/60"
-	on:click={closeDrawer}
-	on:keydown={closeDrawer}
+	onclick={closeDrawer}
+	onkeydown={closeDrawer}
 	role="presentation"
 ></div>

@@ -342,7 +342,7 @@
           </svg>
           Edit
         </Button>
-        <Button on:click={() => showCloseModal = true} size="sm" color="yellow" class="ml-2">
+        <Button onclick={() => showCloseModal = true} size="sm" color="yellow" class="ml-2">
           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
           </svg>
@@ -559,13 +559,13 @@
         </div>
         
         <div class="mt-6">
-          <Button on:click={() => showAddContactModal = true} color="blue" class="w-full justify-center">
+          <Button onclick={() => showAddContactModal = true} color="blue" class="w-full justify-center">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
             </svg>
             Add Contact
           </Button>
-          <Button on:click={() => showAddOpportunityModal = true} color="green" class="w-full justify-center mt-3">
+          <Button onclick={() => showAddOpportunityModal = true} color="green" class="w-full justify-center mt-3">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
@@ -709,7 +709,7 @@
               <p class="text-red-600 mt-2">{commentError}</p>
             {/if}
             <div class="mt-2 flex justify-end">
-              <Button size="sm" color="blue" on:click={submitComment} disabled={isSubmittingComment}>
+              <Button size="sm" color="blue" onclick={submitComment} disabled={isSubmittingComment}>
                 {#if isSubmittingComment}Adding...{:else}Add Note{/if}
               </Button>
             </div>
@@ -745,7 +745,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
           <div class="flex justify-between items-center p-4 pb-0">
             <div></div>
-            <Button color="purple" on:click={() => showAddTaskModal = true}>+ Add Task</Button>
+            <Button color="purple" onclick={() => showAddTaskModal = true}>+ Add Task</Button>
           </div>
           {#if tasks.length === 0}
             <div class="p-8 text-center">
@@ -788,7 +788,7 @@
                       <td class="px-6 py-4 hidden md:table-cell">{formatDate(task.dueDate)}</td>
                       <td class="px-6 py-4 hidden lg:table-cell">{task.owner?.name || 'Unassigned'}</td>
                       <td class="px-6 py-4 text-right">
-                        <Button size="xs" color="blue" on:click={() => openTaskModal(task)}>View</Button>
+                        <Button size="xs" color="blue" onclick={() => openTaskModal(task)}>View</Button>
                       </td>
                     </tr>
                   {/each}
@@ -925,7 +925,7 @@
       </div>
       
       <div class="flex justify-end gap-2">
-        <Button type="button" color="alternative" on:click={() => showCloseModal = false}>Cancel</Button>
+        <Button type="button" color="alternative" onclick={() => showCloseModal = false}>Cancel</Button>
         <Button type="submit" color="red">Close Account</Button>
       </div>
     </form>
@@ -933,7 +933,7 @@
 
   <!-- Add Contact Modal -->
   <Modal bind:open={showAddContactModal} size="md" autoclose={false} title="Add Contact to Account">
-    <form on:submit|preventDefault={submitAddContact}>
+    <form on:submit={(e) => { e.preventDefault(); submitAddContact(); }}>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label for="firstName" class="block text-sm font-medium mb-1">First Name <span class="text-red-500">*</span></label>
@@ -968,7 +968,7 @@
         <p class="text-red-600 mt-2">{addContactError}</p>
       {/if}
       <div class="flex justify-end gap-2 mt-6">
-        <Button type="button" color="alternative" on:click={() => { showAddContactModal = false; resetContactForm(); }}>Cancel</Button>
+        <Button type="button" color="alternative" onclick={() => { showAddContactModal = false; resetContactForm(); }}>Cancel</Button>
         <Button type="submit" color="blue" disabled={isAddingContact}>
           {#if isAddingContact}
             Adding...
@@ -982,7 +982,7 @@
 
   <!-- Add Opportunity Modal -->
   <Modal bind:open={showAddOpportunityModal} size="md" autoclose={false} title="Add Opportunity to Account">
-    <form on:submit|preventDefault={submitAddOpportunity}>
+    <form on:submit={(e) => { e.preventDefault(); submitAddOpportunity(); }}>
       <div class="grid grid-cols-1 gap-4">
         <div>
           <label for="oppName" class="block text-sm font-medium mb-1">Name <span class="text-red-500">*</span></label>
@@ -1016,7 +1016,7 @@
         <p class="text-red-600 mt-2">{addOpportunityError}</p>
       {/if}
       <div class="flex justify-end gap-2 mt-6">
-        <Button type="button" color="alternative" on:click={() => { showAddOpportunityModal = false; resetOpportunityForm(); }}>Cancel</Button>
+        <Button type="button" color="alternative" onclick={() => { showAddOpportunityModal = false; resetOpportunityForm(); }}>Cancel</Button>
         <Button type="submit" color="green" disabled={isAddingOpportunity}>
           {#if isAddingOpportunity}
             Adding...
@@ -1030,7 +1030,7 @@
 
   <!-- Add Task Modal -->
   <Modal bind:open={showAddTaskModal} size="md" autoclose={false} title="Add Task to Account">
-    <form on:submit|preventDefault={submitAddTask}>
+    <form on:submit={(e) => { e.preventDefault(); submitAddTask(); }}>
       <div class="grid grid-cols-1 gap-4">
         <div>
           <label for="taskSubject" class="block text-sm font-medium mb-1">Subject <span class="text-red-500">*</span></label>
@@ -1070,7 +1070,7 @@
         <p class="text-red-600 mt-2">{addTaskError}</p>
       {/if}
       <div class="flex justify-end gap-2 mt-6">
-        <Button type="button" color="alternative" on:click={() => { showAddTaskModal = false; resetAddTaskForm(); }}>Cancel</Button>
+        <Button type="button" color="alternative" onclick={() => { showAddTaskModal = false; resetAddTaskForm(); }}>Cancel</Button>
         <Button type="submit" color="purple" disabled={isAddingTask}>
           {#if isAddingTask}
             Adding...

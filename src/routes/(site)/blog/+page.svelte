@@ -111,14 +111,14 @@
           </div>
           <div class="flex space-x-2">
             <button 
-              on:click={() => changePage(1)}
+              onclick={() => changePage(1)}
               class="px-3 py-1 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!pagination.hasPreviousPage}
             >
               First
             </button>
             <button 
-              on:click={() => changePage(pagination.page - 1)}
+              onclick={() => changePage(pagination.page - 1)}
               class="px-3 py-1 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!pagination.hasPreviousPage}
             >
@@ -128,14 +128,14 @@
               {pagination.page} / {pagination.totalPages}
             </span>
             <button 
-              on:click={() => changePage(pagination.page + 1)}
+              onclick={() => changePage(pagination.page + 1)}
               class="px-3 py-1 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!pagination.hasNextPage}
             >
               Next
             </button>
             <button 
-              on:click={() => changePage(pagination.totalPages)}
+              onclick={() => changePage(pagination.totalPages)}
               class="px-3 py-1 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!pagination.hasNextPage}
             >

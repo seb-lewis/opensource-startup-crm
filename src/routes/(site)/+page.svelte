@@ -166,7 +166,7 @@
       </div>
       
       <div class="absolute top-1/2 transform -translate-y-1/2 left-0">
-        <button on:click={prevTestimonial} aria-label="Previous testimonial" class="p-2 rounded-full bg-white shadow-md text-gray-600 hover:text-blue-600 focus:outline-none">
+        <button onclick={prevTestimonial} aria-label="Previous testimonial" class="p-2 rounded-full bg-white shadow-md text-gray-600 hover:text-blue-600 focus:outline-none">
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
@@ -174,7 +174,7 @@
       </div>
       
       <div class="absolute top-1/2 transform -translate-y-1/2 right-0">
-        <button on:click={nextTestimonial} aria-label="Next testimonial" class="p-2 rounded-full bg-white shadow-md text-gray-600 hover:text-blue-600 focus:outline-none">
+        <button onclick={nextTestimonial} aria-label="Next testimonial" class="p-2 rounded-full bg-white shadow-md text-gray-600 hover:text-blue-600 focus:outline-none">
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
@@ -183,7 +183,7 @@
       
       <div class="mt-12 flex justify-center space-x-2">
         {#each testimonials as _, i}
-          <button on:click={() => activeTestimonial = i} 
+          <button onclick={() => activeTestimonial = i} 
                   aria-label="Go to testimonial {i + 1}"
                   class="w-3 h-3 rounded-full {i === activeTestimonial ? 'bg-blue-600' : 'bg-gray-300'} 
                          focus:outline-none transition-colors duration-300"></button>

@@ -43,7 +43,7 @@
   <div class="mb-4 flex flex-wrap gap-4 items-end">
     <div>
       <label for="status" class="block text-xs font-semibold mb-1">Status</label>
-      <select id="status" class="select select-bordered" bind:value={statusFilter} on:change={onFilterChange}>
+      <select id="status" class="select select-bordered" bind:value={statusFilter} onchange={onFilterChange}>
         <option value="">All</option>
         {#each statusOptions as s}
           <option value={s}>{s}</option>
@@ -52,7 +52,7 @@
     </div>
     <div>
       <label for="assigned" class="block text-xs font-semibold mb-1">Assigned To</label>
-      <select id="assigned" class="select select-bordered" bind:value={assignedFilter} on:change={onFilterChange}>
+      <select id="assigned" class="select select-bordered" bind:value={assignedFilter} onchange={onFilterChange}>
         <option value="">All</option>
         {#each assignedOptions as a}
           <option value={a}>{a}</option>
@@ -61,7 +61,7 @@
     </div>
     <div>
       <label for="account" class="block text-xs font-semibold mb-1">Account</label>
-      <select id="account" class="select select-bordered" bind:value={accountFilter} on:change={onFilterChange}>
+      <select id="account" class="select select-bordered" bind:value={accountFilter} onchange={onFilterChange}>
         <option value="">All</option>
         {#each accountOptions as acc}
           <option value={acc}>{acc}</option>
@@ -69,7 +69,7 @@
       </select>
     </div>
     {#if statusFilter || assignedFilter || accountFilter}
-      <button class="btn btn-sm btn-ghost ml-2" on:click={() => { statusFilter = ''; assignedFilter = ''; accountFilter = ''; onFilterChange(); }}>
+      <button class="btn btn-sm btn-ghost ml-2" onclick={() => { statusFilter = ''; assignedFilter = ''; accountFilter = ''; onFilterChange(); }}>
         Clear Filters
       </button>
     {/if}

@@ -23,7 +23,7 @@
   {#if error}
     <div class="text-red-600 mb-2">{error}</div>
   {/if}
-  <form on:submit={handleDelete} class="flex gap-2">
+  <form onsubmit={handleDelete} class="flex gap-2">
     <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded" disabled={isDeleting}>
       {isDeleting ? 'Deleting...' : 'Delete'}
     </button>

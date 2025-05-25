@@ -44,7 +44,7 @@
             <button
                 type="button"
                 class="text-gray-400 hover:text-gray-600"
-                on:click={handleCancel}
+                onclick={handleCancel}
                 aria-label="Close"
             >
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -118,7 +118,7 @@
             </div>
 
             <div class="flex justify-end gap-3 pt-4">
-                <button type="button" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium" on:click={handleCancel}>Cancel</button>
+                <button type="button" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium" onclick={handleCancel}>Cancel</button>
                 <button type="submit" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow">Save Task</button>
             </div>
         </form>
