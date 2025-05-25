@@ -72,6 +72,17 @@ export async function handle({ event, resolve }) {
 	  
 	  // We already verified above that if org exists in locals, the user is part of it
 	} 
+	// Handle admin routes - only allow micropyramid.com domain users
+	else if (event.url.pathname.startsWith('/admin')) {
+	  if (!user) {
+	    throw redirect(307, '/login');
+	  }
+	  
+	  // Check if user's email domain is micropyramid.com
+	  if (!user.email || !user.email.endsWith('@micropyramid.com')) {
+	    throw redirect(307, '/app');
+	  }
+	}
 	// Handle other protected routes
 	else if (event.url.pathname.startsWith('/org')) {
 	  if (!user) {
