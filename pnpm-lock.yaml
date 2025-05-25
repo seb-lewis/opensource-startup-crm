@@ -38,6 +38,12 @@ importers:
       svelte-fa:
         specifier: ^4.0.3
         version: 4.0.3(svelte@5.27.0)
+      svelte-highlight:
+        specifier: ^7.8.3
+        version: 7.8.3
+      svelte-meta-tags:
+        specifier: ^4.3.0
+        version: 4.3.0(svelte@5.27.0)
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -1061,6 +1067,10 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
+  highlight.js@11.11.1:
+    resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
+    engines: {node: '>=12.0.0'}
+
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
@@ -1440,6 +1450,9 @@ packages:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
     engines: {node: '>=6'}
 
+  schema-dts@1.1.5:
+    resolution: {integrity: sha512-RJr9EaCmsLzBX2NDiO5Z3ux2BVosNZN5jo0gWgsyKvxKIUL5R3swNvoorulAeL9kLB0iTSX7V6aokhla2m7xbg==}
+
   semver@7.7.1:
     resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
     engines: {node: '>=10'}
@@ -1502,6 +1515,14 @@ packages:
     resolution: {integrity: sha512-saZ8yACM0k9Aexey+2NXU1W0MBosU5lBsRgqFCJKM+Taw7d0HyimPaPAjmvY/Xkyi3UwEYL/Sdu1IZJv/p0Flw==}
     peerDependencies:
       svelte: ^4.0.0 || ^5.0.0
+
+  svelte-highlight@7.8.3:
+    resolution: {integrity: sha512-i4CE/6yda1fCh0ovUVATk1S1feu1y3+CV+l1brgtMPPRO9VTGq+hPpUjVEJWQkE7hPAgwgVpHccoa5M2gpKxYQ==}
+
+  svelte-meta-tags@4.3.0:
+    resolution: {integrity: sha512-iwiepOc8p5MauzZpu0nxKsTCj6bLCOnhmR299w04W7vpdJ63sL3adjAj715hOG+TnHxxtlPlc/CeDX6tbc35Dw==}
+    peerDependencies:
+      svelte: ^5.0.0
 
   svelte@5.27.0:
     resolution: {integrity: sha512-Uai13Ydt1ZE+bUHme6b9U38PCYVNCqBRoBMkUKbFbKiD7kHWjdUUrklYAQZJxyKK81qII4mrBwe/YmvEMSlC9w==}
@@ -2513,6 +2534,8 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
+  highlight.js@11.11.1: {}
+
   ignore@5.3.2: {}
 
   import-fresh@3.3.1:
@@ -2791,6 +2814,8 @@ snapshots:
     dependencies:
       mri: 1.2.0
 
+  schema-dts@1.1.5: {}
+
   semver@7.7.1: {}
 
   set-cookie-parser@2.7.1: {}
@@ -2846,6 +2871,15 @@ snapshots:
 
   svelte-fa@4.0.3(svelte@5.27.0):
     dependencies:
+      svelte: 5.27.0
+
+  svelte-highlight@7.8.3:
+    dependencies:
+      highlight.js: 11.11.1
+
+  svelte-meta-tags@4.3.0(svelte@5.27.0):
+    dependencies:
+      schema-dts: 1.1.5
       svelte: 5.27.0
 
   svelte@5.27.0:
