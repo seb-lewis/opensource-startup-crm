@@ -53,7 +53,6 @@ export const actions = {
   },
   'update-blog': async ({ request, params }) => {
     const form = await request.formData();
-    console.log('Form data:', Object.fromEntries(form.entries()));
     const data = {
       title: form.get('title'),
       seoTitle: form.get('seoTitle'),
