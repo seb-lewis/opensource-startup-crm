@@ -35,7 +35,7 @@
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each orgs as org}
-            <Card padding="lg" class="cursor-pointer hover:shadow-lg transition-shadow" on:click={() => selectOrg(org)}>
+            <Card padding="lg" class="cursor-pointer hover:shadow-lg transition-shadow" onclick={() => selectOrg(org)}>
                 <div class="flex items-center space-x-3">
                     <div class="p-2 bg-blue-100 rounded-lg">
                         <BuildingSolid class="text-blue-600 w-6 h-6" />
@@ -43,7 +43,7 @@
                     <div class="flex items-center gap-2">
                         <h5 class="text-lg font-semibold text-gray-900">{org.name}</h5>
                         {#if org.role === 'ADMIN'}
-                            <a href={`/org/${org.id}`} title="Organization Settings" on:click|stopPropagation>
+                            <a href={`/org/${org.id}`} title="Organization Settings" onclick={(e) => e.stopPropagation()}>
                                 <Fa icon={faCog} class="text-gray-500 hover:text-blue-600 w-5 h-5 ml-1" />
                             </a>
                         {/if}

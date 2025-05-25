@@ -61,14 +61,14 @@
         type="text"
         placeholder="Search accounts..."
         class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        on:input={(e) => { $page.url.searchParams.set('q', e.target.value); goto(`?${$page.url.searchParams.toString()}`); }}
+        oninput={(e) => { $page.url.searchParams.set('q', e.target.value); goto(`?${$page.url.searchParams.toString()}`); }}
         value={$page.url.searchParams.get('q') || ''}
       />
       <select
         class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         style="width: 90px;"
         bind:value={statusFilter}
-        on:change={updateQueryParams}
+        onchange={updateQueryParams}
       >
         <option value="all">All</option>
         <option value="open">Open</option>
@@ -85,7 +85,7 @@
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
-          <th scope="col" class="px-6 py-3 cursor-pointer" on:click={() => toggleSort('name')}>
+          <th scope="col" class="px-6 py-3 cursor-pointer" onclick={() => toggleSort('name')}>
             <div class="flex items-center">
               Account Name
               {#if sortField === 'name'}
@@ -99,7 +99,7 @@
               {/if}
             </div>
           </th>
-          <th scope="col" class="px-6 py-3 cursor-pointer hidden sm:table-cell" on:click={() => toggleSort('industry')}>
+          <th scope="col" class="px-6 py-3 cursor-pointer hidden sm:table-cell" onclick={() => toggleSort('industry')}>
             <div class="flex items-center">
               Industry
               {#if sortField === 'industry'}
@@ -113,7 +113,7 @@
               {/if}
             </div>
           </th>
-          <th scope="col" class="px-6 py-3 cursor-pointer hidden md:table-cell" on:click={() => toggleSort('type')}>
+          <th scope="col" class="px-6 py-3 cursor-pointer hidden md:table-cell" onclick={() => toggleSort('type')}>
             <div class="flex items-center">
               Type
               {#if sortField === 'type'}
@@ -212,14 +212,14 @@
       </div>
       <div class="inline-flex space-x-2">
         <button 
-          on:click={() => changePage(1)}
+          onclick={() => changePage(1)}
           class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={pagination.page === 1}
         >
           First
         </button>
         <button 
-          on:click={() => changePage(pagination.page - 1)}
+          onclick={() => changePage(pagination.page - 1)}
           class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={pagination.page === 1}
         >
@@ -229,14 +229,14 @@
           {pagination.page} / {pagination.totalPages}
         </span>
         <button 
-          on:click={() => changePage(pagination.page + 1)}
+          onclick={() => changePage(pagination.page + 1)}
           class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={pagination.page === pagination.totalPages}
         >
           Next
         </button>
         <button 
-          on:click={() => changePage(pagination.totalPages)}
+          onclick={() => changePage(pagination.totalPages)}
           class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={pagination.page === pagination.totalPages}
         >

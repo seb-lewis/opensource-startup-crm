@@ -30,7 +30,7 @@
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-3">
-      <button on:click={() => goto('/app/tasks/list')} class="text-blue-600 hover:text-blue-800" aria-label="Back">
+      <button onclick={() => goto('/app/tasks/list')} class="text-blue-600 hover:text-blue-800" aria-label="Back">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
         </svg>
@@ -39,7 +39,7 @@
     </div>
     <button 
       class="px-4 py-2 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700" 
-      on:click={() => goto(`/app/tasks/${task.id}/edit`)}
+      onclick={() => goto(`/app/tasks/${task.id}/edit`)}
     >
       Edit
     </button>

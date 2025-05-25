@@ -7,12 +7,6 @@
     
     let mobileMenuOpen = $state(false);
     
-    const navigationItems = [
-        { name: 'Dashboard', href: '/admin', icon: Home },
-        { name: 'Blog Posts', href: '/admin/blogs', icon: FileText },
-        { name: 'Analytics', href:'/admin/analytics', icon: ChartBar },
-    ];
-    
 </script>
 
 <div class="min-h-screen bg-gray-50">
@@ -29,12 +23,18 @@
                     
                     <!-- Desktop navigation -->
                     <nav class="hidden md:ml-8 md:flex md:space-x-1">
-                        {#each navigationItems as item}
-                            <a href={item.href} class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors">
-                                <svelte:component this={item.icon} class="w-4 h-4 mr-2" />
-                                {item.name}
-                            </a>
-                        {/each}
+                        <a href="/admin" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors">
+                            <Home class="w-4 h-4 mr-2" />
+                            Dashboard
+                        </a>
+                        <a href="/admin/blogs" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors">
+                            <FileText class="w-4 h-4 mr-2" />
+                            Blog Posts
+                        </a>
+                        <a href="/admin/analytics" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors">
+                            <ChartBar class="w-4 h-4 mr-2" />
+                            Analytics
+                        </a>
                     </nav>
                 </div>
 
@@ -68,12 +68,18 @@
         {#if mobileMenuOpen}
             <div class="md:hidden border-t border-gray-200">
                 <nav class="px-4 py-3 space-y-1">
-                    {#each navigationItems as item}
-                        <a href={item.href} class="flex items-center px-3 py-2 text-base font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors" onclick={() => mobileMenuOpen = false}>
-                            <svelte:component this={item.icon} class="w-5 h-5 mr-3" />
-                            {item.name}
-                        </a>
-                    {/each}
+                    <a href="/admin" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors" onclick={() => mobileMenuOpen = false}>
+                        <Home class="w-5 h-5 mr-3" />
+                        Dashboard
+                    </a>
+                    <a href="/admin/blogs" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors" onclick={() => mobileMenuOpen = false}>
+                        <FileText class="w-5 h-5 mr-3" />
+                        Blog Posts
+                    </a>
+                    <a href="/admin/analytics" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors" onclick={() => mobileMenuOpen = false}>
+                        <ChartBar class="w-5 h-5 mr-3" />
+                        Analytics
+                    </a>
                     
                     <!-- Mobile logout -->
                     <button 

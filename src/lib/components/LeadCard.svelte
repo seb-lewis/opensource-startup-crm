@@ -11,8 +11,8 @@
   
   <div class="p-4 border rounded shadow-sm bg-white space-y-2">
     <div class="flex justify-between items-center">
-      <div class="font-semibold text-blue-900 cursor-pointer" on:click={() => selectLeadList(item.id)}>{item.title}</div>
-      <button on:click={() => deleteLead(item.id)}>
+      <div class="font-semibold text-blue-900 cursor-pointer" onclick={() => selectLeadList(item.id)}>{item.title}</div>
+      <button onclick={() => deleteLead(item.id)}>
         <Fa icon={faTrashAlt} class="text-gray-400 hover:text-red-500" />
       </button>
     </div>

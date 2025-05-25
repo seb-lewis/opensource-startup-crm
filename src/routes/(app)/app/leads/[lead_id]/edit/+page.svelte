@@ -316,7 +316,7 @@
         
         <!-- Action buttons -->
         <div class="flex justify-end items-center gap-3 mt-8 pt-4 border-t border-gray-100">
-          <Button type="button" color="alternative" on:click={cancelEdit}>Cancel</Button>
+          <Button type="button" color="alternative" onclick={cancelEdit}>Cancel</Button>
           <Button type="submit" color="blue" disabled={isSubmitting}>
             {#if isSubmitting}
               <Spinner size="sm" class="mr-2" />
