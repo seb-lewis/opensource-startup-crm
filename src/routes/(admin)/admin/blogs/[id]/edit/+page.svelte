@@ -176,8 +176,8 @@
   <ul
     class="space-y-4"
     use:dndzone={{ items: contentBlocks, flipDurationMs: 200 }}
-    on:consider={handleReorder}
-    on:finalize={handleReorder}
+    onconsider={handleReorder}
+    onfinalize={handleReorder}
   >
     {#each contentBlocks as block (block.id)}
       <li class="border rounded p-4 bg-gray-50" data-id={block.id}>
@@ -234,7 +234,7 @@
               >
               <button
                 type="button"
-                on:click={() => cancelEditBlock(block)}
+                onclick={() => cancelEditBlock(block)}
                 class="py-1 px-3 bg-gray-300 rounded hover:bg-gray-400"
                 >Cancel</button
               >
@@ -254,7 +254,7 @@
             <div class="flex gap-2">
               <button
                 type="button"
-                on:click={() => startEditBlock(block)}
+                onclick={() => startEditBlock(block)}
                 class="py-1 px-3 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >Edit</button
               >
@@ -263,7 +263,8 @@
                 <button
                   type="submit"
                   class="py-1 px-3 bg-red-600 text-white rounded hover:bg-red-700"
-                  on:click|preventDefault={(e) => {
+                  onclick={(e) => {
+                    e.preventDefault();
                     if (confirm("Delete this block?")) {
                       const target = /** @type {HTMLElement} */ (e.target);
                       const form = target.closest("form");

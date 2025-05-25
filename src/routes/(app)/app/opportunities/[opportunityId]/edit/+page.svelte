@@ -25,7 +25,7 @@
 
 <div class="max-w-xl mx-auto p-4">
   <h1 class="text-2xl font-bold mb-4">Edit Opportunity</h1>
-  <form on:submit={handleSubmit} class="space-y-4">
+  <form onsubmit={handleSubmit} class="space-y-4">
     <div>
       <label for="name" class="block mb-1 font-medium">Name</label>
       <input id="name" class="w-full border rounded px-3 py-2" name="name" bind:value={opportunity.name} required />

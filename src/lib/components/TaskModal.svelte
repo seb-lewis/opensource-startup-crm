@@ -61,6 +61,11 @@
     }
   }
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    addComment();
+  }
+
   async function updateDueDate(e) {
     const newDate = e.target.value;
     if (!newDate) return;
@@ -99,7 +104,7 @@
   });
 </script>
 
-<button type="button" class="modal-backdrop" on:click={() => dispatch('close')} on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('close')} aria-label="Close modal" tabindex="0"></button>
+<button type="button" class="modal-backdrop" onclick={() => dispatch('close')} onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && dispatch('close')} aria-label="Close modal" tabindex="0"></button>
 <div class="modal">
   {#if loading}
     <div class="modal-loading">
@@ -112,17 +117,17 @@
     <div class="modal-header">
       <h2>{details.title}</h2>
       <span class="status-badge {details.completed ? 'completed' : 'open'}">{details.completed ? 'Completed' : 'Open'}</span>
-      <button class="close-icon" on:click={() => dispatch('close')} aria-label="Close">×</button>
+      <button class="close-icon" onclick={() => dispatch('close')} aria-label="Close">×</button>
     </div>
     <p class="modal-description">{details.description}</p>
     <div class="modal-section">
       <label for="due-date"><b>Due:</b></label>
-      <input id="due-date" type="date" bind:value={dueDateInput} on:change={updateDueDate} />
+      <input id="due-date" type="date" bind:value={dueDateInput} onchange={updateDueDate} />
       <span class="date-info">{details.dueDate ? new Date(details.dueDate).toLocaleDateString() : '—'}</span>
     </div>
     <div class="modal-section">
       <label for="assignee"><b>Assigned to:</b></label>
-      <select id="assignee" bind:value={assigneeInput} on:change={updateAssignee}>
+      <select id="assignee" bind:value={assigneeInput} onchange={updateAssignee}>
         <option value="">Unassigned</option>
         {#each users as user}
           <option value={user.id}>{user.name} ({user.email})</option>
@@ -144,11 +149,11 @@
         </li>
       {/each}
     </ul>
-    <form class="comment-form" on:submit|preventDefault={addComment}>
+    <form class="comment-form" onsubmit={handleSubmit}>
       <textarea bind:value={newComment} placeholder="Add a comment..." rows="2"></textarea>
       <button type="submit">Comment</button>
     </form>
-    <button class="close" on:click={() => dispatch('close')}>Close</button>
+    <button class="close" onclick={() => dispatch('close')}>Close</button>
   {/if}
 </div>
 

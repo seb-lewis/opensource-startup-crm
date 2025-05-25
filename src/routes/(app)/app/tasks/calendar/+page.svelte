@@ -135,7 +135,6 @@
   font-weight: 600;
 }
 .badge-crm { background: #dbeafe; color: #2563eb; }
-.badge-board { background: #dcfce7; color: #16a34a; }
 .badge-priority-high { background: #fee2e2; color: #dc2626; }
 .badge-priority-medium { background: #fef9c3; color: #ca8a04; }
 .badge-priority-low { background: #d1fae5; color: #059669; }
@@ -170,7 +169,7 @@ h2 {
       {#if date}
         <button
           class="day {isToday(date) ? 'today' : ''} {formatDate(date) === selectedDate ? 'selected' : ''} {hasTasks(date) ? 'has-tasks' : ''}"
-          on:click={() => selectDay(date)}
+          onclick={() => selectDay(date)}
         >
           {date.getDate()}
         </button>

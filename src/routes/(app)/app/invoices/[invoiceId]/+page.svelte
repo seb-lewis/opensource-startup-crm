@@ -68,7 +68,7 @@
       <div>Thank you for your business. Please make the payment by the due date.</div>
     </div>
     <div class="absolute top-10 right-10">
-      <a href="#" class="text-purple-600 hover:underline text-sm font-semibold">Edit</a>
+      <a href="." class="text-purple-600 hover:underline text-sm font-semibold">Edit</a>
     </div>
     <div class="mt-10 text-center">
       <a href="/app/invoices" class="inline-block text-blue-600 hover:underline text-sm">&larr; Back to Invoices</a>
