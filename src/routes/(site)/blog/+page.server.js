@@ -11,9 +11,9 @@ export async function load({ url }) {
     // Fetch posts with pagination
     const posts = await prisma.blogPost.findMany({
       // Temporarily showing all posts for testing
-      // where: {
-      //   published: true // Only show published posts
-      // },
+      where: {
+        draft: false // Only show published posts
+      },
       select: {
         id: true,
         title: true,
@@ -21,12 +21,6 @@ export async function load({ url }) {
         excerpt: true,
         createdAt: true,
         updatedAt: true,
-        author: {
-          select: {
-            name: true,
-            profilePhoto: true
-          }
-        }
       },
       orderBy: {
         createdAt: 'desc'
@@ -39,9 +33,9 @@ export async function load({ url }) {
     // Get total count for pagination
     const totalPosts = await prisma.blogPost.count({
       // Temporarily counting all posts for testing
-      // where: {
-      //   published: true
-      // }
+      where: {
+        draft: false
+      }
     });
     
     // Calculate pagination values
