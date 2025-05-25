@@ -37,7 +37,6 @@ export async function load({ params, locals }) {
     throw error(404, 'Lead not found');
   }
 
-  console.log('Loaded lead:', lead);
   return {
     lead
   };

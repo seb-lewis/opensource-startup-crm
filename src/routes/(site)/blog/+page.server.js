@@ -41,7 +41,6 @@ export async function load({ url }) {
     // Calculate pagination values
     const totalPages = Math.ceil(totalPosts / pageSize);
     
-    console.log('Total Posts:', totalPosts, 'Total Pages:', totalPages);
     return { 
       posts,
       pagination: {

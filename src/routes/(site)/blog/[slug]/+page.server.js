@@ -24,7 +24,6 @@ export async function load({ params }) {
     }
 
 
-    console.log('Loaded blog post:', post);
     return { post };
   } catch (err) {
     console.error('Error loading blog post:', err);

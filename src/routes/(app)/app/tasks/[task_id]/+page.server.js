@@ -80,7 +80,6 @@ export async function load({ params, locals }) {
         // organizationId: locals.user.organizationId // If available and needed directly
     } : null;
 
-    console.log('Loaded task:', task);
     return {
         task,
         users,

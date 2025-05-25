@@ -8,14 +8,6 @@
     return new Date(dateString).toLocaleDateString(undefined, options);
   }
 
-  // Function for edit, to be implemented or kept if edit happens in a modal here
-  function openEditModal(task) {
-    // For now, this can be a placeholder or navigate to an edit page
-    console.log('Editing task:', task);
-    // If you want to keep an edit modal on this page, you'd re-introduce
-    // modal logic specifically for editing.
-    // For this refactor, we are only moving the 'create' part.
-  }
 </script>
 
 <div class="container mx-auto px-4 py-8">
