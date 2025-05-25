@@ -28,7 +28,7 @@
   <div class="mb-6 flex items-center">
     <button 
       class="mr-3 inline-flex items-center text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500"
-      on:click={() => history.back()}
+      onclick={() => history.back()}
     >
       <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -132,7 +132,7 @@
           <Button 
             type="button"
             color="alternative" 
-            on:click={() => history.back()}
+            onclick={() => history.back()}
             disabled={isSubmitting}
             class="px-6"
           >

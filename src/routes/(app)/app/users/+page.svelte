@@ -65,7 +65,7 @@ let users = Array.isArray(data.users)
 		<button
 			type="button"
 			class="absolute top-4 right-4 text-gray-400 hover:text-blue-600"
-			on:click={startEdit}
+			onclick={startEdit}
 			aria-label="Edit"
 			style:display={editing ? 'none' : 'inline-block'}
 		>
@@ -121,7 +121,7 @@ let users = Array.isArray(data.users)
 					<button
 						type="button"
 						class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-						on:click={cancelEdit}>Cancel</button
+						onclick={cancelEdit}>Cancel</button
 					>
 					<button type="submit" class="rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
 						>Save Changes</button
@@ -222,13 +222,13 @@ let users = Array.isArray(data.users)
                                             <option value="READ_ONLY" selected={user.role === 'READ_ONLY'}>Read Only</option>
                                         </select>
                                         <button type="submit" class="text-blue-600 text-xs px-2 py-0.5 rounded hover:bg-blue-50">Save</button>
-                                        <button type="button" class="text-gray-400 text-xs px-2 py-0.5 rounded hover:bg-gray-100" on:click={() => { users[i].editingRole = false }}>Cancel</button>
+                                        <button type="button" class="text-gray-400 text-xs px-2 py-0.5 rounded hover:bg-gray-100" onclick={() => { users[i].editingRole = false }}>Cancel</button>
                                     </form>
                                 {:else}
                                     <span class="inline-flex items-center gap-1 rounded bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800">
                                         <Fa icon={roleIcons[user.role] || faUser} class="h-3.5 w-3.5" />
                                         {user.role}
-                                        <button type="button" class="ml-1 text-gray-400 hover:text-blue-600" title="Edit Role" on:click={() => { users[i].editingRole = true }}>
+                                        <button type="button" class="ml-1 text-gray-400 hover:text-blue-600" title="Edit Role" onclick={() => { users[i].editingRole = true }}>
                                             <Fa icon={faPen} class="h-3 w-3" />
                                         </button>
                                     </span>
@@ -240,7 +240,7 @@ let users = Array.isArray(data.users)
                             {#if user.isSelf}
                                 <span class="text-gray-300 text-xs px-2 py-1 rounded cursor-not-allowed">Remove</span>
                             {:else}
-                                <form method="POST" action="?/remove_user" on:submit={() => confirm('Remove this user from organization?') || event.preventDefault()}>
+                                <form method="POST" action="?/remove_user" onsubmit={() => confirm('Remove this user from organization?') || event.preventDefault()}>
                                     <input type="hidden" name="user_id" value={user.id} />
                                     <button type="submit" class="text-red-500 hover:text-red-700 text-xs px-2 py-1 rounded">Remove</button>
                                 </form>

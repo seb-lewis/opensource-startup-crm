@@ -26,7 +26,7 @@
 <div class="max-w-2xl mx-auto p-6">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Edit Task</h1>
-        <button type="button" on:click={handleCancel} class="text-gray-600 hover:text-gray-800">
+        <button type="button" onclick={handleCancel} class="text-gray-600 hover:text-gray-800">
             Cancel
         </button>
     </div>
@@ -100,7 +100,7 @@
         </div>
 
         <div class="flex justify-end gap-2 pt-2">
-            <button type="button" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-700" on:click={handleCancel}>
+            <button type="button" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-700" onclick={handleCancel}>
                 Cancel
             </button>
             <button type="submit" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow">

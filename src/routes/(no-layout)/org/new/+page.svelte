@@ -5,7 +5,6 @@
     import { Card } from 'flowbite-svelte';
     import { goto } from '$app/navigation';
   
-    export let data;
     export let form; // This contains the result of your form action
     
     

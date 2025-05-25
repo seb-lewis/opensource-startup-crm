@@ -3,7 +3,7 @@
   <div class="max-w-5xl mx-auto">
     <div class="flex justify-between items-center mb-10">
       <h1 class="text-4xl font-extrabold text-blue-900 tracking-tight">Invoices</h1>
-      <a href="#" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-700 to-purple-700 text-white text-lg font-semibold rounded-xl shadow-lg hover:from-blue-800 hover:to-purple-800 transition">+ New Invoice</a>
+      <a href="." class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-700 to-purple-700 text-white text-lg font-semibold rounded-xl shadow-lg hover:from-blue-800 hover:to-purple-800 transition">+ New Invoice</a>
     </div>
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
       <!-- Search -->

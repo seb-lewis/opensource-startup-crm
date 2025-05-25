@@ -243,7 +243,7 @@
                 id="source" 
                 name="source" 
                 bind:value={formData.source} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full">
                 {#each data.data.source as [value, label]}
                   <option value={value}>{label}</option>
@@ -258,7 +258,7 @@
                 id="industry" 
                 name="industry" 
                 bind:value={formData.industry} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full">
                 {#each data.data.industries as [value, label]}
                   <option value={value}>{label}</option>
@@ -273,7 +273,7 @@
                 id="status" 
                 name="status" 
                 bind:value={formData.status} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full">
                 {#each data.data.status as [value, label]}
                   <option value={value}>{label}</option>
@@ -288,7 +288,7 @@
                 id="rating" 
                 name="rating" 
                 bind:value={formData.rating} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full">
                 <option value="">Select Rating</option>
                 <option value="HOT">Hot</option>
@@ -513,7 +513,7 @@
           <Button
             type="button"
             color="light"
-            on:click={() => goto('/app/leads/')}
+            onclick={() => goto('/app/leads/')}
             disabled={isSubmitting}>
             Cancel
           </Button>

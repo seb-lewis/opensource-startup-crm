@@ -51,7 +51,8 @@
 
 <div class="max-w-2xl mx-auto p-4">
   <h1 class="text-2xl font-bold mb-6">Edit Contact</h1>
-  <form on:submit|preventDefault={handleSubmit} class="space-y-6 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+    <form on:submit={(e) => { e.preventDefault(); handleSubmit(); }} class="space-y-6 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
         <label class="block text-sm font-medium mb-1" for="firstName">
@@ -104,7 +105,7 @@
       <div class="text-red-600">{errorMsg}</div>
     {/if}
     <div class="flex justify-end gap-2">
-      <Button type="button" color="alternative" on:click={() => goto(`/app/contacts/${contact.id}`)}>Cancel</Button>
+      <Button type="button" color="alternative" onclick={() => goto(`/app/contacts/${contact.id}`)}>Cancel</Button>
       <Button type="submit" color="blue" disabled={submitting}>{submitting ? 'Saving...' : 'Save Changes'}</Button>
     </div>
   </form>
