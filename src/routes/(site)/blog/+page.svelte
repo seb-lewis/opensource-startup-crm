@@ -71,18 +71,19 @@
                 <div class="flex items-center gap-3 text-sm text-gray-500 mb-2">
                   <time datetime={post.createdAt}>{formatDate(post.createdAt)}</time>
                   <span class="inline-block h-1 w-1 rounded-full bg-gray-300"></span>
-                  <span>{post.author?.name || 'BottleCRM Team'}</span>
                 </div>
                 
                 <a href="/blog/{post.slug}" class="block group">
                   <h2 class="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-3">
                     {post.title}
                   </h2>
-                  
-                  <p class="text-base text-gray-500 leading-relaxed">
-                    {post.excerpt ? limitWords(post.excerpt, 40) : ''}
-                  </p>
                 </a>
+                
+                {#if post.excerpt}
+                  <p class="text-gray-600 text-base leading-relaxed mb-4">
+                    {limitWords(post.excerpt, 40)}
+                  </p>
+                {/if}
                 
                 <div class="mt-4">
                   <a href="/blog/{post.slug}" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
@@ -94,15 +95,7 @@
                 </div>
               </div>
               
-              <div class="mt-6 lg:mt-0 lg:ml-8 lg:flex-shrink-0 lg:self-center order-first lg:order-last">
-                {#if post.author?.profilePhoto}
-                  <img class="h-16 w-16 rounded-full object-cover shadow-md" src={post.author.profilePhoto} alt={post.author?.name || 'Author'} />
-                {:else}
-                  <div class="h-16 w-16 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
-                    {post.author?.name?.[0] || 'A'}
-                  </div>
-                {/if}
-              </div>
+              
             </div>
           </article>
         {/each}

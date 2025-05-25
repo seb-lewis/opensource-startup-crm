@@ -9,41 +9,23 @@ export async function load({ params }) {
     const post = await prisma.blogPost.findUnique({
       where: {
         slug,
-        published: true // Only show published posts
+        draft: false // Only show published posts
       },
       include: {
-        author: {
-          select: {
-            name: true,
-            profilePhoto: true
-          }
+        contentBlocks: {
+          orderBy: { displayOrder: 'asc' }
         }
       }
+      
     });
     
     if (!post) {
       throw error(404, 'Blog post not found');
     }
-    
-    // Get related posts (same author, excluding current post)
-    const relatedPosts = await prisma.blogPost.findMany({
-      where: {
-        published: true,
-        authorId: post.authorId,
-        id: { not: post.id }
-      },
-      select: {
-        title: true,
-        slug: true,
-        createdAt: true
-      },
-      orderBy: {
-        createdAt: 'desc'
-      },
-      take: 3
-    });
-    
-    return { post, relatedPosts };
+
+
+    console.log('Loaded blog post:', post);
+    return { post };
   } catch (err) {
     console.error('Error loading blog post:', err);
     throw error(404, 'Blog post not found');

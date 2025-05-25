@@ -1,41 +1,12 @@
 <script>
   import { marked } from 'marked';
-  import { onMount } from 'svelte';
   
   export let data;
-  
-  const { post, relatedPosts } = data;
-  
-  let renderedContent = '';
-  
-  // Format date for display
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
-  
-  // Format date for datetime attribute
-  function formatISODate(dateString) {
-    return new Date(dateString).toISOString();
-  }
-  
-  // Initialize marked with safe defaults
-  onMount(() => {
-    // Set up marked options for security
-    marked.setOptions({
-      headerIds: false,
-      mangle: false,
-      smartLists: true,
-      smartypants: true
-    });
-    
-    // Render content
-    renderedContent = marked.parse(post.content || '');
-  });
+
+  const { post } = data;
+
+  // Combine all content blocks into a single rendered string
+  let renderedContent = post.contentBlocks?.map(block => marked(block.content)).join('') || '';
 </script>
 
 <svelte:head>
@@ -68,39 +39,8 @@
         <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl md:text-5xl">
           {post.title}
         </h1>
-        
-        {#if post.excerpt}
-          <p class="mt-4 text-xl text-gray-500">
-            {post.excerpt}
-          </p>
-        {/if}
-        
-        <div class="mt-6 flex items-center justify-center">
-          <div class="flex-shrink-0">
-            {#if post.author?.profilePhoto}
-              <img class="h-12 w-12 rounded-full object-cover" src={post.author.profilePhoto} alt={post.author?.name || 'Author'} />
-            {:else}
-              <div class="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
-                {post.author?.name?.[0] || 'A'}
-              </div>
-            {/if}
-          </div>
-          <div class="ml-3 text-center sm:text-left">
-            <p class="text-base font-medium text-gray-900">
-              {post.author?.name || 'BottleCRM Team'}
-            </p>
-            <div class="flex space-x-1 text-sm text-gray-500">
-              <time datetime={formatISODate(post.createdAt)}>
-                {formatDate(post.createdAt)}
-              </time>
-              {#if post.updatedAt && post.updatedAt !== post.createdAt}
-                <span>&middot;</span>
-                <span>Updated {formatDate(post.updatedAt)}</span>
-              {/if}
-            </div>
-          </div>
-        </div>
       </div>
+
     </div>
   </div>
   
@@ -113,30 +53,6 @@
     </div>
   </div>
 </article>
-
-<!-- Related posts section -->
-{#if relatedPosts && relatedPosts.length > 0}
-  <section class="py-12 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-8">More from this author</h2>
-      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {#each relatedPosts as relatedPost}
-          <a 
-            href="/blog/{relatedPost.slug}"
-            class="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow duration-200"
-          >
-            <h3 class="text-xl font-semibold text-gray-900 hover:text-blue-600 transition-colors">
-              {relatedPost.title}
-            </h3>
-            <time datetime={formatISODate(relatedPost.createdAt)} class="text-sm text-gray-500">
-              {formatDate(relatedPost.createdAt)}
-            </time>
-          </a>
-        {/each}
-      </div>
-    </div>
-  </section>
-{/if}
 
 <div class="bg-white py-8">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
