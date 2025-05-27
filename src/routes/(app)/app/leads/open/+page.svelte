@@ -1,7 +1,25 @@
 <script>
-  import { Button, Badge, Spinner, Select, Input } from 'flowbite-svelte';
   import { fade, fly } from 'svelte/transition';
   import { formatDistanceToNow } from 'date-fns';
+  import { 
+    Search, 
+    Filter, 
+    Plus, 
+    ChevronDown, 
+    ChevronUp, 
+    Phone, 
+    Mail, 
+    Building2, 
+    User, 
+    Calendar,
+    Star,
+    TrendingUp,
+    AlertCircle,
+    CheckCircle2,
+    Clock,
+    XCircle,
+    Eye
+  } from '@lucide/svelte';
   
   // Get leads from the data prop passed from the server
   export let data;
@@ -10,9 +28,12 @@
   // State management
   let searchQuery = '';
   let statusFilter = 'ALL';
+  let sourceFilter = 'ALL';
+  let ratingFilter = 'ALL';
   let sortBy = 'createdAt';
   let sortOrder = 'desc';
   let isLoading = false;
+  let showFilters = false;
   
   // Available statuses for filtering
   const statuses = [
@@ -24,13 +45,35 @@
     { value: 'UNQUALIFIED', label: 'Unqualified' },
     { value: 'CONVERTED', label: 'Converted' }
   ];
+
+  // Lead sources for filtering
+  const sources = [
+    { value: 'ALL', label: 'All Sources' },
+    { value: 'WEB', label: 'Website' },
+    { value: 'PHONE_INQUIRY', label: 'Phone Inquiry' },
+    { value: 'PARTNER_REFERRAL', label: 'Partner Referral' },
+    { value: 'COLD_CALL', label: 'Cold Call' },
+    { value: 'TRADE_SHOW', label: 'Trade Show' },
+    { value: 'EMPLOYEE_REFERRAL', label: 'Employee Referral' },
+    { value: 'ADVERTISEMENT', label: 'Advertisement' },
+    { value: 'OTHER', label: 'Other' }
+  ];
+
+  // Rating options
+  const ratings = [
+    { value: 'ALL', label: 'All Ratings' },
+    { value: 'Hot', label: 'Hot' },
+    { value: 'Warm', label: 'Warm' },
+    { value: 'Cold', label: 'Cold' }
+  ];
   
   // Sort options
   const sortOptions = [
     { value: 'createdAt', label: 'Created Date' },
     { value: 'firstName', label: 'First Name' },
     { value: 'lastName', label: 'Last Name' },
-    { value: 'company', label: 'Company' }
+    { value: 'company', label: 'Company' },
+    { value: 'rating', label: 'Rating' }
   ];
   
   // Function to get the full name of a lead
@@ -38,23 +81,37 @@
     return `${lead.firstName} ${lead.lastName}`.trim();
   }
   
-  // Function to map lead status to badge color
-  function getStatusColor(status) {
+  // Function to map lead status to colors and icons
+  function getStatusConfig(status) {
     switch (status) {
       case 'NEW':
-        return 'blue';
+        return { color: 'bg-blue-100 text-blue-800 border-blue-200', icon: Star };
       case 'PENDING':
-        return 'purple';
+        return { color: 'bg-yellow-100 text-yellow-800 border-yellow-200', icon: Clock };
       case 'CONTACTED':
-        return 'green';
+        return { color: 'bg-green-100 text-green-800 border-green-200', icon: CheckCircle2 };
       case 'QUALIFIED':
-        return 'indigo';
+        return { color: 'bg-indigo-100 text-indigo-800 border-indigo-200', icon: TrendingUp };
       case 'UNQUALIFIED':
-        return 'red';
+        return { color: 'bg-red-100 text-red-800 border-red-200', icon: XCircle };
       case 'CONVERTED':
-        return 'dark';
+        return { color: 'bg-gray-100 text-gray-800 border-gray-200', icon: CheckCircle2 };
       default:
-        return 'blue';
+        return { color: 'bg-blue-100 text-blue-800 border-blue-200', icon: AlertCircle };
+    }
+  }
+
+  // Function to get rating config
+  function getRatingConfig(rating) {
+    switch (rating) {
+      case 'Hot':
+        return { color: 'text-red-600', dots: 3 };
+      case 'Warm':
+        return { color: 'text-orange-500', dots: 2 };
+      case 'Cold':
+        return { color: 'text-blue-500', dots: 1 };
+      default:
+        return { color: 'text-gray-400', dots: 0 };
     }
   }
   
@@ -68,11 +125,14 @@
   $: filteredLeads = leads.filter(lead => {
     const matchesSearch = searchQuery === '' || 
       getFullName(lead).toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (lead.company && lead.company.toLowerCase().includes(searchQuery.toLowerCase()));
+      (lead.company && lead.company.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (lead.email && lead.email.toLowerCase().includes(searchQuery.toLowerCase()));
     
     const matchesStatus = statusFilter === 'ALL' || lead.status === statusFilter;
+    const matchesSource = sourceFilter === 'ALL' || lead.leadSource === sourceFilter;
+    const matchesRating = ratingFilter === 'ALL' || lead.rating === ratingFilter;
     
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesSource && matchesRating;
   }).sort((a, b) => {
     const aValue = a[sortBy];
     const bValue = b[sortBy];
@@ -93,185 +153,371 @@
       sortOrder = 'desc';
     }
   }
+
+  // Clear all filters
+  function clearFilters() {
+    searchQuery = '';
+    statusFilter = 'ALL';
+    sourceFilter = 'ALL';
+    ratingFilter = 'ALL';
+    sortBy = 'createdAt';
+    sortOrder = 'desc';
+  }
 </script>
 
 <div class="min-h-screen bg-gray-50">
   <!-- Header -->
-  <header class="bg-gradient-to-r from-blue-600 to-blue-800 shadow-md">
+  <header class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h1 class="text-white text-2xl md:text-3xl font-bold flex items-center">
-          <span class="mr-2">📋</span> Open Leads
-        </h1>
-        <Button href="/app/leads/new" size="sm" color="light" class="px-4 py-2 flex-shrink-0">
-          <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
-          </svg>
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-blue-100 rounded-lg">
+            <User class="w-6 h-6 text-blue-600" />
+          </div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Open Leads</h1>
+            <p class="text-gray-500 text-sm mt-1">{filteredLeads.length} of {leads.length} leads</p>
+          </div>
+        </div>
+        <a 
+          href="/app/leads/new" 
+          class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+        >
+          <Plus class="w-4 h-4" />
           New Lead
-        </Button>
+        </a>
       </div>
     </div>
   </header>
 
   <!-- Filters and Search -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="col-span-1 md:col-span-2">
-          <Input
+  <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <!-- Search and Filter Toggle -->
+      <div class="flex flex-col sm:flex-row gap-4 mb-4">
+        <div class="flex-1 relative">
+          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <input
             type="text"
-            placeholder="Search by name or company..."
+            placeholder="Search by name, company, or email..."
             bind:value={searchQuery}
-            class="w-full"
-          >
-            <svg slot="prefix" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-          </Input>
+            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          />
         </div>
-        <div class="col-span-1">
-          <Select bind:value={statusFilter} class="w-full">
-            {#each statuses as status}
-              <option value={status.value}>{status.label}</option>
-            {/each}
-          </Select>
-        </div>
+        <button
+          onclick={() => showFilters = !showFilters}
+          class="inline-flex items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          <Filter class="w-4 h-4" />
+          Filters
+          {#if showFilters}
+            <ChevronUp class="w-4 h-4" />
+          {:else}
+            <ChevronDown class="w-4 h-4" />
+          {/if}
+        </button>
       </div>
+
+      <!-- Advanced Filters -->
+      {#if showFilters}
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg" transition:fade>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <select bind:value={statusFilter} class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              {#each statuses as status}
+                <option value={status.value}>{status.label}</option>
+              {/each}
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Source</label>
+            <select bind:value={sourceFilter} class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              {#each sources as source}
+                <option value={source.value}>{source.label}</option>
+              {/each}
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+            <select bind:value={ratingFilter} class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              {#each ratings as rating}
+                <option value={rating.value}>{rating.label}</option>
+              {/each}
+            </select>
+          </div>
+          <div class="flex items-end">
+            <button
+              onclick={clearFilters}
+              class="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Clear Filters
+            </button>
+          </div>
+        </div>
+      {/if}
     </div>
   </div>
 
   <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+  <main class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 pb-8">
     {#if isLoading}
       <div class="flex justify-center items-center py-20" transition:fade>
-        <Spinner size="xl" />
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     {:else if filteredLeads.length === 0}
-      <div class="text-center py-16 bg-white rounded-lg shadow-sm border border-gray-100" transition:fade>
-        <div class="text-gray-400 text-5xl mb-4">📭</div>
-        <p class="text-gray-600 text-lg mb-6">No leads found</p>
-        <Button href="/app/leads/new" color="blue" class="mt-2 px-6">Create a new lead</Button>
+      <div class="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-200" transition:fade>
+        <div class="text-gray-400 text-6xl mb-4">📭</div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No leads found</h3>
+        <p class="text-gray-500 mb-6">Try adjusting your search criteria or create a new lead.</p>
+        <a href="/app/leads/new" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+          <Plus class="w-4 h-4" />
+          Create New Lead
+        </a>
       </div>
     {:else}
-      <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100" in:fade={{duration: 300}}>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden" in:fade={{duration: 300}}>
         <!-- Desktop Table View -->
-        <div class="hidden md:block">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onclick={() => toggleSort('firstName')}>
-                  <div class="flex items-center">
-                    Name
-                    {#if sortBy === 'firstName'}
-                      <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={sortOrder === 'asc' ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}></path>
-                      </svg>
-                    {/if}
-                  </div>
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onclick={() => toggleSort('createdAt')}>
-                  <div class="flex items-center">
-                    Created
-                    {#if sortBy === 'createdAt'}
-                      <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={sortOrder === 'asc' ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}></path>
-                      </svg>
-                    {/if}
-                  </div>
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Owner</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              {#each filteredLeads as lead, i}
-                <tr 
-                  class="hover:bg-blue-50 transition-colors duration-150"
-                  in:fly={{y: 20, duration: 300, delay: i * 50}}
-                >
-                <td class="px-6 py-4 whitespace-nowrap text-gray-600">
-                  <a href="/app/leads/{lead.id}" class="text-blue-600 hover:text-blue-800 font-medium">
-                  {lead.title || '-'}
-                </a>
-                </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                      {getFullName(lead)}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-gray-600">
-                    {lead.company || '-'}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-gray-600">
-                    {#if lead.phone}
-                      <a href="tel:{lead.phone}" class="hover:text-blue-600">{lead.phone}</a>
-                    {:else}
-                      -
-                    {/if}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <Badge color={getStatusColor(lead.status)}>{lead.status}</Badge>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-gray-600">
-                    {formatDate(lead.createdAt)}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-gray-600">
-                    {lead.owner?.name || '-'}
-                  </td>
+        <div class="hidden xl:block">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Lead</th>
+                  <th class="px-4 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 w-40" onclick={() => toggleSort('company')}>
+                    <div class="flex items-center gap-1">
+                      Company
+                      {#if sortBy === 'company'}
+                        {#if sortOrder === 'asc'}
+                          <ChevronUp class="w-4 h-4" />
+                        {:else}
+                          <ChevronDown class="w-4 h-4" />
+                        {/if}
+                      {/if}
+                    </div>
+                  </th>
+                  <th class="px-4 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Contact</th>
+                  <th class="px-4 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Source</th>
+                  <th class="px-4 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Rating</th>
+                  <th class="px-4 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Status</th>
+                  <th class="px-4 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 w-32" onclick={() => toggleSort('createdAt')}>
+                    <div class="flex items-center gap-1">
+                      Created
+                      {#if sortBy === 'createdAt'}
+                        {#if sortOrder === 'asc'}
+                          <ChevronUp class="w-4 h-4" />
+                        {:else}
+                          <ChevronDown class="w-4 h-4" />
+                        {/if}
+                      {/if}
+                    </div>
+                  </th>
+                  <th class="px-4 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Owner</th>
+                  <th class="px-4 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Actions</th>
                 </tr>
-              {/each}
-            </tbody>
-          </table>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                {#each filteredLeads as lead, i}
+                  {@const statusConfig = getStatusConfig(lead.status)}
+                  {@const ratingConfig = getRatingConfig(lead.rating)}
+                  <tr 
+                    class="hover:bg-gray-50 transition-colors duration-150"
+                    in:fly={{y: 20, duration: 300, delay: i * 50}}
+                  >
+                    <td class="px-4 py-4">
+                      <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm flex-shrink-0">
+                          {lead.firstName.charAt(0)}{lead.lastName.charAt(0)}
+                        </div>
+                        <div class="min-w-0">
+                          <a href="/app/leads/{lead.id}" class="text-gray-900 font-medium hover:text-blue-600 transition-colors block truncate">
+                            {getFullName(lead)}
+                          </a>
+                          {#if lead.title}
+                            <p class="text-sm text-gray-500 truncate">{lead.title}</p>
+                          {/if}
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-4 py-4">
+                      {#if lead.company}
+                        <div class="flex items-center gap-2 min-w-0">
+                          <Building2 class="w-4 h-4 text-gray-400 flex-shrink-0" />
+                          <span class="text-gray-900 truncate">{lead.company}</span>
+                        </div>
+                      {:else}
+                        <span class="text-gray-400">-</span>
+                      {/if}
+                    </td>
+                    <td class="px-4 py-4">
+                      <div class="space-y-1">
+                        {#if lead.email}
+                          <a href="mailto:{lead.email}" class="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors min-w-0">
+                            <Mail class="w-4 h-4 flex-shrink-0" />
+                            <span class="truncate">{lead.email}</span>
+                          </a>
+                        {/if}
+                        {#if lead.phone}
+                          <a href="tel:{lead.phone}" class="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                            <Phone class="w-4 h-4 flex-shrink-0" />
+                            <span class="whitespace-nowrap">{lead.phone}</span>
+                          </a>
+                        {/if}
+                        {#if !lead.email && !lead.phone}
+                          <span class="text-gray-400">-</span>
+                        {/if}
+                      </div>
+                    </td>
+                    <td class="px-4 py-4">
+                      {#if lead.leadSource}
+                        <span class="text-sm text-gray-600 capitalize truncate block">
+                          {lead.leadSource.replace('_', ' ').toLowerCase()}
+                        </span>
+                      {:else}
+                        <span class="text-gray-400">-</span>
+                      {/if}
+                    </td>
+                    <td class="px-4 py-4">
+                      {#if lead.rating}
+                        <div class="flex items-center gap-1">
+                          {#each Array(ratingConfig.dots) as _, i}
+                            <div class="w-2 h-2 rounded-full {ratingConfig.color.replace('text-', 'bg-')} flex-shrink-0"></div>
+                          {/each}
+                          <span class="text-sm {ratingConfig.color} font-medium ml-1 whitespace-nowrap">{lead.rating}</span>
+                        </div>
+                      {:else}
+                        <span class="text-gray-400">-</span>
+                      {/if}
+                    </td>
+                    <td class="px-4 py-4">
+                      <div class="flex items-center gap-2">
+                        <svelte:component this={statusConfig.icon} class="w-4 h-4 {statusConfig.color.split(' ')[1]} flex-shrink-0" />
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border {statusConfig.color} whitespace-nowrap">
+                          {lead.status}
+                        </span>
+                      </div>
+                    </td>
+                    <td class="px-4 py-4">
+                      <div class="flex items-center gap-1 text-sm text-gray-500">
+                        <Calendar class="w-4 h-4 flex-shrink-0" />
+                        <span class="whitespace-nowrap">{formatDate(lead.createdAt)}</span>
+                      </div>
+                    </td>
+                    <td class="px-4 py-4">
+                      {#if lead.owner?.name}
+                        <div class="flex items-center gap-2 min-w-0">
+                          <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0">
+                            {lead.owner.name.charAt(0)}
+                          </div>
+                          <span class="text-sm text-gray-600 truncate">{lead.owner.name}</span>
+                        </div>
+                      {:else}
+                        <span class="text-gray-400">-</span>
+                      {/if}
+                    </td>
+                    <td class="px-4 py-4">
+                      <a 
+                        href="/app/leads/{lead.id}" 
+                        class="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors whitespace-nowrap"
+                      >
+                        <Eye class="w-4 h-4" />
+                        View
+                      </a>
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
         </div>
         
         <!-- Mobile Card View -->
-        <div class="md:hidden divide-y divide-gray-200">
+        <div class="xl:hidden divide-y divide-gray-200">
           {#each filteredLeads as lead, i}
+            {@const statusConfig = getStatusConfig(lead.status)}
+            {@const ratingConfig = getRatingConfig(lead.rating)}
             <div 
-              class="p-4 bg-white hover:bg-blue-50 transition-colors duration-150" 
+              class="p-6 bg-white hover:bg-gray-50 transition-colors duration-150" 
               in:fly={{y: 20, duration: 300, delay: i * 50}}
             >
-              <div class="flex justify-between items-start mb-2">
-                <a href="/app/leads/{lead.id}" class="text-blue-600 hover:text-blue-800 font-medium text-lg">
-                  {getFullName(lead)}
-                </a>
-                <Badge color={getStatusColor(lead.status)}>{lead.status}</Badge>
+              <!-- Header -->
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                    {lead.firstName.charAt(0)}{lead.lastName.charAt(0)}
+                  </div>
+                  <div>
+                    <a href="/app/leads/{lead.id}" class="text-lg font-medium text-gray-900 hover:text-blue-600 transition-colors">
+                      {getFullName(lead)}
+                    </a>
+                    {#if lead.title}
+                      <p class="text-sm text-gray-500">{lead.title}</p>
+                    {/if}
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svelte:component this={statusConfig.icon} class="w-4 h-4 {statusConfig.color.split(' ')[1]}" />
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {statusConfig.color}">
+                    {lead.status}
+                  </span>
+                </div>
               </div>
               
-              <div class="grid grid-cols-1 gap-2 text-sm">
-                {#if lead.title}
-                  <div class="flex items-center">
-                    <span class="w-20 text-gray-500">Title:</span>
-                    <span class="text-gray-700">{lead.title}</span>
-                  </div>
-                {/if}
-                
+              <!-- Details Grid -->
+              <div class="grid grid-cols-1 gap-3">
                 {#if lead.company}
-                  <div class="flex items-center">
-                    <span class="w-20 text-gray-500">Company:</span>
+                  <div class="flex items-center gap-2">
+                    <Building2 class="w-4 h-4 text-gray-400 flex-shrink-0" />
                     <span class="text-gray-700">{lead.company}</span>
                   </div>
                 {/if}
                 
+                {#if lead.email}
+                  <a href="mailto:{lead.email}" class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                    <Mail class="w-4 h-4 flex-shrink-0" />
+                    <span class="truncate">{lead.email}</span>
+                  </a>
+                {/if}
+                
                 {#if lead.phone}
-                  <div class="flex items-center">
-                    <span class="w-20 text-gray-500">Phone:</span>
-                    <a href="tel:{lead.phone}" class="text-blue-600 hover:text-blue-800">{lead.phone}</a>
-                  </div>
+                  <a href="tel:{lead.phone}" class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                    <Phone class="w-4 h-4 flex-shrink-0" />
+                    <span>{lead.phone}</span>
+                  </a>
                 {/if}
-                
-                <div class="flex items-center">
-                  <span class="w-20 text-gray-500">Created:</span>
-                  <span class="text-gray-700">{formatDate(lead.createdAt)}</span>
+
+                <div class="flex items-center justify-between text-sm">
+                  <div class="flex items-center gap-2 text-gray-500">
+                    <Calendar class="w-4 h-4" />
+                    {formatDate(lead.createdAt)}
+                  </div>
+                  
+                  {#if lead.rating}
+                    <div class="flex items-center gap-1">
+                      {#each Array(ratingConfig.dots) as _, i}
+                        <div class="w-2 h-2 rounded-full {ratingConfig.color.replace('text-', 'bg-')}"></div>
+                      {/each}
+                      <span class="text-sm {ratingConfig.color} font-medium ml-1">{lead.rating}</span>
+                    </div>
+                  {/if}
                 </div>
-                
+
                 {#if lead.owner?.name}
-                  <div class="flex items-center">
-                    <span class="w-20 text-gray-500">Owner:</span>
-                    <span class="text-gray-700">{lead.owner.name}</span>
+                  <div class="flex items-center gap-2 text-sm text-gray-500">
+                    <User class="w-4 h-4" />
+                    <span>Owned by {lead.owner.name}</span>
                   </div>
                 {/if}
+              </div>
+
+              <!-- Action Button -->
+              <div class="mt-4 pt-4 border-t border-gray-100">
+                <a 
+                  href="/app/leads/{lead.id}" 
+                  class="inline-flex items-center gap-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors font-medium"
+                >
+                  <Eye class="w-4 h-4" />
+                  View Details
+                </a>
               </div>
             </div>
           {/each}

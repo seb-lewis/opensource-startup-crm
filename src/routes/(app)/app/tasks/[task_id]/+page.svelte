@@ -1,6 +1,8 @@
 <script>
   import { goto } from '$app/navigation';
   import { enhance } from '$app/forms';
+  import { ArrowLeft, Edit3, Calendar, User, Building2, MessageSquare, Send } from '@lucide/svelte';
+  
   export let data;
   /** @type {import('./$types').ActionData} */
   export let form;
@@ -26,122 +28,207 @@
   }
 </script>
 
-<div class="max-w-2xl mx-auto p-6">
-  <!-- Header -->
-  <div class="flex items-center justify-between mb-6">
-    <div class="flex items-center gap-3">
-      <button onclick={() => goto('/app/tasks/list')} class="text-blue-600 hover:text-blue-800" aria-label="Back">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-        </svg>
-      </button>
-      <h1 class="text-2xl font-bold text-gray-800">Task Details</h1>
-    </div>
-    <button 
-      class="px-4 py-2 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700" 
-      onclick={() => goto(`/app/tasks/${task.id}/edit`)}
-    >
-      Edit
-    </button>
-  </div>
-
-  <!-- Task Detail View -->
-  {#if task}
-    <div class="bg-white rounded-lg shadow p-6 space-y-6">
-      <div>
-        <div class="flex items-center gap-3 mb-2">
-          <span class="inline-block px-2 py-1 rounded text-xs font-semibold
-            {task.status === 'Completed' ? 'bg-green-100 text-green-700' : ''}
-            {task.status === 'In Progress' ? 'bg-yellow-100 text-yellow-700' : ''}
-            {task.status === 'Not Started' ? 'bg-gray-100 text-gray-700' : ''}">
-            {task.status}
-          </span>
-          <span class="inline-block px-2 py-1 rounded text-xs font-semibold
-            {task.priority === 'High' ? 'bg-red-100 text-red-700' : ''}
-            {task.priority === 'Normal' ? 'bg-blue-100 text-blue-700' : ''}
-            {task.priority === 'Low' ? 'bg-gray-100 text-gray-700' : ''}">
-            {task.priority}
-          </span>
-          <span class="ml-auto text-sm text-gray-500">Due: {formatDate(task.dueDate)}</span>
-        </div>
-        <h2 class="text-xl font-semibold text-blue-900">{task.subject}</h2>
-        <p class="mt-2 text-gray-700">{task.description || 'No description provided.'}</p>
-      </div>
-      <div class="flex flex-col md:flex-row gap-4">
-        <div class="flex-1">
-          <div class="text-sm text-gray-500">Owner</div>
-          <div class="flex items-center gap-2 mt-1">
-            {#if task.owner?.profilePhoto}
-              <img src={task.owner.profilePhoto} alt={task.owner.name} class="w-7 h-7 rounded-full border" referrerpolicy="no-referrer" />
-            {:else}
-              <div class="w-7 h-7 rounded-full border bg-gray-200 flex items-center justify-center text-xs text-gray-500">
-                {task.owner?.name?.charAt(0) || 'U'}
-              </div>
-            {/if}
-            <span class="font-medium">{task.owner?.name || 'Unassigned'}</span>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="max-w-4xl mx-auto p-3 sm:p-4 lg:p-6">
+    <!-- Header -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <button 
+            onclick={() => goto('/app/tasks/list')} 
+            class="flex items-center justify-center w-8 h-8 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Back to tasks"
+          >
+            <ArrowLeft class="w-4 h-4" />
+          </button>
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Task Details</h1>
+            <p class="text-sm text-gray-600 dark:text-gray-400">View and manage task information</p>
           </div>
         </div>
-        <div class="flex-1">
-          <div class="text-sm text-gray-500">Account</div>
-          <div class="mt-1 font-medium">{task.account?.name || 'N/A'}</div>
-        </div>
-      </div>
-    </div>
-  {/if}
-
-  <!-- Comments Section -->
-  {#if task}
-  <div class="mt-10">
-    <h2 class="text-lg font-semibold text-blue-900 mb-4">Comments</h2>
-
-    {#if form?.message}
-      <div class="p-3 my-2 rounded-md {form.error ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">
-        <p>{form.message}</p>
-      </div>
-    {/if}
-    {#if form?.commentBody && form.error} <!-- Preserve comment body on error if returned by action -->
-      {@const _ = newComment = form.commentBody}
-    {/if}
-
-    <div class="space-y-4">
-      {#if task.comments && task.comments.length > 0}
-        {#each task.comments as c (c.id || c.createdAt) } <!-- Use a unique key, c.id if available from backend, else c.createdAt for client-added -->
-          <div class="flex items-start gap-3 bg-gray-50 rounded-lg p-3">
-            {#if c.author.profilePhoto}
-              <img src={c.author.profilePhoto} alt={c.author.name} class="w-8 h-8 rounded-full border" referrerpolicy="no-referrer" />
-            {:else}
-              <div class="w-8 h-8 rounded-full border bg-gray-200 flex items-center justify-center text-xs text-gray-500">
-                {c.author?.name?.charAt(0) || 'U'}
-              </div>
-            {/if}
-            <div class="flex-1">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-gray-800">{c.author.name}</span>
-                <span class="text-xs text-gray-400">{new Date(c.createdAt).toLocaleString()}</span>
-              </div>
-              <div class="text-gray-700 mt-1">{c.body}</div> <!-- Changed from c.content to c.body -->
-            </div>
-          </div>
-        {/each}
-      {:else}
-        <p class="text-gray-500">No comments yet.</p>
-      {/if}
-    </div>
-    <form class="mt-6 flex flex-col gap-2" method="POST" action="?/addComment" use:enhance>
-      <textarea
-        name="commentBody"
-        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        rows="2"
-        placeholder="Add a comment..."
-        bind:value={newComment}
-        required
-      ></textarea>
-      <div class="flex justify-end">
-        <button type="submit" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow disabled:opacity-50" disabled={!newComment.trim()}>
-          Add Comment
+        <button 
+          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-600 dark:bg-blue-500 text-white font-medium shadow-sm hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors text-sm" 
+          onclick={() => goto(`/app/tasks/${task.id}/edit`)}
+        >
+          <Edit3 class="w-4 h-4" />
+          <span class="hidden sm:inline">Edit</span>
         </button>
       </div>
-    </form>
+    </div>
+
+    <!-- Task Detail Card -->
+    {#if task}
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+        <!-- Task Header -->
+        <div class="p-4 border-b border-gray-100 dark:border-gray-700">
+          <div class="flex flex-wrap items-center gap-2 mb-3">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+              {task.status === 'Completed' ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800' : ''}
+              {task.status === 'In Progress' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800' : ''}
+              {task.status === 'Not Started' ? 'bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600' : ''}">
+              {task.status}
+            </span>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+              {task.priority === 'High' ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800' : ''}
+              {task.priority === 'Normal' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800' : ''}
+              {task.priority === 'Low' ? 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600' : ''}">
+              {task.priority}
+            </span>
+            <div class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 ml-auto">
+              <Calendar class="w-3.5 h-3.5" />
+              <span>Due {formatDate(task.dueDate)}</span>
+            </div>
+          </div>
+          
+          <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">{task.subject}</h2>
+          
+          {#if task.description}
+            <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{task.description}</p>
+          {:else}
+            <p class="text-sm text-gray-500 dark:text-gray-400 italic">No description provided</p>
+          {/if}
+        </div>
+
+        <!-- Task Meta Information -->
+        <div class="p-4 bg-gray-50 dark:bg-gray-700/50">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Owner -->
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-400">
+                <User class="w-3.5 h-3.5" />
+                <span>Task Owner</span>
+              </div>
+              <div class="flex items-center gap-2.5">
+                {#if task.owner?.profilePhoto}
+                  <img 
+                    src={task.owner.profilePhoto} 
+                    alt={task.owner.name} 
+                    class="w-8 h-8 rounded-full border border-white dark:border-gray-600 shadow-sm" 
+                    referrerpolicy="no-referrer" 
+                  />
+                {:else}
+                  <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 border border-white dark:border-gray-600 shadow-sm flex items-center justify-center">
+                    <span class="text-xs font-medium text-blue-700 dark:text-blue-400">
+                      {task.owner?.name?.charAt(0) || 'U'}
+                    </span>
+                  </div>
+                {/if}
+                <div>
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">{task.owner?.name || 'Unassigned'}</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">Owner</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Account -->
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-400">
+                <Building2 class="w-3.5 h-3.5" />
+                <span>Related Account</span>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-600 flex items-center justify-center">
+                  <Building2 class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">{task.account?.name || 'No account assigned'}</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">Account</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comments Section -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-4 border-b border-gray-100 dark:border-gray-700">
+          <div class="flex items-center gap-2">
+            <MessageSquare class="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            <h2 class="text-base font-semibold text-gray-900 dark:text-white">Comments</h2>
+            {#if task.comments && task.comments.length > 0}
+              <span class="text-xs text-gray-500 dark:text-gray-400">({task.comments.length})</span>
+            {/if}
+          </div>
+        </div>
+
+        <div class="p-4">
+          {#if form?.message}
+            <div class="mb-4 p-3 rounded-lg {form.error ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800' : 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800'}">
+              <p class="text-xs font-medium">{form.message}</p>
+            </div>
+          {/if}
+          
+          {#if form?.commentBody && form.error}
+            {@const _ = newComment = form.commentBody}
+          {/if}
+
+          <!-- Comments List -->
+          <div class="space-y-3 mb-6">
+            {#if task.comments && task.comments.length > 0}
+              {#each task.comments as c (c.id || c.createdAt)}
+                <div class="flex gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600">
+                  {#if c.author.profilePhoto}
+                    <img 
+                      src={c.author.profilePhoto} 
+                      alt={c.author.name} 
+                      class="w-8 h-8 rounded-full border border-gray-200 dark:border-gray-600 flex-shrink-0" 
+                      referrerpolicy="no-referrer" 
+                    />
+                  {:else}
+                    <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 border border-gray-200 dark:border-gray-600 flex items-center justify-center flex-shrink-0">
+                      <span class="text-xs font-medium text-blue-700 dark:text-blue-400">
+                        {c.author?.name?.charAt(0) || 'U'}
+                      </span>
+                    </div>
+                  {/if}
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-sm font-medium text-gray-900 dark:text-white">{c.author.name}</span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">{new Date(c.createdAt).toLocaleString()}</span>
+                    </div>
+                    <div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{c.body}</div>
+                  </div>
+                </div>
+              {/each}
+            {:else}
+              <div class="text-center py-6">
+                <MessageSquare class="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+                <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">No comments yet</p>
+                <p class="text-xs text-gray-400 dark:text-gray-500">Be the first to add a comment</p>
+              </div>
+            {/if}
+          </div>
+
+          <!-- Add Comment Form -->
+          <form method="POST" action="?/addComment" use:enhance class="space-y-3">
+            <div>
+              <label for="commentBody" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                Add a comment
+              </label>
+              <textarea
+                id="commentBody"
+                name="commentBody"
+                class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent resize-none transition-colors"
+                rows="2"
+                placeholder="Share your thoughts or updates..."
+                bind:value={newComment}
+                required
+              ></textarea>
+            </div>
+            <div class="flex justify-end">
+              <button 
+                type="submit" 
+                class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-medium shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm" 
+                disabled={!newComment.trim()}
+              >
+                <Send class="w-3.5 h-3.5" />
+                Add Comment
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    {/if}
   </div>
-  {/if}
 </div>

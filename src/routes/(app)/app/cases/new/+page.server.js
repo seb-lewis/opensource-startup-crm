@@ -20,6 +20,7 @@ export async function load({ locals }) {
       }
     }
   });
+  
   return { accounts, users };
 }
 

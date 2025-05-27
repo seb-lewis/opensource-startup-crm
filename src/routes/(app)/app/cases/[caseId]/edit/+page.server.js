@@ -31,26 +31,60 @@ export const actions = {
     const dueDate = dueDateRaw ? new Date(dueDateRaw.toString()) : null;
     const priority = form.get('priority')?.toString() || 'Medium';
     const ownerId = form.get('assignedId')?.toString();
+    
     if (!subject || !accountId || !ownerId) {
       return fail(400, { error: 'Missing required fields.' });
     }
+    
     // Validate case is part of the organization
     const caseExists = await prisma.case.findFirst({
       where: { id: params.caseId, organizationId: org.id }
     });
     if (!caseExists) {
       return fail(404, { error: 'Case not found or does not belong to this organization.' });
-    } 
-    await prisma.case.update({
-      where: { id: params.caseId },
-      data: { subject, description, accountId, dueDate, priority, ownerId }
-    });
-    return { success: true };
+    }
+    
+    try {
+      await prisma.case.update({
+        where: { id: params.caseId },
+        data: { subject, description, accountId, dueDate, priority, ownerId }
+      });
+      return { success: true };
+    } catch (error) {
+      return fail(500, { error: 'Failed to update case.' });
+    }
   },
-  close: async ({ params }) => {
+  close: async ({ params, locals }) => {
+    const org = locals.org;
+    
+    // Validate case is part of the organization
+    const caseExists = await prisma.case.findFirst({
+      where: { id: params.caseId, organizationId: org.id }
+    });
+    if (!caseExists) {
+      return fail(404, { error: 'Case not found or does not belong to this organization.' });
+    }
+    
     await prisma.case.update({
       where: { id: params.caseId },
       data: { status: 'CLOSED', closedAt: new Date() }
+    });
+    throw redirect(303, `/app/cases/${params.caseId}`);
+  },
+  reopen: async ({ params, locals }) => {
+    const org = locals.org;
+    
+    // Validate case is part of the organization
+    const caseExists = await prisma.case.findFirst({
+      where: { id: params.caseId, organizationId: org.id }
+    });
+    if (!caseExists) {
+      return fail(404, { error: 'Case not found or does not belong to this organization.' });
+    }
+    
+    await prisma.case.update({
+      where: { id: params.caseId },
+      data: { status: 'OPEN', closedAt: null }
     });
     throw redirect(303, `/app/cases/${params.caseId}`);
   }

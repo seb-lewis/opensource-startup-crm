@@ -1,6 +1,9 @@
 <script>
+  import { Calendar, ChevronLeft, ChevronRight, Clock, AlertCircle, CheckCircle2, Circle } from '@lucide/svelte';
+  
   export let data;
   let today = new Date();
+  let currentDate = new Date(today);
   let selectedDate = today.toISOString().slice(0, 10);
 
   // Group tasks by due date (YYYY-MM-DD)
@@ -22,185 +25,248 @@
   }
 
   // Calendar logic
-  let year = today.getFullYear();
-  let month = today.getMonth(); // 0-indexed
-  let monthStart = new Date(year, month, 1);
-  let monthEnd = new Date(year, month + 1, 0);
-  let startDay = monthStart.getDay(); // 0=Sun
-  let daysInMonth = monthEnd.getDate();
-  let calendar = [];
-  for (let i = 0; i < startDay; i++) calendar.push(null);
-  for (let d = 1; d <= daysInMonth; d++) calendar.push(new Date(Date.UTC(year, month, d)));
-  while (calendar.length % 7 !== 0) calendar.push(null);
+  $: year = currentDate.getFullYear();
+  $: month = currentDate.getMonth();
+  $: monthStart = new Date(year, month, 1);
+  $: monthEnd = new Date(year, month + 1, 0);
+  $: startDay = monthStart.getDay();
+  $: daysInMonth = monthEnd.getDate();
+  $: calendar = (() => {
+    let cal = [];
+    for (let i = 0; i < startDay; i++) cal.push(null);
+    for (let d = 1; d <= daysInMonth; d++) cal.push(new Date(Date.UTC(year, month, d)));
+    while (cal.length % 7 !== 0) cal.push(null);
+    return cal;
+  })();
 
+  $: monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+  
   function formatDate(date) {
     return date.toISOString().slice(0, 10);
   }
+  
   function isToday(date) {
     return date && formatDate(date) === today.toISOString().slice(0, 10);
   }
+  
   function hasTasks(date) {
     return date && tasksByDate[formatDate(date)]?.length > 0;
   }
+  
   function selectDay(date) {
     if (date) {
-      const formatted = formatDate(date);
-      selectedDate = formatted;
-      selectedTasks = tasksByDate[selectedDate] || [];
+      selectedDate = formatDate(date);
     }
   }
+
+  function previousMonth() {
+    currentDate = new Date(year, month - 1, 1);
+  }
+
+  function nextMonth() {
+    currentDate = new Date(year, month + 1, 1);
+  }
+
+  function goToToday() {
+    currentDate = new Date(today);
+    selectedDate = today.toISOString().slice(0, 10);
+  }
+
+  function getPriorityIcon(priority) {
+    switch (priority?.toLowerCase()) {
+      case 'high': return AlertCircle;
+      case 'medium': return Clock;
+      default: return Circle;
+    }
+  }
+
+  function getStatusIcon(status) {
+    if (status?.toLowerCase() === 'completed') return CheckCircle2;
+    return Circle;
+  }
+
+  // Calculate monthly stats
+  $: monthlyTasks = Object.keys(tasksByDate).filter(dateStr => {
+    const taskDate = new Date(dateStr);
+    return taskDate.getFullYear() === year && taskDate.getMonth() === month;
+  });
+
+  $: totalMonthlyTasks = monthlyTasks.reduce((total, dateStr) => {
+    return total + tasksByDate[dateStr].length;
+  }, 0);
+
   $: selectedTasks = tasksByDate[selectedDate] || [];
 </script>
 
-<style>
-/* Card container for better separation */
-.card {
-  background: #fff;
-  border-radius: 1.25rem;
-  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.06);
-  padding: 2rem 2.5rem;
-  margin: 2rem auto;
-  max-width: 540px;
-}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-4 sm:p-6 lg:p-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 text-center">
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <Calendar class="w-8 h-8 text-blue-600 dark:text-blue-400" />
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Task Calendar</h1>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300">Manage and track your tasks with ease</p>
+    </div>
 
-.calendar {
-  display: grid;
-  grid-template-columns: repeat(7, 2.5rem);
-  gap: 0.25rem;
-  background: #f8fafc;
-  padding: 1rem;
-  border-radius: 1rem;
-  margin-bottom: 2rem;
-}
-.day {
-  aspect-ratio: 1/1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-weight: 500;
-  background: white;
-  border: 1px solid #e5e7eb;
-  transition: background 0.2s, color 0.2s;
-  position: relative;
-}
-.day.today {
-  border: 2px solid #2563eb;
-  color: #2563eb;
-}
-.day.selected {
-  background: #2563eb;
-  color: white;
-}
-.day.has-tasks {
-  box-shadow: 0 0 0 2px #22c55e;
-}
-.day:disabled, .day.null {
-  background: transparent;
-  border: none;
-  cursor: default;
-}
-.calendar-header {
-  display: grid;
-  grid-template-columns: repeat(7, 2.5rem);
-  margin-bottom: 0.25rem;
-  font-size: 0.95rem;
-  color: #64748b;
-  text-align: center;
-}
-
-/* Task list improvements */
-.task-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.task-item {
-  background: #f1f5f9;
-  border-radius: 0.75rem;
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.75rem;
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.03);
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-.badge {
-  display: inline-block;
-  font-size: 0.8rem;
-  padding: 0.15em 0.7em;
-  border-radius: 0.5em;
-  margin-left: 0.5em;
-  font-weight: 600;
-}
-.badge-crm { background: #dbeafe; color: #2563eb; }
-.badge-priority-high { background: #fee2e2; color: #dc2626; }
-.badge-priority-medium { background: #fef9c3; color: #ca8a04; }
-.badge-priority-low { background: #d1fae5; color: #059669; }
-
-h1 {
-  text-align: center;
-  margin-top: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-h2 {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-  color: #2563eb;
-}
-
-.no-tasks {
-  color: #64748b;
-  text-align: center;
-  margin: 2rem 0;
-}
-</style>
-
-<h1>Task Calendar</h1>
-<div class="card">
-  <div class="calendar-header">
-    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-  </div>
-  <div class="calendar">
-    {#each calendar as date, i}
-      {#if date}
-        <button
-          class="day {isToday(date) ? 'today' : ''} {formatDate(date) === selectedDate ? 'selected' : ''} {hasTasks(date) ? 'has-tasks' : ''}"
-          onclick={() => selectDay(date)}
-        >
-          {date.getDate()}
-        </button>
-      {:else}
-        <div class="day null"></div>
-      {/if}
-    {/each}
-  </div>
-
-  <main>
-    <h2>Tasks for {selectedDate}</h2>
-    {#if selectedTasks.length}
-      <ul class="task-list">
-        {#each selectedTasks as task}
-          <li class="task-item">
-            <a href="/app/tasks/{task.id}" style="text-decoration: none; color: inherit;">
-              <div>
-                <strong>{task.title}</strong>
-                <span class="badge badge-crm">{task.type}</span>
-                <span class="badge {task.priority === 'High' ? 'badge-priority-high' : task.priority === 'Medium' ? 'badge-priority-medium' : 'badge-priority-low'}">{task.priority}</span>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Calendar Section -->
+      <div class="lg:col-span-2">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <!-- Calendar Header -->
+          <div class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 px-6 py-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <button
+                  onclick={previousMonth}
+                  class="p-2 rounded-lg bg-white/10 hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20 transition-colors"
+                >
+                  <ChevronLeft class="w-5 h-5 text-white" />
+                </button>
+                <h2 class="text-xl font-semibold text-white">
+                  {monthNames[month]} {year}
+                </h2>
+                <button
+                  onclick={nextMonth}
+                  class="p-2 rounded-lg bg-white/10 hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20 transition-colors"
+                >
+                  <ChevronRight class="w-5 h-5 text-white" />
+                </button>
               </div>
-              <div style="font-size:0.95em; color:#64748b;">{task.description}</div>
-              <div style="font-size:0.9em; margin-top:0.2em;">
-                <span>Status: <b>{task.status}</b></span>
+              <button
+                onclick={goToToday}
+                class="px-4 py-2 bg-white/10 hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20 text-white rounded-lg font-medium transition-colors"
+              >
+                Today
+              </button>
+            </div>
+          </div>
+
+          <!-- Days of Week -->
+          <div class="grid grid-cols-7 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+            {#each ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as day}
+              <div class="p-4 text-center text-sm font-medium text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-600 last:border-r-0">
+                {day}
               </div>
-            </a>
-          </li>
-        {/each}
-      </ul>
-    {:else}
-      <p class="no-tasks">No tasks for this date.</p>
-    {/if}
-  </main>
+            {/each}
+          </div>
+
+          <!-- Calendar Grid -->
+          <div class="grid grid-cols-7">
+            {#each calendar as date, i}
+              {#if date}
+                <button
+                  onclick={() => selectDay(date)}
+                  class="relative h-16 sm:h-20 p-2 border-r border-b border-gray-200 dark:border-gray-600 last:border-r-0 
+                         hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors group
+                         {formatDate(date) === selectedDate ? 'bg-blue-600 dark:bg-blue-700 text-white' : ''}
+                         {isToday(date) && formatDate(date) !== selectedDate ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : ''}
+                         {!isToday(date) && formatDate(date) !== selectedDate ? 'text-gray-900 dark:text-gray-100' : ''}"
+                >
+                  <div class="text-sm font-medium">
+                    {date.getDate()}
+                  </div>
+                  {#if hasTasks(date)}
+                    <div class="absolute bottom-1 right-1 w-2 h-2 rounded-full 
+                               {formatDate(date) === selectedDate ? 'bg-white' : 'bg-blue-500 dark:bg-blue-400'}">
+                    </div>
+                    <div class="absolute bottom-1 left-1 text-xs font-medium
+                               {formatDate(date) === selectedDate ? 'text-white' : 'text-blue-600 dark:text-blue-400'}">
+                      {tasksByDate[formatDate(date)].length}
+                    </div>
+                  {/if}
+                </button>
+              {:else}
+                <div class="h-16 sm:h-20 border-r border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800"></div>
+              {/if}
+            {/each}
+          </div>
+        </div>
+      </div>
+
+      <!-- Tasks Section -->
+      <div class="lg:col-span-1">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 h-fit">
+          <div class="p-6 border-b border-gray-200 dark:border-gray-600">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Tasks for {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </h3>
+            <div class="text-sm text-gray-600 dark:text-gray-300">
+              {selectedTasks.length} task{selectedTasks.length !== 1 ? 's' : ''}
+            </div>
+          </div>
+
+          <div class="p-6">
+            {#if selectedTasks.length > 0}
+              <div class="space-y-4">
+                {#each selectedTasks as task}
+                  <a 
+                    href="/app/tasks/{task.id}"
+                    class="block p-4 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-xl transition-colors border border-gray-200 dark:border-gray-600"
+                  >
+                    <div class="flex items-start justify-between mb-2">
+                      <h4 class="font-medium text-gray-900 dark:text-white overflow-hidden text-ellipsis" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{task.title}</h4>
+                      <svelte:component 
+                        this={getStatusIcon(task.status)} 
+                        class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 ml-2"
+                      />
+                    </div>
+                    
+                    {#if task.description}
+                      <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 overflow-hidden text-ellipsis" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{task.description}</p>
+                    {/if}
+
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs font-medium rounded-lg">
+                          {task.type}
+                        </span>
+                        <span class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-lg
+                               {task.priority === 'High' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' : 
+                                 task.priority === 'Medium' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' : 
+                                 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300'}">
+                          <svelte:component this={getPriorityIcon(task.priority)} class="w-3 h-3" />
+                          {task.priority}
+                        </span>
+                      </div>
+                      <span class="text-xs text-gray-500 dark:text-gray-400 font-medium">{task.status}</span>
+                    </div>
+                  </a>
+                {/each}
+              </div>
+            {:else}
+              <div class="text-center py-12">
+                <Calendar class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <p class="text-gray-500 dark:text-gray-400 text-sm">No tasks scheduled for this date</p>
+                <p class="text-gray-400 dark:text-gray-500 text-xs mt-1">Select a different date to view tasks</p>
+              </div>
+            {/if}
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="mt-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
+          <h4 class="font-semibold text-gray-900 dark:text-white mb-4">This Month</h4>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600 dark:text-gray-300">Total Tasks</span>
+              <span class="font-medium text-gray-900 dark:text-white">
+                {totalMonthlyTasks}
+              </span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600 dark:text-gray-300">Days with Tasks</span>
+              <span class="font-medium text-gray-900 dark:text-white">{monthlyTasks.length}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
