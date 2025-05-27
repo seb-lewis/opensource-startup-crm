@@ -53,63 +53,6 @@
 </script>
 
 <style>
-/* Card container for better separation */
-.card {
-  background: #fff;
-  border-radius: 1.25rem;
-  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.06);
-  padding: 2rem 2.5rem;
-  margin: 2rem auto;
-  max-width: 540px;
-}
-
-.calendar {
-  display: grid;
-  grid-template-columns: repeat(7, 2.5rem);
-  gap: 0.25rem;
-  background: #f8fafc;
-  padding: 1rem;
-  border-radius: 1rem;
-  margin-bottom: 2rem;
-}
-.day {
-  aspect-ratio: 1/1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-weight: 500;
-  background: white;
-  border: 1px solid #e5e7eb;
-  transition: background 0.2s, color 0.2s;
-  position: relative;
-}
-.day.today {
-  border: 2px solid #2563eb;
-  color: #2563eb;
-}
-.day.selected {
-  background: #2563eb;
-  color: white;
-}
-.day.has-tasks {
-  box-shadow: 0 0 0 2px #22c55e;
-}
-.day:disabled, .day.null {
-  background: transparent;
-  border: none;
-  cursor: default;
-}
-.calendar-header {
-  display: grid;
-  grid-template-columns: repeat(7, 2.5rem);
-  margin-bottom: 0.25rem;
-  font-size: 0.95rem;
-  color: #64748b;
-  text-align: center;
-}
-
 /* Task list improvements */
 .task-list {
   list-style: none;
@@ -138,49 +81,36 @@
 .badge-priority-high { background: #fee2e2; color: #dc2626; }
 .badge-priority-medium { background: #fef9c3; color: #ca8a04; }
 .badge-priority-low { background: #d1fae5; color: #059669; }
-
-h1 {
-  text-align: center;
-  margin-top: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-h2 {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-  color: #2563eb;
-}
-
-.no-tasks {
-  color: #64748b;
-  text-align: center;
-  margin: 2rem 0;
-}
 </style>
 
-<h1>Task Calendar</h1>
-<div class="card">
-  <div class="calendar-header">
+<h1 class="text-center mt-8 mb-2">Task Calendar</h1>
+<div class="bg-white rounded-3xl shadow-lg p-8 mx-auto mt-8 max-w-lg">
+  <div class="grid grid-cols-7 mb-1 text-sm text-slate-500 text-center" style="grid-template-columns: repeat(7, 2.5rem);">
     <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
   </div>
-  <div class="calendar">
+  <div class="grid grid-cols-7 gap-1 bg-slate-50 p-4 rounded-2xl mb-8" style="grid-template-columns: repeat(7, 2.5rem);">
     {#each calendar as date, i}
       {#if date}
         <button
-          class="day {isToday(date) ? 'today' : ''} {formatDate(date) === selectedDate ? 'selected' : ''} {hasTasks(date) ? 'has-tasks' : ''}"
+          class="aspect-square flex items-center justify-center rounded-lg cursor-pointer font-medium transition-all duration-200 relative
+            {formatDate(date) === selectedDate 
+              ? 'bg-blue-600 text-white border-2 border-blue-600' 
+              : isToday(date) 
+                ? 'bg-white border-2 border-blue-600 text-blue-600' 
+                : 'bg-white border border-gray-200 hover:bg-gray-50'}
+            {hasTasks(date) ? 'ring-2 ring-green-500' : ''}"
           onclick={() => selectDay(date)}
         >
           {date.getDate()}
         </button>
       {:else}
-        <div class="day null"></div>
+        <div class="aspect-square"></div>
       {/if}
     {/each}
   </div>
 
   <main>
-    <h2>Tasks for {selectedDate}</h2>
+    <h2 class="mt-6 mb-4 text-xl text-blue-600">Tasks for {selectedDate}</h2>
     {#if selectedTasks.length}
       <ul class="task-list">
         {#each selectedTasks as task}
@@ -200,7 +130,7 @@ h2 {
         {/each}
       </ul>
     {:else}
-      <p class="no-tasks">No tasks for this date.</p>
+      <p class="text-slate-500 text-center my-8">No tasks for this date.</p>
     {/if}
   </main>
 </div>
