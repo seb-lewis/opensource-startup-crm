@@ -164,7 +164,7 @@ model Contact {
   leads           Lead[] // Keep this relation for historical tracking only
   comments        Comment[]
   quotes          Quote[]                      @relation("ContactQuotes")
-  relatedAccounts AccountContactRelationship[]
+  relatedAccounts   AccountContactRelationship[]
 }
 
 enum LeadSource {
@@ -644,4 +644,21 @@ enum ContentBlockType {
   MARKDOWN
   CODE
   IMAGE
+}
+
+model NewsletterSubscriber {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  isActive        Boolean   @default(true)
+  subscribedAt    DateTime  @default(now())
+  unsubscribedAt  DateTime?
+  confirmationToken String? @unique
+  isConfirmed     Boolean   @default(false)
+  confirmedAt     DateTime?
+  ipAddress       String?
+  userAgent       String?
+  
+  @@index([email])
+  @@index([isActive])
+  @@index([subscribedAt])
 }

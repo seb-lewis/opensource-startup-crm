@@ -17,9 +17,13 @@
     Linkedin,
     Star
   } from '@lucide/svelte';
+  import { enhance } from '$app/forms';
 
   let isMenuOpen = false;
   let scrollY = 0;
+  let newsletterForm;
+  let newsletterMessage = '';
+  let showNewsletterMessage = false;
   
   // Toggle mobile menu
   function toggleMenu() {
@@ -235,10 +239,50 @@
         <div class="text-center">
           <h3 class="text-2xl font-bold text-white mb-4">Stay Updated with BottleCRM</h3>
           <p class="text-blue-100 mb-6 max-w-2xl mx-auto">Get the latest updates on new features, best practices, and CRM tips delivered to your inbox.</p>
-          <div class="flex flex-col sm:flex-row max-w-md mx-auto space-y-3 sm:space-y-0 sm:space-x-3">
-            <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-white/50 focus:outline-none">
-            <button class="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors duration-200">Subscribe Free</button>
-          </div>
+          <form 
+            method="POST" 
+            action="/?/subscribe" 
+            class="max-w-md mx-auto"
+            use:enhance={({ submitter, formData }) => {
+              submitter.disabled = true;
+              return async ({ result, update }) => {
+                if (result.type === 'success') {
+                  newsletterMessage = result.data?.message || 'Successfully subscribed to newsletter!';
+                  showNewsletterMessage = true;
+                  newsletterForm.reset();
+                  setTimeout(() => { showNewsletterMessage = false; }, 5000);
+                } else if (result.type === 'failure') {
+                  newsletterMessage = result.data?.message || 'Failed to subscribe. Please try again.';
+                  showNewsletterMessage = true;
+                  setTimeout(() => { showNewsletterMessage = false; }, 5000);
+                }
+                submitter.disabled = false;
+                await update();
+              };
+            }}
+            bind:this={newsletterForm}
+          >
+            {#if showNewsletterMessage}
+              <div class="mb-4 p-3 rounded-lg {newsletterMessage.includes('Success') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} text-sm">
+                {newsletterMessage}
+              </div>
+            {/if}
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+              <input 
+                type="email" 
+                name="email"
+                placeholder="Enter your email" 
+                required
+                class="flex-1 px-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-white/50 focus:outline-none"
+              >
+              <button 
+                type="submit"
+                class="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors duration-200 disabled:opacity-50"
+              >
+                Subscribe Free
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
