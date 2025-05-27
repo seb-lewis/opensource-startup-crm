@@ -194,24 +194,24 @@
 </script>
 
 <!-- Main container -->
-<div class="min-h-screen bg-gray-50 py-8">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
   <!-- Toast notification -->
   {#if showToast}
     <div class="fixed top-4 right-4 z-50" in:fade>
-      <div class="flex items-center p-4 rounded-lg shadow-lg {toastType === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}">
+      <div class="flex items-center p-4 rounded-lg shadow-lg {toastType === 'success' ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}">
         <div class="flex-shrink-0">
           {#if toastType === 'success'}
-            <CheckCircle class="w-5 h-5 text-green-400" />
+            <CheckCircle class="w-5 h-5 text-green-400 dark:text-green-400" />
           {:else}
-            <AlertCircle class="w-5 h-5 text-red-400" />
+            <AlertCircle class="w-5 h-5 text-red-400 dark:text-red-400" />
           {/if}
         </div>
         <div class="ml-3">
-          <p class="text-sm font-medium {toastType === 'success' ? 'text-green-800' : 'text-red-800'}">{toastMessage}</p>
+          <p class="text-sm font-medium {toastType === 'success' ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'}">{toastMessage}</p>
         </div>
         <button 
           on:click={() => showToast = false}
-          class="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 {toastType === 'success' ? 'text-green-500 hover:bg-green-100' : 'text-red-500 hover:bg-red-100'}">
+          class="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 {toastType === 'success' ? 'text-green-500 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800/30' : 'text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-800/30'}">
           <X class="w-4 h-4" />
         </button>
       </div>
@@ -220,15 +220,15 @@
 
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Header -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-      <div class="px-6 py-4 border-b border-gray-200">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <Target class="w-6 h-6 text-blue-600" />
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <Target class="w-6 h-6 text-blue-600 dark:text-blue-400" />
               Create New Lead
             </h1>
-            <p class="text-gray-600 mt-1">Capture lead information and start building relationships</p>
+            <p class="text-gray-600 dark:text-gray-300 mt-1">Capture lead information and start building relationships</p>
           </div>
         </div>
       </div>
@@ -236,11 +236,11 @@
 
     <!-- Show error if returned from server -->
     {#if form?.error}
-      <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
         <div class="flex items-center">
-          <AlertCircle class="w-5 h-5 text-red-400 mr-2" />
-          <span class="font-medium text-red-800">Error:</span>
-          <span class="ml-1 text-red-700">{form.error}</span>
+          <AlertCircle class="w-5 h-5 text-red-400 dark:text-red-400 mr-2" />
+          <span class="font-medium text-red-800 dark:text-red-200">Error:</span>
+          <span class="ml-1 text-red-700 dark:text-red-300">{form.error}</span>
         </div>
       </div>
     {/if}
@@ -268,10 +268,10 @@
     }} class="space-y-6">
 
       <!-- Lead Information Section -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-            <Briefcase class="w-5 h-5 text-blue-600" />
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <Briefcase class="w-5 h-5 text-blue-600 dark:text-blue-400" />
             Lead Information
           </h2>
         </div>
@@ -279,7 +279,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Lead Title -->
             <div class="md:col-span-2">
-              <label for="lead_title" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="lead_title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Lead Title *
               </label>
               <input
@@ -290,15 +290,15 @@
                 on:input={handleChange}
                 placeholder="Enter lead title"
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.lead_title ? 'border-red-500 ring-1 ring-red-500' : ''}" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.lead_title ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.lead_title}
-                <p class="text-red-500 text-sm mt-1">{errors.lead_title}</p>
+                <p class="text-red-500 dark:text-red-400 text-sm mt-1">{errors.lead_title}</p>
               {/if}
             </div>
             
             <!-- Company -->
             <div>
-              <label for="company" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="company" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <Building class="w-4 h-4 inline mr-1" />
                 Company
               </label>
@@ -309,12 +309,12 @@
                 bind:value={formData.company}
                 on:input={handleChange}
                 placeholder="Company name"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
             
             <!-- Lead Source -->
             <div>
-              <label for="source" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="source" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Lead Source
               </label>
               <select 
@@ -322,7 +322,7 @@
                 name="source" 
                 bind:value={formData.source} 
                 on:change={handleChange}
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 <option value="">Select source</option>
                 {#each data.data.source as [value, label]}
                   <option value={value}>{label}</option>
@@ -332,7 +332,7 @@
 
             <!-- Industry -->
             <div>
-              <label for="industry" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="industry" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Industry
               </label>
               <select 
@@ -340,7 +340,7 @@
                 name="industry" 
                 bind:value={formData.industry} 
                 on:change={handleChange}
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 <option value="">Select industry</option>
                 {#each data.data.industries as [value, label]}
                   <option value={value}>{label}</option>
@@ -350,7 +350,7 @@
 
             <!-- Status -->
             <div>
-              <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Status
               </label>
               <select 
@@ -358,7 +358,7 @@
                 name="status" 
                 bind:value={formData.status} 
                 on:change={handleChange}
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 {#each data.data.status as [value, label]}
                   <option value={value}>{label}</option>
                 {/each}
@@ -367,7 +367,7 @@
             
             <!-- Rating -->
             <div>
-              <label for="rating" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="rating" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Rating
               </label>
               <select 
@@ -375,7 +375,7 @@
                 name="rating" 
                 bind:value={formData.rating} 
                 on:change={handleChange}
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 <option value="">Select rating</option>
                 <option value="HOT">🔥 Hot</option>
                 <option value="WARM">🟡 Warm</option>
@@ -385,7 +385,7 @@
             
             <!-- Website -->
             <div>
-              <label for="website" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="website" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <Globe class="w-4 h-4 inline mr-1" />
                 Website
               </label>
@@ -396,15 +396,15 @@
                 bind:value={formData.website}
                 on:input={handleChange}
                 placeholder="https://company.com"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.website ? 'border-red-500 ring-1 ring-red-500' : ''}" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.website ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.website}
-                <p class="text-red-500 text-sm mt-1">{errors.website}</p>
+                <p class="text-red-500 dark:text-red-400 text-sm mt-1">{errors.website}</p>
               {/if}
             </div>
             
             <!-- Opportunity Amount -->
             <div>
-              <label for="opportunity_amount" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="opportunity_amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <DollarSign class="w-4 h-4 inline mr-1" />
                 Opportunity Amount
               </label>
@@ -417,12 +417,12 @@
                 placeholder="0"
                 min="0"
                 step="0.01"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
             
             <!-- Probability -->
             <div>
-              <label for="probability" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="probability" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <Percent class="w-4 h-4 inline mr-1" />
                 Probability (%)
               </label>
@@ -435,15 +435,15 @@
                 bind:value={formData.probability}
                 on:input={handleChange}
                 placeholder="50"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.probability ? 'border-red-500 ring-1 ring-red-500' : ''}" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.probability ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.probability}
-                <p class="text-red-500 text-sm mt-1">{errors.probability}</p>
+                <p class="text-red-500 dark:text-red-400 text-sm mt-1">{errors.probability}</p>
               {/if}
             </div>
             
             <!-- Budget Range -->
             <div>
-              <label for="budget_range" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="budget_range" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Budget Range
               </label>
               <select
@@ -451,7 +451,7 @@
                 name="budget_range"
                 bind:value={formData.budget_range}
                 on:change={handleChange}
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 <option value="">Select budget range</option>
                 <option value="under_10k">Under $10K</option>
                 <option value="10k_50k">$10K - $50K</option>
@@ -463,7 +463,7 @@
 
             <!-- Decision Timeframe -->
             <div>
-              <label for="decision_timeframe" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="decision_timeframe" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <Calendar class="w-4 h-4 inline mr-1" />
                 Decision Timeframe
               </label>
@@ -472,7 +472,7 @@
                 name="decision_timeframe"
                 bind:value={formData.decision_timeframe}
                 on:change={handleChange}
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 <option value="">Select timeframe</option>
                 <option value="immediate">Immediate (&lt; 1 month)</option>
                 <option value="short_term">Short term (1-3 months)</option>
@@ -485,10 +485,10 @@
       </div>
        
       <!-- Contact Section -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-            <User class="w-5 h-5 text-blue-600" />
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <User class="w-5 h-5 text-blue-600 dark:text-blue-400" />
             Contact Information
           </h2>
         </div>
@@ -496,7 +496,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- First Name -->
             <div>
-              <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="first_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 First Name *
               </label>
               <input
@@ -507,15 +507,15 @@
                 on:input={handleChange}
                 placeholder="First name"
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.first_name ? 'border-red-500 ring-1 ring-red-500' : ''}" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.first_name ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.first_name}
-                <p class="text-red-500 text-sm mt-1">{errors.first_name}</p>
+                <p class="text-red-500 dark:text-red-400 text-sm mt-1">{errors.first_name}</p>
               {/if}
             </div>
             
             <!-- Last Name -->
             <div>
-              <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="last_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Last Name *
               </label>
               <input
@@ -526,15 +526,15 @@
                 on:input={handleChange}
                 placeholder="Last name"
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.last_name ? 'border-red-500 ring-1 ring-red-500' : ''}" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.last_name ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.last_name}
-                <p class="text-red-500 text-sm mt-1">{errors.last_name}</p>
+                <p class="text-red-500 dark:text-red-400 text-sm mt-1">{errors.last_name}</p>
               {/if}
             </div>
             
             <!-- Job Title -->
             <div>
-              <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Job Title
               </label>
               <input
@@ -544,12 +544,12 @@
                 bind:value={formData.title}
                 on:input={handleChange}
                 placeholder="Job title"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
             
             <!-- Phone Number -->
             <div>
-              <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <Phone class="w-4 h-4 inline mr-1" />
                 Phone
               </label>
@@ -560,15 +560,15 @@
                 bind:value={formData.phone}
                 on:input={handleChange}
                 placeholder="+1 (555) 123-4567"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.phone ? 'border-red-500 ring-1 ring-red-500' : ''}" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.phone ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.phone}
-                <p class="text-red-500 text-sm mt-1">{errors.phone}</p>
+                <p class="text-red-500 dark:text-red-400 text-sm mt-1">{errors.phone}</p>
               {/if}
             </div>
             
             <!-- Email Address -->
             <div class="md:col-span-2">
-              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <Mail class="w-4 h-4 inline mr-1" />
                 Email *
               </label>
@@ -580,15 +580,15 @@
                 on:input={handleChange}
                 placeholder="email@company.com"
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.email ? 'border-red-500 ring-1 ring-red-500' : ''}" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.email ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.email}
-                <p class="text-red-500 text-sm mt-1">{errors.email}</p>
+                <p class="text-red-500 dark:text-red-400 text-sm mt-1">{errors.email}</p>
               {/if}
             </div>
 
             <!-- LinkedIn URL -->
             <div class="md:col-span-2">
-              <label for="linkedin_url" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="linkedin_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 LinkedIn Profile
               </label>
               <input
@@ -598,9 +598,9 @@
                 bind:value={formData.linkedin_url}
                 on:input={handleChange}
                 placeholder="https://linkedin.com/in/username"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.linkedin_url ? 'border-red-500 ring-1 ring-red-500' : ''}" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.linkedin_url ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.linkedin_url}
-                <p class="text-red-500 text-sm mt-1">{errors.linkedin_url}</p>
+                <p class="text-red-500 dark:text-red-400 text-sm mt-1">{errors.linkedin_url}</p>
               {/if}
             </div>
           </div>
@@ -608,10 +608,10 @@
       </div>
       
       <!-- Address Section -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-            <MapPin class="w-5 h-5 text-blue-600" />
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <MapPin class="w-5 h-5 text-blue-600 dark:text-blue-400" />
             Address Information
           </h2>
         </div>
@@ -619,7 +619,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Address Lane -->
             <div class="md:col-span-2">
-              <label for="address_line" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="address_line" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Address Line
               </label>
               <input
@@ -629,11 +629,11 @@
                 bind:value={formData.address_line}
                 on:input={handleChange}
                 placeholder="Street address"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
             
             <div>
-              <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
+              <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">City</label>
               <input
                 id="city"
                 name="city"
@@ -641,11 +641,11 @@
                 bind:value={formData.city}
                 on:input={handleChange}
                 placeholder="City"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
             
             <div>
-              <label for="state" class="block text-sm font-medium text-gray-700 mb-2">State</label>
+              <label for="state" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">State</label>
               <input
                 id="state"
                 name="state"
@@ -653,11 +653,11 @@
                 bind:value={formData.state}
                 on:input={handleChange}
                 placeholder="State"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
             
             <div>
-              <label for="postcode" class="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
+              <label for="postcode" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Postal Code</label>
               <input
                 id="postcode"
                 name="postcode"
@@ -665,11 +665,11 @@
                 bind:value={formData.postcode}
                 on:input={handleChange}
                 placeholder="Postal code"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
             
             <div>
-              <label for="country" class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+              <label for="country" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Country</label>
               <input
                 id="country"
                 name="country"
@@ -677,21 +677,21 @@
                 bind:value={formData.country}
                 on:input={handleChange}
                 placeholder="Country"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
           </div>
         </div>
       </div>
         
       <!-- Additional Details Section -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-900">Additional Details</h2>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Additional Details</h2>
         </div>
         <div class="p-6 space-y-6">
           <!-- Description -->
           <div>
-            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Description
             </label>
             <textarea
@@ -701,12 +701,12 @@
               on:input={handleChange}
               placeholder="Additional notes about this lead..."
               rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical"></textarea>
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors resize-vertical"></textarea>
           </div>
 
           <!-- Pain Points -->
           <div>
-            <label for="pain_points" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="pain_points" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Pain Points
             </label>
             <textarea
@@ -716,13 +716,13 @@
               on:input={handleChange}
               placeholder="What challenges is the lead facing?"
               rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical"></textarea>
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors resize-vertical"></textarea>
           </div>
 
           <!-- Follow-up Dates -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label for="last_contacted" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="last_contacted" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Last Contacted
               </label>
               <input
@@ -731,11 +731,11 @@
                 type="date"
                 bind:value={formData.last_contacted}
                 on:input={handleChange}
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
             
             <div>
-              <label for="next_follow_up" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="next_follow_up" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Next Follow-up
               </label>
               <input
@@ -744,28 +744,28 @@
                 type="date"
                 bind:value={formData.next_follow_up}
                 on:input={handleChange}
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
           </div>
         </div>
       </div>
 
       <!-- Submit Button -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div class="px-6 py-4">
           <div class="flex justify-end gap-4">
             <button
               type="button"
               on:click={() => goto('/app/leads/')}
               disabled={isSubmitting}
-              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+              class="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
               <X class="w-4 h-4" />
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+              class="px-6 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
               {#if isSubmitting}
                 <div class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                 Creating...
