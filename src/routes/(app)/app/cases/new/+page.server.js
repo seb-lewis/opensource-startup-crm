@@ -20,6 +20,8 @@ export async function load({ locals }) {
       }
     }
   });
+  console.log('Accounts:', accounts);
+  console.log('Users:', users);
   return { accounts, users };
 }
 
