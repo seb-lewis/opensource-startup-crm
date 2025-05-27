@@ -1,6 +1,7 @@
 <script>
     import { goto } from '$app/navigation';
     import { enhance } from '$app/forms';
+    import { X, Calendar, User, Building, FileText, Flag, Clock } from '@lucide/svelte';
 
     /** @type {{ data: import('./$types').PageData, form?: import('./$types').ActionData }} */
     let { data, form } = $props();
@@ -37,91 +38,208 @@
     }
 </script>
 
-<div class="container mx-auto px-4 py-8">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-auto p-6 md:p-8">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Create New Task</h1>
-            <button
-                type="button"
-                class="text-gray-400 hover:text-gray-600"
-                onclick={handleCancel}
-                aria-label="Close"
-            >
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 px-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="mb-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Create New Task</h1>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Add a new task to keep track of your work</p>
+                </div>
+                <button
+                    type="button"
+                    class="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    onclick={handleCancel}
+                    aria-label="Close"
+                >
+                    <X size={20} />
+                </button>
+            </div>
         </div>
 
-        {#if form?.error}
-            <div class="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded">
-                <p>{form.error}</p>
-            </div>
-        {/if}
-
-        <form method="POST" use:enhance class="space-y-4 md:space-y-6">
-            <div>
-                <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                <input type="text" id="subject" name="subject" bind:value={subject} class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Task subject" required />
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select id="status" name="status" bind:value={status} class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option>Not Started</option>
-                        <option>In Progress</option>
-                        <option>Completed</option>
-                        <option>Waiting on someone else</option>
-                        <option>Deferred</option>
-                    </select>
+        <!-- Form Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            {#if form?.error}
+                <div class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 dark:border-red-500 p-3">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-4 w-4 text-red-400 dark:text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-2">
+                            <p class="text-sm text-red-700 dark:text-red-300 font-medium">{form.error}</p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                    <select id="priority" name="priority" bind:value={priority} class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option>High</option>
-                        <option>Normal</option>
-                        <option>Low</option>
-                    </select>
+            {/if}
+
+            <form method="POST" use:enhance class="p-6">
+                <div class="space-y-5">
+                    <!-- Task Details Section -->
+                    <div>
+                        <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                            <FileText size={18} class="mr-2 text-blue-600 dark:text-blue-400" />
+                            Task Details
+                        </h2>
+                        
+                        <div class="space-y-4">
+                            <!-- Subject -->
+                            <div>
+                                <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Subject <span class="text-red-500 dark:text-red-400">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="subject" 
+                                    name="subject" 
+                                    bind:value={subject} 
+                                    class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors placeholder-gray-400 dark:placeholder-gray-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white" 
+                                    placeholder="Enter task subject" 
+                                    required 
+                                />
+                            </div>
+
+                            <!-- Status, Priority, and Due Date in a grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+                                        <Clock size={14} class="mr-1 text-gray-500 dark:text-gray-400" />
+                                        Status
+                                    </label>
+                                    <select 
+                                        id="status" 
+                                        name="status" 
+                                        bind:value={status} 
+                                        class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-white"
+                                    >
+                                        <option value="Not Started">Not Started</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Waiting on someone else">Waiting on someone else</option>
+                                        <option value="Deferred">Deferred</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+                                        <Flag size={14} class="mr-1 text-gray-500 dark:text-gray-400" />
+                                        Priority
+                                    </label>
+                                    <select 
+                                        id="priority" 
+                                        name="priority" 
+                                        bind:value={priority} 
+                                        class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-white"
+                                    >
+                                        <option value="High">High</option>
+                                        <option value="Normal">Normal</option>
+                                        <option value="Low">Low</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="dueDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+                                        <Calendar size={14} class="mr-1 text-gray-500 dark:text-gray-400" />
+                                        Due Date
+                                    </label>
+                                    <input 
+                                        type="date" 
+                                        id="dueDate" 
+                                        name="dueDate" 
+                                        bind:value={dueDate} 
+                                        class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white" 
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assignment Section -->
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-5">
+                        <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                            <User size={18} class="mr-2 text-blue-600 dark:text-blue-400" />
+                            Assignment
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Owner -->
+                            <div>
+                                <label for="ownerId" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Owner <span class="text-red-500 dark:text-red-400">*</span>
+                                </label>
+                                <select 
+                                    id="ownerId" 
+                                    name="ownerId" 
+                                    bind:value={ownerId} 
+                                    class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-white" 
+                                    required
+                                >
+                                    <option value="" disabled>Select owner</option>
+                                    {#each data.users as user (user.id)}
+                                        <option value={user.id}>{user.name || user.email}</option>
+                                    {/each}
+                                </select>
+                            </div>
+
+                            <!-- Related Account -->
+                            <div>
+                                <label for="accountId" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+                                    <Building size={14} class="mr-1 text-gray-500 dark:text-gray-400" />
+                                    Related Account
+                                </label>
+                                <select 
+                                    id="accountId" 
+                                    name="accountId" 
+                                    bind:value={accountId} 
+                                    class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-white"
+                                >
+                                    <option value="">Select account (optional)</option>
+                                    {#each data.accounts as account (account.id)}
+                                        <option value={account.id}>{account.name}</option>
+                                    {/each}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description Section -->
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-5">
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Description
+                            </label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                bind:value={description} 
+                                class="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors placeholder-gray-400 dark:placeholder-gray-500 resize-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white" 
+                                rows="3" 
+                                placeholder="Enter task details and notes..."
+                            ></textarea>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <label for="dueDate" class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-                <input type="date" id="dueDate" name="dueDate" bind:value={dueDate} class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="ownerId" class="block text-sm font-medium text-gray-700 mb-1">Owner</label>
-                    <select id="ownerId" name="ownerId" bind:value={ownerId} class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        <option value="" disabled>Select owner</option>
-                        {#each data.users as user (user.id)}
-                            <option value={user.id}>{user.name || user.email}</option>
-                        {/each}
-                    </select>
+                <!-- Form Actions -->
+                <div class="flex flex-col sm:flex-row justify-end gap-3 pt-5 mt-5 border-t border-gray-200 dark:border-gray-700">
+                    <button 
+                        type="button" 
+                        class="px-5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-gray-400 focus:ring-offset-white dark:focus:ring-offset-gray-800 transition-colors text-sm" 
+                        onclick={handleCancel}
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit" 
+                        class="px-5 py-2.5 rounded-lg bg-blue-600 dark:bg-blue-600 text-white font-semibold hover:bg-blue-700 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-white dark:focus:ring-offset-gray-800 shadow-sm transition-colors text-sm"
+                    >
+                        Create Task
+                    </button>
                 </div>
-                <div>
-                    <label for="accountId" class="block text-sm font-medium text-gray-700 mb-1">Related Account</label>
-                    <select id="accountId" name="accountId" bind:value={accountId} class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select account</option>
-                        {#each data.accounts as account (account.id)}
-                            <option value={account.id}>{account.name}</option>
-                        {/each}
-                    </select>
-                </div>
-            </div>
-
-            <div>
-                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea id="description" name="description" bind:value={description} class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="Task details"></textarea>
-            </div>
-
-            <div class="flex justify-end gap-3 pt-4">
-                <button type="button" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium" onclick={handleCancel}>Cancel</button>
-                <button type="submit" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow">Save Task</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 

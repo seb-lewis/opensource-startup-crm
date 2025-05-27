@@ -1,66 +1,331 @@
-<script lang="ts">
+<script>
   export let data;
   import { enhance } from '$app/forms';
+  import { goto } from '$app/navigation';
+  import { Save, X, AlertTriangle, User, Building, Calendar, Flag, FileText, Lock, Unlock } from '@lucide/svelte';
+
   let title = data.caseItem.subject;
   let description = data.caseItem.description || '';
   let accountId = data.caseItem.accountId;
-  let dueDate = data.caseItem.dueDate ? data.caseItem.dueDate.split('T')[0] : '';
+  let dueDate = '';
+  if (data.caseItem.dueDate) {
+    if (typeof data.caseItem.dueDate === 'string') {
+      dueDate = data.caseItem.dueDate.split('T')[0];
+    } else if (data.caseItem.dueDate instanceof Date) {
+      dueDate = data.caseItem.dueDate.toISOString().split('T')[0];
+    }
+  }
   let assignedId = data.caseItem.ownerId;
   let priority = data.caseItem.priority || 'Medium';
   let errorMsg = '';
+  let successMsg = '';
+  let loading = false;
+  let showCloseConfirmation = false;
+  let showReopenConfirmation = false;
+
+  function handleCloseCase() {
+    showCloseConfirmation = true;
+  }
+
+  function confirmCloseCase() {
+    document.getElementById('close-case-form').submit();
+    showCloseConfirmation = false;
+  }
+
+  function cancelCloseCase() {
+    showCloseConfirmation = false;
+  }
+
+  function handleReopenCase() {
+    showReopenConfirmation = true;
+  }
+
+  function confirmReopenCase() {
+    document.getElementById('reopen-case-form').submit();
+    showReopenConfirmation = false;
+  }
+
+  function cancelReopenCase() {
+    showReopenConfirmation = false;
+  }
 </script>
 
-<section class="container mx-auto p-4 max-w-xl">
-  <h1 class="text-xl font-semibold mb-4">Edit Case</h1>
-  <form method="POST" action="?/update" use:enhance class="space-y-4 bg-white rounded shadow p-6">
-    <div>
-      <label for="title" class="block mb-1 font-medium">Title <span class="text-red-500">*</span></label>
-      <input id="title" type="text" class="input input-bordered w-full" required bind:value={title} name="title" />
-    </div>
-    <div>
-      <label for="description" class="block mb-1 font-medium">Description</label>
-      <textarea id="description" class="textarea textarea-bordered w-full" rows="4" bind:value={description} name="description"></textarea>
-    </div>
-    <div>
-      <label for="accountId" class="block mb-1 font-medium">Account <span class="text-red-500">*</span></label>
-      <select id="accountId" class="select select-bordered w-full" bind:value={accountId} name="accountId" required>
-        <option value="">-- Select Account --</option>
-        {#each data.accounts as acc}
-          <option value={acc.id}>{acc.name}</option>
-        {/each}
-      </select>
-    </div>
-    <div class="flex gap-4">
-      <div class="flex-1">
-        <label for="dueDate" class="block mb-1 font-medium">Due Date</label>
-        <input id="dueDate" type="date" class="input input-bordered w-full" bind:value={dueDate} name="dueDate" />
-      </div>
-      <div class="flex-1">
-        <label for="assignedId" class="block mb-1 font-medium">Assign To <span class="text-red-500">*</span></label>
-        <select id="assignedId" class="select select-bordered w-full" bind:value={assignedId} name="assignedId" required>
-          <option value="">-- Select User --</option>
-          {#each data.users as u}
-            <option value={u.id}>{u.name}</option>
-          {/each}
-        </select>
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Edit Case</h1>
+          <p class="mt-1 text-sm text-gray-600">Update case details and assignment</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button 
+            on:click={() => goto(`/app/cases/${data.caseItem.id}`)}
+            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          >
+            <X size="16" />
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
-    <div>
-      <label for="priority" class="block mb-1 font-medium">Priority</label>
-      <select id="priority" class="select select-bordered w-full" bind:value={priority} name="priority">
-        <option value="High">High</option>
-        <option value="Medium">Medium</option>
-        <option value="Low">Low</option>
-      </select>
+
+    <!-- Main Form -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <form method="POST" action="?/update" use:enhance={({ formData, cancel }) => {
+        loading = true;
+        errorMsg = '';
+        successMsg = '';
+        return async ({ result, update }) => {
+          loading = false;
+          if (result.type === 'failure') {
+            errorMsg = result.data?.error || 'An error occurred';
+          } else if (result.type === 'success') {
+            successMsg = 'Case updated successfully!';
+          }
+          await update();
+        };
+      }}>
+        <div class="p-6 space-y-6">
+          <!-- Case Title -->
+          <div class="space-y-2">
+            <label for="title" class="flex items-center gap-2 text-sm font-medium text-gray-900">
+              <FileText size="16" class="text-gray-500" />
+              Case Title
+              <span class="text-red-500">*</span>
+            </label>
+            <input 
+              id="title" 
+              type="text" 
+              name="title"
+              bind:value={title}
+              required
+              class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              placeholder="Enter case title"
+            />
+          </div>
+
+          <!-- Description -->
+          <div class="space-y-2">
+            <label for="description" class="flex items-center gap-2 text-sm font-medium text-gray-900">
+              <FileText size="16" class="text-gray-500" />
+              Description
+            </label>
+            <textarea 
+              id="description" 
+              name="description"
+              bind:value={description}
+              rows="4"
+              class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+              placeholder="Describe the case details..."
+            ></textarea>
+          </div>
+
+          <!-- Account Selection -->
+          <div class="space-y-2">
+            <label for="accountId" class="flex items-center gap-2 text-sm font-medium text-gray-900">
+              <Building size="16" class="text-gray-500" />
+              Account
+              <span class="text-red-500">*</span>
+            </label>
+            <select 
+              id="accountId" 
+              name="accountId"
+              bind:value={accountId}
+              required
+              class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+            >
+              <option value="">Select an account...</option>
+              {#each data.accounts as acc}
+                <option value={acc.id}>{acc.name}</option>
+              {/each}
+            </select>
+          </div>
+
+          <!-- Due Date and Assignment Row -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label for="dueDate" class="flex items-center gap-2 text-sm font-medium text-gray-900">
+                <Calendar size="16" class="text-gray-500" />
+                Due Date
+              </label>
+              <input 
+                id="dueDate" 
+                type="date" 
+                name="dueDate"
+                bind:value={dueDate}
+                class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label for="assignedId" class="flex items-center gap-2 text-sm font-medium text-gray-900">
+                <User size="16" class="text-gray-500" />
+                Assign To
+                <span class="text-red-500">*</span>
+              </label>
+              <select 
+                id="assignedId" 
+                name="assignedId"
+                bind:value={assignedId}
+                required
+                class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+              >
+                <option value="">Select a user...</option>
+                {#each data.users as u}
+                  <option value={u.id}>{u.name}</option>
+                {/each}
+              </select>
+            </div>
+          </div>
+
+          <!-- Priority -->
+          <div class="space-y-2">
+            <label for="priority" class="flex items-center gap-2 text-sm font-medium text-gray-900">
+              <Flag size="16" class="text-gray-500" />
+              Priority
+            </label>
+            <select 
+              id="priority" 
+              name="priority"
+              bind:value={priority}
+              class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+            >
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+
+          <!-- Messages -->
+          {#if errorMsg}
+            <div class="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <AlertTriangle size="20" class="text-red-500 mt-0.5 flex-shrink-0" />
+              <div class="text-sm text-red-700">{errorMsg}</div>
+            </div>
+          {/if}
+
+          {#if successMsg}
+            <div class="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div class="text-sm text-green-700">{successMsg}</div>
+            </div>
+          {/if}
+        </div>
+
+        <!-- Form Actions -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row gap-3">
+          <button 
+            type="submit" 
+            disabled={loading || data.caseItem.status === 'CLOSED'}
+            class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <Save size="16" />
+            {loading ? 'Saving...' : data.caseItem.status === 'CLOSED' ? 'Case is Closed' : 'Save Changes'}
+          </button>
+          
+          {#if data.caseItem.status === 'CLOSED'}
+            <button 
+              type="button"
+              on:click={handleReopenCase}
+              class="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+            >
+              <Unlock size="16" />
+              Reopen Case
+            </button>
+          {:else}
+            <button 
+              type="button"
+              on:click={handleCloseCase}
+              class="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-colors"
+            >
+              <Lock size="16" />
+              Close Case
+            </button>
+          {/if}
+        </div>
+      </form>
     </div>
-    {#if errorMsg}
-      <div class="text-red-500">{errorMsg}</div>
+
+    <!-- Hidden Close Case Form -->
+    <form id="close-case-form" method="POST" action="?/close" style="display: none;"></form>
+
+    <!-- Hidden Reopen Case Form -->
+    <form id="reopen-case-form" method="POST" action="?/reopen" style="display: none;"></form>
+
+    <!-- Close Case Confirmation Modal -->
+    {#if showCloseConfirmation}
+      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+          <div class="p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                <Lock size="20" class="text-amber-600" />
+              </div>
+              <div>
+                <h3 class="text-lg font-medium text-gray-900">Close Case</h3>
+                <p class="text-sm text-gray-600">Are you sure you want to close this case?</p>
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 mb-6">
+              This action will mark the case as closed. You can still view the case details, but it will no longer be active.
+            </p>
+            <div class="flex gap-3">
+              <button
+                on:click={confirmCloseCase}
+                class="flex-1 px-4 py-2 text-sm font-medium text-white bg-amber-600 rounded-lg hover:bg-amber-700 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-colors"
+              >
+                Close Case
+              </button>
+              <button
+                on:click={cancelCloseCase}
+                class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     {/if}
-    <button type="submit" class="btn btn-primary w-full">Save Changes</button>
-  </form>
-  <form method="POST" action="?/close" class="mt-6">
-    <button type="submit" class="btn btn-warning w-full" disabled={data.caseItem.status === 'CLOSED'}>
-      {data.caseItem.status === 'CLOSED' ? 'Case Closed' : 'Close Case'}
-    </button>
-  </form>
-</section>
+
+    <!-- Reopen Case Confirmation Modal -->
+    {#if showReopenConfirmation}
+      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+          <div class="p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                <Unlock size="20" class="text-green-600" />
+              </div>
+              <div>
+                <h3 class="text-lg font-medium text-gray-900">Reopen Case</h3>
+                <p class="text-sm text-gray-600">Are you sure you want to reopen this case?</p>
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 mb-6">
+              This action will mark the case as active again and allow you to continue working on it.
+            </p>
+            <div class="flex gap-3">
+              <button
+                on:click={confirmReopenCase}
+                class="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+              >
+                Reopen Case
+              </button>
+              <button
+                on:click={cancelReopenCase}
+                class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {/if}
+  </div>
+</div>

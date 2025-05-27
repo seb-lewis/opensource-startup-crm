@@ -2,6 +2,7 @@
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
+  import { Search, Plus, Eye, Edit, Trash2, ExternalLink, Phone, Mail, MapPin, Calendar, Users, TrendingUp, Building2, Globe, DollarSign, ChevronUp, ChevronDown, Filter } from '@lucide/svelte';
   
   export let data;
   
@@ -10,14 +11,30 @@
   let sortOrder = $page.url.searchParams.get('order') || 'asc';
   let isLoading = false;
   let statusFilter = $page.url.searchParams.get('status') || 'all';
+  let searchQuery = $page.url.searchParams.get('q') || '';
+  let searchTimeout;
+  
+  function debounceSearch(value) {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      const params = new URLSearchParams($page.url.searchParams);
+      if (value.trim()) {
+        params.set('q', value.trim());
+      } else {
+        params.delete('q');
+      }
+      params.set('page', '1');
+      goto(`?${params.toString()}`, { keepFocus: true });
+    }, 300);
+  }
   
   function updateQueryParams() {
     isLoading = true;
     const params = new URLSearchParams($page.url.searchParams);
     params.set('sort', sortField);
     params.set('order', sortOrder);
-    params.set('status', statusFilter); // ensure status is included
-    params.set('page', '1'); // Reset to first page when filters change
+    params.set('status', statusFilter);
+    params.set('page', '1');
     
     goto(`?${params.toString()}`, { keepFocus: true });
   }
@@ -40,6 +57,25 @@
     updateQueryParams();
   }
   
+  function formatCurrency(amount) {
+    if (!amount) return '-';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
+  
+  function formatDate(date) {
+    if (!date) return '-';
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    }).format(new Date(date));
+  }
+  
   // Update data when it changes from the server
   $: {
     accounts = data.accounts;
@@ -48,196 +84,313 @@
   }
 </script>
 
-<div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
-  <div class="sm:flex sm:items-center sm:justify-between pb-4">
-    <div>
-      <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Accounts</h3>
-      <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-        Manage all your customer accounts and business relationships
-      </p>
+<div class="p-6 bg-white dark:bg-gray-900 min-h-screen">
+  <!-- Header Section -->
+  <div class="mb-8">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Accounts</h1>
+        <p class="text-gray-600 dark:text-gray-400">
+          Manage all your customer accounts and business relationships
+        </p>
+      </div>
+      
+      <!-- Action Bar -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <!-- Search -->
+        <div class="relative">
+          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Search accounts..."
+            class="pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[250px]"
+            bind:value={searchQuery}
+            oninput={(e) => debounceSearch(e.target.value)}
+          />
+        </div>
+        
+        <!-- Status Filter -->
+        <div class="relative">
+          <Filter class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <select
+            class="pl-10 pr-8 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none min-w-[120px]"
+            bind:value={statusFilter}
+            onchange={updateQueryParams}
+          >
+            <option value="all">All Status</option>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+        
+        <!-- New Account Button -->
+        <a href="/app/accounts/new" class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors whitespace-nowrap">
+          <Plus class="w-4 h-4" />
+          New Account
+        </a>
+      </div>
     </div>
-    <div class="flex flex-col sm:flex-row gap-2 mt-4 sm:mt-0 items-center">
-      <input
-        type="text"
-        placeholder="Search accounts..."
-        class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        oninput={(e) => { $page.url.searchParams.set('q', e.target.value); goto(`?${$page.url.searchParams.toString()}`); }}
-        value={$page.url.searchParams.get('q') || ''}
-      />
-      <select
-        class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        style="width: 90px;"
-        bind:value={statusFilter}
-        onchange={updateQueryParams}
-      >
-        <option value="all">All</option>
-        <option value="open">Open</option>
-        <option value="closed">Closed</option>
-      </select>
-      <a href="/app/accounts/new" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        + New Account
-      </a>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+    <div class="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-blue-600 rounded-lg">
+          <Building2 class="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <p class="text-sm text-blue-600 dark:text-blue-400 font-medium">Total Accounts</p>
+          <p class="text-2xl font-bold text-blue-900 dark:text-blue-100">{pagination.total}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-green-600 rounded-lg">
+          <TrendingUp class="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <p class="text-sm text-green-600 dark:text-green-400 font-medium">Active</p>
+          <p class="text-2xl font-bold text-green-900 dark:text-green-100">{accounts.filter(a => !a.closedAt).length}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-orange-600 rounded-lg">
+          <Users class="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <p class="text-sm text-orange-600 dark:text-orange-400 font-medium">Total Contacts</p>
+          <p class="text-2xl font-bold text-orange-900 dark:text-orange-100">{accounts.reduce((sum, a) => sum + (a.contactCount || 0), 0)}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-purple-600 rounded-lg">
+          <DollarSign class="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <p class="text-sm text-purple-600 dark:text-purple-400 font-medium">Opportunities</p>
+          <p class="text-2xl font-bold text-purple-900 dark:text-purple-100">{accounts.reduce((sum, a) => sum + (a.opportunityCount || 0), 0)}</p>
+        </div>
+      </div>
     </div>
   </div>
   
-  <!-- Accounts table -->
-  <div class="relative overflow-x-auto rounded-lg mt-4">
-    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-        <tr>
-          <th scope="col" class="px-6 py-3 cursor-pointer" onclick={() => toggleSort('name')}>
-            <div class="flex items-center">
-              Account Name
-              {#if sortField === 'name'}
-                <svg class="w-3 h-3 ml-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+  <!-- Accounts Table -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+          <tr>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600" onclick={() => toggleSort('name')}>
+              <div class="flex items-center gap-2">
+                <Building2 class="w-4 h-4" />
+                Account Name
+                {#if sortField === 'name'}
                   {#if sortOrder === 'asc'}
-                  <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"></path>
+                    <ChevronUp class="w-4 h-4" />
                   {:else}
-                  <path d="M12 16l-6-6 1.41-1.41L12 13.17l4.59-4.58L18 10z"></path>
+                    <ChevronDown class="w-4 h-4" />
                   {/if}
-                </svg>
-              {/if}
-            </div>
-          </th>
-          <th scope="col" class="px-6 py-3 cursor-pointer hidden sm:table-cell" onclick={() => toggleSort('industry')}>
-            <div class="flex items-center">
-              Industry
-              {#if sortField === 'industry'}
-                <svg class="w-3 h-3 ml-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                  {#if sortOrder === 'asc'}
-                  <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"></path>
-                  {:else}
-                  <path d="M12 16l-6-6 1.41-1.41L12 13.17l4.59-4.58L18 10z"></path>
-                  {/if}
-                </svg>
-              {/if}
-            </div>
-          </th>
-          <th scope="col" class="px-6 py-3 cursor-pointer hidden md:table-cell" onclick={() => toggleSort('type')}>
-            <div class="flex items-center">
-              Type
-              {#if sortField === 'type'}
-                <svg class="w-3 h-3 ml-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                  {#if sortOrder === 'asc'}
-                  <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"></path>
-                  {:else}
-                  <path d="M12 16l-6-6 1.41-1.41L12 13.17l4.59-4.58L18 10z"></path>
-                  {/if}
-                </svg>
-              {/if}
-            </div>
-          </th>
-          <th scope="col" class="px-6 py-3 hidden lg:table-cell">Website</th>
-          <th scope="col" class="px-6 py-3 hidden xl:table-cell">Phone</th>
-          <th scope="col" class="px-6 py-3 hidden md:table-cell">Contacts</th>
-          <th scope="col" class="px-6 py-3 hidden md:table-cell">Opportunities</th>
-          <th scope="col" class="px-6 py-3 text-right">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#if isLoading}
-          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-            <td colspan="8" class="px-6 py-16 text-center">
-              <div class="flex justify-center">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-              </div>
-              <p class="mt-2 text-gray-500 dark:text-gray-400">Loading accounts...</p>
-            </td>
-          </tr>
-        {:else if accounts.length === 0}
-          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-            <td colspan="8" class="px-6 py-16 text-center">
-              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
-              <p class="mt-2 text-gray-500 dark:text-gray-400">No accounts found</p>
-            </td>
-          </tr>
-        {:else}
-          {#each accounts as account}
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 {account.closedAt ? 'opacity-60' : ''}">
-              <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                <a href="/app/accounts/{account.id}" class="hover:underline hover:text-blue-600 dark:hover:text-blue-500 flex items-center gap-2">
-                  <span class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full w-7 h-7 flex items-center justify-center text-gray-500 text-xs font-bold">
-                    {account.name?.[0]}
-                  </span>
-                  {account.name}
-                  {#if account.closedAt}
-                    <span class="ml-2 px-2 py-0.5 rounded bg-red-100 text-red-700 text-xs font-semibold">Closed</span>
-                  {/if}
-                </a>
-              </td>
-              <td class="px-6 py-4 hidden sm:table-cell">{account.industry || '-'}</td>
-              <td class="px-6 py-4 hidden md:table-cell">{account.type || '-'}</td>
-              <td class="px-6 py-4 hidden lg:table-cell">
-                {#if account.website}
-                  <a href={account.website.startsWith('http') ? account.website : `https://${account.website}`} 
-                     target="_blank" 
-                     rel="noopener noreferrer" 
-                     class="text-blue-600 dark:text-blue-500 hover:underline">
-                    {account.website}
-                  </a>
-                {:else}
-                  -
                 {/if}
-              </td>
-              <td class="px-6 py-4 hidden xl:table-cell">{account.phone || '-'}</td>
-              <td class="px-6 py-4 hidden md:table-cell">{account.contactCount}</td>
-              <td class="px-6 py-4 hidden md:table-cell">{account.opportunityCount}</td>
-              <td class="px-6 py-4 text-right flex gap-2 justify-end">
-                <a href="/app/accounts/{account.id}" title="View" aria-label="View Account" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                </a>
-                <a href="/app/accounts/{account.id}/edit" title="Edit" aria-label="Edit Account" class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h2m-1 0v14m-7-7h14" /></svg>
-                </a>
-                <a href="/app/accounts/{account.id}/delete" title="Delete" aria-label="Delete Account" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                </a>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell">Industry</th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">Type</th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden lg:table-cell">Contact Info</th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden xl:table-cell">Revenue</th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">Relations</th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden lg:table-cell">Created</th>
+            <th scope="col" class="px-6 py-4 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          {#if isLoading}
+            <tr>
+              <td colspan="8" class="px-6 py-16 text-center">
+                <div class="flex flex-col items-center gap-4">
+                  <div class="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent"></div>
+                  <p class="text-gray-500 dark:text-gray-400">Loading accounts...</p>
+                </div>
               </td>
             </tr>
-          {/each}
-        {/if}
-      </tbody>
-    </table>
+          {:else if accounts.length === 0}
+            <tr>
+              <td colspan="8" class="px-6 py-16 text-center">
+                <div class="flex flex-col items-center gap-4">
+                  <Building2 class="w-12 h-12 text-gray-400" />
+                  <div>
+                    <p class="text-gray-500 dark:text-gray-400 text-lg font-medium">No accounts found</p>
+                    <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">Get started by creating your first account</p>
+                  </div>
+                  <a href="/app/accounts/new" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                    <Plus class="w-4 h-4" />
+                    Create Account
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {:else}
+            {#each accounts as account}
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors {account.closedAt ? 'opacity-60' : ''}">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="flex-shrink-0">
+                      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold">
+                        {account.name?.[0]?.toUpperCase() || 'A'}
+                      </div>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <a href="/app/accounts/{account.id}" class="block group">
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          {account.name}
+                        </p>
+                        {#if account.closedAt}
+                          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 mt-1">
+                            Closed
+                          </span>
+                        {:else}
+                          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 mt-1">
+                            Active
+                          </span>
+                        {/if}
+                      </a>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 hidden sm:table-cell">
+                  <span class="text-sm text-gray-600 dark:text-gray-300">{account.industry || '-'}</span>
+                </td>
+                <td class="px-6 py-4 hidden md:table-cell">
+                  <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                    {account.type || 'Customer'}
+                  </span>
+                </td>
+                <td class="px-6 py-4 hidden lg:table-cell">
+                  <div class="space-y-1">
+                    {#if account.website}
+                      <div class="flex items-center gap-1 text-sm">
+                        <Globe class="w-3 h-3 text-gray-400" />
+                        <a href={account.website.startsWith('http') ? account.website : `https://${account.website}`} 
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           class="text-blue-600 dark:text-blue-400 hover:underline truncate max-w-[150px]">
+                          {account.website.replace(/^https?:\/\//, '')}
+                        </a>
+                      </div>
+                    {/if}
+                    {#if account.phone}
+                      <div class="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
+                        <Phone class="w-3 h-3 text-gray-400" />
+                        <span class="truncate">{account.phone}</span>
+                      </div>
+                    {/if}
+                    {#if account.city || account.state}
+                      <div class="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
+                        <MapPin class="w-3 h-3 text-gray-400" />
+                        <span class="truncate">{[account.city, account.state].filter(Boolean).join(', ')}</span>
+                      </div>
+                    {/if}
+                  </div>
+                </td>
+                <td class="px-6 py-4 hidden xl:table-cell">
+                  <div class="text-sm">
+                    {#if account.annualRevenue}
+                      <span class="font-medium text-gray-900 dark:text-white">{formatCurrency(account.annualRevenue)}</span>
+                      <p class="text-xs text-gray-500">Annual Revenue</p>
+                    {:else}
+                      <span class="text-gray-400">-</span>
+                    {/if}
+                  </div>
+                </td>
+                <td class="px-6 py-4 hidden md:table-cell">
+                  <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-1">
+                      <Users class="w-4 h-4 text-gray-400" />
+                      <span class="text-sm font-medium text-gray-900 dark:text-white">{account.contactCount || 0}</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <TrendingUp class="w-4 h-4 text-gray-400" />
+                      <span class="text-sm font-medium text-gray-900 dark:text-white">{account.opportunityCount || 0}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 hidden lg:table-cell">
+                  <div class="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
+                    <Calendar class="w-3 h-3 text-gray-400" />
+                    <span>{formatDate(account.createdAt)}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                    <a href="/app/accounts/{account.id}" 
+                       class="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" 
+                       title="View Account">
+                      <Eye class="w-4 h-4" />
+                    </a>
+                    <a href="/app/accounts/{account.id}/edit" 
+                       class="p-2 text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" 
+                       title="Edit Account">
+                      <Edit class="w-4 h-4" />
+                    </a>
+                    <a href="/app/accounts/{account.id}/delete" 
+                       class="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" 
+                       title="Delete Account">
+                      <Trash2 class="w-4 h-4" />
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            {/each}
+          {/if}
+        </tbody>
+      </table>
+    </div>
   </div>
   
   <!-- Pagination -->
   {#if pagination.totalPages > 1}
-    <div class="flex flex-col md:flex-row items-center justify-between pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
-      <div class="text-sm text-gray-700 dark:text-gray-400 mb-4 md:mb-0">
+    <div class="flex flex-col sm:flex-row items-center justify-between pt-6 gap-4">
+      <div class="text-sm text-gray-700 dark:text-gray-300">
         Showing <span class="font-medium">{(pagination.page - 1) * pagination.limit + 1}</span> to 
         <span class="font-medium">{Math.min(pagination.page * pagination.limit, pagination.total)}</span> of 
         <span class="font-medium">{pagination.total}</span> accounts
       </div>
-      <div class="inline-flex space-x-2">
+      <div class="flex items-center gap-2">
         <button 
           onclick={() => changePage(1)}
-          class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           disabled={pagination.page === 1}
         >
           First
         </button>
         <button 
           onclick={() => changePage(pagination.page - 1)}
-          class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           disabled={pagination.page === 1}
         >
           Previous
         </button>
-        <span class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md">
-          {pagination.page} / {pagination.totalPages}
+        <span class="px-4 py-2 text-sm font-medium text-gray-900 dark:text-white bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          {pagination.page} of {pagination.totalPages}
         </span>
         <button 
           onclick={() => changePage(pagination.page + 1)}
-          class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           disabled={pagination.page === pagination.totalPages}
         >
           Next
         </button>
         <button 
           onclick={() => changePage(pagination.totalPages)}
-          class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           disabled={pagination.page === pagination.totalPages}
         >
           Last

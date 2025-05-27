@@ -1,15 +1,26 @@
 <script>
     import { enhance } from '$app/forms';
-    // Flowbite-Svelte components
-    import { Button, Input, Select, Label, Card, Alert, Toast } from 'flowbite-svelte';
-    import { CheckCircleSolid } from 'flowbite-svelte-icons';
-    // Import FontAwesome icons via svelte-fa
-    import Fa from 'svelte-fa';
-    import {
-      faPercent,
-    } from '@fortawesome/free-solid-svg-icons';
-    import { goto } from '$app/navigation'; // Import goto for navigation
+    import { goto } from '$app/navigation';
     import { fade } from 'svelte/transition';
+    
+    // Lucide icons
+    import { 
+      User, 
+      Building, 
+      Mail, 
+      Phone, 
+      Globe, 
+      MapPin, 
+      Percent,
+      DollarSign,
+      Calendar,
+      Save,
+      X,
+      CheckCircle,
+      AlertCircle,
+      Briefcase,
+      Target
+    } from '@lucide/svelte';
 
     /** @type {import('./$types').ActionData} */
     export let form;
@@ -18,21 +29,21 @@
     // Toast state
     let showToast = false;
     let toastMessage = '';
+    let toastType = 'success'; // 'success' | 'error'
     
     /**
      * Object holding the form fields.
-     * @type {Object}
      */
     let formData = {
       lead_title: '',
-      opportunity_amount: 0,
+      opportunity_amount: '',
       website: '',
       industry: '',
       status: 'NEW',
       skype_ID: '',
       source: '',
       lead_attachment: '',
-      probability: 0,
+      probability: '',
       first_name: '',
       last_name: '',
       company: '', 
@@ -46,25 +57,25 @@
       postcode: '',
       country: '',
       description: '',
-      rating: ''
+      rating: '',
+      // Additional fields for better lead management
+      linkedin_url: '',
+      budget_range: '',
+      decision_timeframe: '',
+      pain_points: '',
+      competitor_info: '',
+      referral_source: '',
+      last_contacted: '',
+      next_follow_up: ''
     };
   
     /**
      * Object to store field errors.
-     * @type {Object}
      */
     let errors = {};
-  
-    /**
-     * Reference for the rich text editor container.
-     * You may integrate a Svelte editor (e.g. svelte-quill) here.
-     * @type {HTMLElement}
-     */
-    let quillRef;
     
     /**
      * Handles changes to form inputs
-     * @param {Event} event - The input change event
      */
     function handleChange(event) {
       const { name, value } = event.target;
@@ -77,7 +88,6 @@
     
     /**
      * Validates the form before submission.
-     * @returns {boolean} - Whether the form is valid.
      */
     function validateForm() {
       errors = {};
@@ -111,19 +121,28 @@
         isValid = false;
       }
       
+      // Validate website URL if provided
+      if (formData.website && !/^https?:\/\/.+/.test(formData.website)) {
+        errors.website = 'Please enter a valid website URL (include http:// or https://)';
+        isValid = false;
+      }
+      
+      // Validate LinkedIn URL if provided
+      if (formData.linkedin_url && !/^https?:\/\/(www\.)?linkedin\.com\//.test(formData.linkedin_url)) {
+        errors.linkedin_url = 'Please enter a valid LinkedIn URL';
+        isValid = false;
+      }
+      
+      // Validate probability range
+      if (formData.probability && (formData.probability < 0 || formData.probability > 100)) {
+        errors.probability = 'Probability must be between 0 and 100';
+        isValid = false;
+      }
+      
       return isValid;
     }
   
-    /**
-     * Handles form submission.
-     * @param {Event} event - The form submission event.
-     */
-    function handleSubmit(event) {
-      if (!validateForm()) {
-        event.preventDefault(); // Prevent form submission
-      }
-    }
-      // Submitting indicator
+    // Submitting indicator
     let isSubmitting = false;
     
     /**
@@ -132,14 +151,14 @@
     function resetForm() {
       formData = {
         lead_title: '',
-        opportunity_amount: 0,
+        opportunity_amount: '',
         website: '',
         industry: '',
         status: 'NEW',
         skype_ID: '',
         source: '',
         lead_attachment: '',
-        probability: 0,
+        probability: '',
         first_name: '',
         last_name: '',
         company: '', 
@@ -153,388 +172,611 @@
         postcode: '',
         country: '',
         description: '',
-        rating: ''
+        rating: '',
+        linkedin_url: '',
+        budget_range: '',
+        decision_timeframe: '',
+        pain_points: '',
+        competitor_info: '',
+        referral_source: '',
+        last_contacted: '',
+        next_follow_up: ''
       };
       errors = {};
+    }
+
+    function showNotification(message, type = 'success') {
+      toastMessage = message;
+      toastType = type;
+      showToast = true;
+      setTimeout(() => showToast = false, 5000);
     }
 </script>
 
 <!-- Main container -->
-<div class="min-h-screen bg-gray-50 py-6">
-  <!-- Toast notification for success -->
+<div class="min-h-screen bg-gray-50 py-8">
+  <!-- Toast notification -->
   {#if showToast}
     <div class="fixed top-4 right-4 z-50" in:fade>
-      <Toast color="green" dismissable={true} on:dismiss={() => showToast = false}>
-        <svelte:fragment slot="icon">
-          <CheckCircleSolid class="w-5 h-5" />
-        </svelte:fragment>
-        {toastMessage}
-      </Toast>
+      <div class="flex items-center p-4 rounded-lg shadow-lg {toastType === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}">
+        <div class="flex-shrink-0">
+          {#if toastType === 'success'}
+            <CheckCircle class="w-5 h-5 text-green-400" />
+          {:else}
+            <AlertCircle class="w-5 h-5 text-red-400" />
+          {/if}
+        </div>
+        <div class="ml-3">
+          <p class="text-sm font-medium {toastType === 'success' ? 'text-green-800' : 'text-red-800'}">{toastMessage}</p>
+        </div>
+        <button 
+          on:click={() => showToast = false}
+          class="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 {toastType === 'success' ? 'text-green-500 hover:bg-green-100' : 'text-red-500 hover:bg-red-100'}">
+          <X class="w-4 h-4" />
+        </button>
+      </div>
     </div>
   {/if}
 
-  <div class="w-full max-w-full lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <Card class="px-4 sm:px-6 py-4 pb-8 max-w-5xl mx-auto">
-      <!-- Header -->
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Create New Lead</h1>
-        <p class="text-gray-600 mt-1">Fill in the details below to create a new lead</p>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+              <Target class="w-6 h-6 text-blue-600" />
+              Create New Lead
+            </h1>
+            <p class="text-gray-600 mt-1">Capture lead information and start building relationships</p>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <!-- Show error if returned from server -->
-      {#if form?.error}
-        <Alert color="red" class="mb-6">
-          <span class="font-medium">Error:</span> {form.error}
-        </Alert>
-      {/if}
+    <!-- Show error if returned from server -->
+    {#if form?.error}
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center">
+          <AlertCircle class="w-5 h-5 text-red-400 mr-2" />
+          <span class="font-medium text-red-800">Error:</span>
+          <span class="ml-1 text-red-700">{form.error}</span>
+        </div>
+      </div>
+    {/if}
 
-      <!-- Main Form -->
-      <form method="POST" use:enhance={() => {
-        if (!validateForm()) return;
+    <!-- Main Form -->
+    <form method="POST" use:enhance={({ formData, cancel }) => {
+      if (!validateForm()) {
+        cancel();
+        return;
+      }
+      
+      isSubmitting = true;
+      
+      return async ({ result }) => {
+        isSubmitting = false;
         
-        isSubmitting = true;
-        
-        return async ({ result }) => {
-          isSubmitting = false;
-          
-          if (result.type === 'success') {
-            toastMessage = form?.message || 'Lead created successfully!';
-            showToast = true;
-            resetForm();
-            setTimeout(() => goto('/app/leads/open'), 1500);
-          }
-        };
-      }}>
-        <!-- Lead Information Section -->
-        <div class="mb-8">
-          <h2 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Lead Information</h2>
-          <div class="grid md:grid-cols-2 gap-x-6 gap-y-4">
+        if (result.type === 'success') {
+          showNotification('Lead created successfully!', 'success');
+          resetForm();
+          setTimeout(() => goto('/app/leads/open'), 1500);
+        } else if (result.type === 'failure') {
+          showNotification(result.data?.error || 'Failed to create lead', 'error');
+        }
+      };
+    }} class="space-y-6">
+
+      <!-- Lead Information Section -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <Briefcase class="w-5 h-5 text-blue-600" />
+            Lead Information
+          </h2>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Lead Title -->
             <div class="md:col-span-2">
-              <Label for="lead_title" class="font-medium">Lead Title *</Label>
-              <Input
+              <label for="lead_title" class="block text-sm font-medium text-gray-700 mb-2">
+                Lead Title *
+              </label>
+              <input
                 id="lead_title"
                 name="lead_title"
+                type="text"
                 bind:value={formData.lead_title}
                 on:input={handleChange}
-                placeholder="Lead Title"
-                class={errors.lead_title ? 'border-red-500' : ''}
-                required />
+                placeholder="Enter lead title"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.lead_title ? 'border-red-500 ring-1 ring-red-500' : ''}" />
               {#if errors.lead_title}
-                <span class="text-red-500 text-sm mt-1">{errors.lead_title}</span>
+                <p class="text-red-500 text-sm mt-1">{errors.lead_title}</p>
               {/if}
             </div>
             
             <!-- Company -->
             <div>
-              <Label for="company" class="font-medium">Company</Label>
-              <Input
+              <label for="company" class="block text-sm font-medium text-gray-700 mb-2">
+                <Building class="w-4 h-4 inline mr-1" />
+                Company
+              </label>
+              <input
                 id="company"
                 name="company"
+                type="text"
                 bind:value={formData.company}
                 on:input={handleChange}
-                placeholder="Company Name" />
+                placeholder="Company name"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
             </div>
             
             <!-- Lead Source -->
             <div>
-              <Label for="source" class="font-medium">Lead Source</Label>
-              <Select 
+              <label for="source" class="block text-sm font-medium text-gray-700 mb-2">
+                Lead Source
+              </label>
+              <select 
                 id="source" 
                 name="source" 
                 bind:value={formData.source} 
-                onchange={handleChange}
-                class="w-full">
+                on:change={handleChange}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                <option value="">Select source</option>
                 {#each data.data.source as [value, label]}
                   <option value={value}>{label}</option>
                 {/each}
-              </Select>
+              </select>
             </div>
 
             <!-- Industry -->
             <div>
-              <Label for="industry" class="font-medium">Industry</Label>
-              <Select 
+              <label for="industry" class="block text-sm font-medium text-gray-700 mb-2">
+                Industry
+              </label>
+              <select 
                 id="industry" 
                 name="industry" 
                 bind:value={formData.industry} 
-                onchange={handleChange}
-                class="w-full">
+                on:change={handleChange}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                <option value="">Select industry</option>
                 {#each data.data.industries as [value, label]}
                   <option value={value}>{label}</option>
                 {/each}
-              </Select>
+              </select>
             </div>
 
             <!-- Status -->
             <div>
-              <Label for="status" class="font-medium">Status</Label>
-              <Select 
+              <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                Status
+              </label>
+              <select 
                 id="status" 
                 name="status" 
                 bind:value={formData.status} 
-                onchange={handleChange}
-                class="w-full">
+                on:change={handleChange}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 {#each data.data.status as [value, label]}
                   <option value={value}>{label}</option>
                 {/each}
-              </Select>
+              </select>
             </div>
             
             <!-- Rating -->
             <div>
-              <Label for="rating" class="font-medium">Rating</Label>
-              <Select 
+              <label for="rating" class="block text-sm font-medium text-gray-700 mb-2">
+                Rating
+              </label>
+              <select 
                 id="rating" 
                 name="rating" 
                 bind:value={formData.rating} 
-                onchange={handleChange}
-                class="w-full">
-                <option value="">Select Rating</option>
-                <option value="HOT">Hot</option>
-                <option value="WARM">Warm</option>
-                <option value="COLD">Cold</option>
-              </Select>
+                on:change={handleChange}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                <option value="">Select rating</option>
+                <option value="HOT">🔥 Hot</option>
+                <option value="WARM">🟡 Warm</option>
+                <option value="COLD">🟦 Cold</option>
+              </select>
             </div>
             
             <!-- Website -->
             <div>
-              <Label for="website" class="font-medium">Website</Label>
-              <Input
+              <label for="website" class="block text-sm font-medium text-gray-700 mb-2">
+                <Globe class="w-4 h-4 inline mr-1" />
+                Website
+              </label>
+              <input
                 id="website"
                 name="website"
+                type="url"
                 bind:value={formData.website}
                 on:input={handleChange}
-                placeholder="Website URL" />
+                placeholder="https://company.com"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.website ? 'border-red-500 ring-1 ring-red-500' : ''}" />
+              {#if errors.website}
+                <p class="text-red-500 text-sm mt-1">{errors.website}</p>
+              {/if}
             </div>
             
-            <!-- Opportunity Amount (stored in description) -->
+            <!-- Opportunity Amount -->
             <div>
-              <Label for="opportunity_amount" class="font-medium">Opportunity Amount</Label>
-              <Input
+              <label for="opportunity_amount" class="block text-sm font-medium text-gray-700 mb-2">
+                <DollarSign class="w-4 h-4 inline mr-1" />
+                Opportunity Amount
+              </label>
+              <input
                 type="number"
                 id="opportunity_amount"
                 name="opportunity_amount"
                 bind:value={formData.opportunity_amount}
                 on:input={handleChange}
-                placeholder="Amount" />
+                placeholder="0"
+                min="0"
+                step="0.01"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
             </div>
             
-            <!-- Probability with Icon (stored in description) -->
+            <!-- Probability -->
             <div>
-              <Label for="probability" class="font-medium">Probability</Label>
-              <div class="relative">
-                <Input
-                  id="probability"
-                  name="probability"
-                  bind:value={formData.probability}
-                  on:input={handleChange}
-                  placeholder="Probability" />
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <Fa icon={faPercent} />
-                </div>
-              </div>
-            </div>
-            
-            <!-- Skype ID (stored in description) -->
-            <div>
-              <Label for="skype_ID" class="font-medium">Skype ID</Label>
-              <Input
-                id="skype_ID"
-                name="skype_ID"
-                bind:value={formData.skype_ID}
+              <label for="probability" class="block text-sm font-medium text-gray-700 mb-2">
+                <Percent class="w-4 h-4 inline mr-1" />
+                Probability (%)
+              </label>
+              <input
+                id="probability"
+                name="probability"
+                type="number"
+                min="0"
+                max="100"
+                bind:value={formData.probability}
                 on:input={handleChange}
-                placeholder="Skype ID" />
+                placeholder="50"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.probability ? 'border-red-500 ring-1 ring-red-500' : ''}" />
+              {#if errors.probability}
+                <p class="text-red-500 text-sm mt-1">{errors.probability}</p>
+              {/if}
+            </div>
+            
+            <!-- Budget Range -->
+            <div>
+              <label for="budget_range" class="block text-sm font-medium text-gray-700 mb-2">
+                Budget Range
+              </label>
+              <select
+                id="budget_range"
+                name="budget_range"
+                bind:value={formData.budget_range}
+                on:change={handleChange}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                <option value="">Select budget range</option>
+                <option value="under_10k">Under $10K</option>
+                <option value="10k_50k">$10K - $50K</option>
+                <option value="50k_100k">$50K - $100K</option>
+                <option value="100k_500k">$100K - $500K</option>
+                <option value="500k_plus">$500K+</option>
+              </select>
+            </div>
+
+            <!-- Decision Timeframe -->
+            <div>
+              <label for="decision_timeframe" class="block text-sm font-medium text-gray-700 mb-2">
+                <Calendar class="w-4 h-4 inline mr-1" />
+                Decision Timeframe
+              </label>
+              <select
+                id="decision_timeframe"
+                name="decision_timeframe"
+                bind:value={formData.decision_timeframe}
+                on:change={handleChange}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                <option value="">Select timeframe</option>
+                <option value="immediate">Immediate (&lt; 1 month)</option>
+                <option value="short_term">Short term (1-3 months)</option>
+                <option value="medium_term">Medium term (3-6 months)</option>
+                <option value="long_term">Long term (6+ months)</option>
+              </select>
             </div>
           </div>
         </div>
+      </div>
        
-        <!-- Contact Section -->
-        <div class="mb-8">
-          <h2 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Contact Information</h2>
-          <div class="grid md:grid-cols-2 gap-x-6 gap-y-4">
+      <!-- Contact Section -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <User class="w-5 h-5 text-blue-600" />
+            Contact Information
+          </h2>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- First Name -->
             <div>
-              <Label for="first_name" class="font-medium">First Name *</Label>
-              <Input
+              <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">
+                First Name *
+              </label>
+              <input
                 id="first_name"
                 name="first_name"
+                type="text"
                 bind:value={formData.first_name}
                 on:input={handleChange}
-                placeholder="First Name"
-                class={errors.first_name ? 'border-red-500' : ''}
-                required />
+                placeholder="First name"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.first_name ? 'border-red-500 ring-1 ring-red-500' : ''}" />
               {#if errors.first_name}
-                <span class="text-red-500 text-sm mt-1">{errors.first_name}</span>
+                <p class="text-red-500 text-sm mt-1">{errors.first_name}</p>
               {/if}
             </div>
+            
             <!-- Last Name -->
             <div>
-              <Label for="last_name" class="font-medium">Last Name *</Label>
-              <Input
+              <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">
+                Last Name *
+              </label>
+              <input
                 id="last_name"
                 name="last_name"
+                type="text"
                 bind:value={formData.last_name}
                 on:input={handleChange}
-                placeholder="Last Name"
-                class={errors.last_name ? 'border-red-500' : ''}
-                required />
+                placeholder="Last name"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.last_name ? 'border-red-500 ring-1 ring-red-500' : ''}" />
               {#if errors.last_name}
-                <span class="text-red-500 text-sm mt-1">{errors.last_name}</span>
+                <p class="text-red-500 text-sm mt-1">{errors.last_name}</p>
               {/if}
             </div>
+            
             <!-- Job Title -->
             <div>
-              <Label for="title" class="font-medium">Job Title</Label>
-              <Input
+              <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                Job Title
+              </label>
+              <input
                 id="title"
                 name="title"
+                type="text"
                 bind:value={formData.title}
                 on:input={handleChange}
-                placeholder="Job Title" />
+                placeholder="Job title"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
             </div>
+            
             <!-- Phone Number -->
             <div>
-              <Label for="phone" class="font-medium">Phone</Label>
-              <Input
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                <Phone class="w-4 h-4 inline mr-1" />
+                Phone
+              </label>
+              <input
                 id="phone"
                 name="phone"
+                type="tel"
                 bind:value={formData.phone}
                 on:input={handleChange}
-                placeholder="Phone Number"
-                class={errors.phone ? 'border-red-500' : ''} />
+                placeholder="+1 (555) 123-4567"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.phone ? 'border-red-500 ring-1 ring-red-500' : ''}" />
               {#if errors.phone}
-                <span class="text-red-500 text-sm mt-1">{errors.phone}</span>
+                <p class="text-red-500 text-sm mt-1">{errors.phone}</p>
               {/if}
             </div>
+            
             <!-- Email Address -->
             <div class="md:col-span-2">
-              <Label for="email" class="font-medium">Email *</Label>
-              <Input
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                <Mail class="w-4 h-4 inline mr-1" />
+                Email *
+              </label>
+              <input
                 id="email"
                 type="email"
                 name="email"
                 bind:value={formData.email}
                 on:input={handleChange}
-                placeholder="Email Address"
-                class={errors.email ? 'border-red-500' : ''}
-                required />
+                placeholder="email@company.com"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.email ? 'border-red-500 ring-1 ring-red-500' : ''}" />
               {#if errors.email}
-                <span class="text-red-500 text-sm mt-1">{errors.email}</span>
+                <p class="text-red-500 text-sm mt-1">{errors.email}</p>
+              {/if}
+            </div>
+
+            <!-- LinkedIn URL -->
+            <div class="md:col-span-2">
+              <label for="linkedin_url" class="block text-sm font-medium text-gray-700 mb-2">
+                LinkedIn Profile
+              </label>
+              <input
+                id="linkedin_url"
+                name="linkedin_url"
+                type="url"
+                bind:value={formData.linkedin_url}
+                on:input={handleChange}
+                placeholder="https://linkedin.com/in/username"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors {errors.linkedin_url ? 'border-red-500 ring-1 ring-red-500' : ''}" />
+              {#if errors.linkedin_url}
+                <p class="text-red-500 text-sm mt-1">{errors.linkedin_url}</p>
               {/if}
             </div>
           </div>
         </div>
+      </div>
       
-        <!-- Address Section -->
-        <div class="mb-8">
-          <h2 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Address</h2>
-          <div class="grid md:grid-cols-2 gap-x-6 gap-y-4">
+      <!-- Address Section -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <MapPin class="w-5 h-5 text-blue-600" />
+            Address Information
+          </h2>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Address Lane -->
             <div class="md:col-span-2">
-              <Label for="address_line" class="font-medium">Address Lane</Label>
-              <Input
+              <label for="address_line" class="block text-sm font-medium text-gray-700 mb-2">
+                Address Line
+              </label>
+              <input
                 id="address_line"
                 name="address_line"
+                type="text"
                 bind:value={formData.address_line}
                 on:input={handleChange}
-                placeholder="Address Lane" />
+                placeholder="Street address"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
             </div>
-            <!-- City -->
+            
             <div>
-              <Label for="city" class="font-medium">City</Label>
-              <Input
+              <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
+              <input
                 id="city"
                 name="city"
+                type="text"
                 bind:value={formData.city}
                 on:input={handleChange}
-                placeholder="City" />
+                placeholder="City"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
             </div>
-            <!-- Street -->
+            
             <div>
-              <Label for="street" class="font-medium">Street</Label>
-              <Input
-                id="street"
-                name="street"
-                bind:value={formData.street}
-                on:input={handleChange}
-                placeholder="Street" />
-            </div>
-            <!-- State -->
-            <div>
-              <Label for="state" class="font-medium">State</Label>
-              <Input
+              <label for="state" class="block text-sm font-medium text-gray-700 mb-2">State</label>
+              <input
                 id="state"
                 name="state"
+                type="text"
                 bind:value={formData.state}
                 on:input={handleChange}
-                placeholder="State" />
+                placeholder="State"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
             </div>
-            <!-- Pincode -->
+            
             <div>
-              <Label for="postcode" class="font-medium">Pincode</Label>
-              <Input
+              <label for="postcode" class="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
+              <input
                 id="postcode"
                 name="postcode"
+                type="text"
                 bind:value={formData.postcode}
                 on:input={handleChange}
-                placeholder="Pincode" />
+                placeholder="Postal code"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
             </div>
-            <!-- Country -->
+            
             <div>
-              <Label for="country" class="font-medium">Country</Label>
-              <Input
+              <label for="country" class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+              <input
                 id="country"
                 name="country"
+                type="text"
                 bind:value={formData.country}
                 on:input={handleChange}
-                placeholder="Country" />
+                placeholder="Country"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
             </div>
           </div>
         </div>
+      </div>
         
-        <!-- Description Section -->
-        <div class="mb-8">
-          <h2 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Description</h2>
+      <!-- Additional Details Section -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-semibold text-gray-900">Additional Details</h2>
+        </div>
+        <div class="p-6 space-y-6">
+          <!-- Description -->
           <div>
+            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+              Description
+            </label>
             <textarea
               id="description"
               name="description"
               bind:value={formData.description}
               on:input={handleChange}
-              placeholder="Description"
-              rows="4"
-              class="w-full border rounded p-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+              placeholder="Additional notes about this lead..."
+              rows="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical"></textarea>
+          </div>
+
+          <!-- Pain Points -->
+          <div>
+            <label for="pain_points" class="block text-sm font-medium text-gray-700 mb-2">
+              Pain Points
+            </label>
+            <textarea
+              id="pain_points"
+              name="pain_points"
+              bind:value={formData.pain_points}
+              on:input={handleChange}
+              placeholder="What challenges is the lead facing?"
+              rows="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical"></textarea>
+          </div>
+
+          <!-- Follow-up Dates -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="last_contacted" class="block text-sm font-medium text-gray-700 mb-2">
+                Last Contacted
+              </label>
+              <input
+                id="last_contacted"
+                name="last_contacted"
+                type="date"
+                bind:value={formData.last_contacted}
+                on:input={handleChange}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+            </div>
+            
+            <div>
+              <label for="next_follow_up" class="block text-sm font-medium text-gray-700 mb-2">
+                Next Follow-up
+              </label>
+              <input
+                id="next_follow_up"
+                name="next_follow_up"
+                type="date"
+                bind:value={formData.next_follow_up}
+                on:input={handleChange}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+            </div>
           </div>
         </div>
+      </div>
 
-        <!-- Submit Button - Improved visibility -->
-        <div class="flex justify-end gap-4 mt-6">
-          <Button
-            type="button"
-            color="light"
-            onclick={() => goto('/app/leads/')}
-            disabled={isSubmitting}>
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            color="blue"
-            disabled={isSubmitting}>
-            {#if isSubmitting}
-              <span class="flex items-center">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+      <!-- Submit Button -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="px-6 py-4">
+          <div class="flex justify-end gap-4">
+            <button
+              type="button"
+              on:click={() => goto('/app/leads/')}
+              disabled={isSubmitting}
+              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+              <X class="w-4 h-4" />
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+              {#if isSubmitting}
+                <div class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                 Creating...
-              </span>
-            {:else}
-              Create Lead
-            {/if}
-          </Button>
+              {:else}
+                <Save class="w-4 h-4" />
+                Create Lead
+              {/if}
+            </button>
+          </div>
         </div>
-      </form>
-    </Card>
+      </div>
+    </form>
   </div>
 </div>
