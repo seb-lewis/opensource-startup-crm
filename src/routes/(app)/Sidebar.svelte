@@ -1,158 +1,192 @@
 <script>
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import Fa from 'svelte-fa';
-	import { faPieChart, faQuestion } from '@fortawesome/free-solid-svg-icons';
-	import {
-		Sidebar,
-		SidebarDropdownItem,
-		SidebarDropdownWrapper,
-		SidebarGroup,
-		SidebarItem,
-		SidebarWrapper
-	} from 'flowbite-svelte';
+	import { PieChart, HelpCircle, ChevronDown } from '@lucide/svelte';
 
-	export let drawerHidden = false;
+	let { drawerHidden = $bindable(false) } = $props();
 
 	const closeDrawer = () => {
 		drawerHidden = true;
 	};
 
-	let iconClass =
-		'flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white';
-	let groupClass = 'pt-2 space-y-2';
+	let iconClass = 'w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white';
 
-	$: mainSidebarUrl = $page.url.pathname;
+	let mainSidebarUrl = $derived($page.url.pathname);
 	let activeMainSidebar;
+	let openDropdowns = $state({});
+
+	const toggleDropdown = (key) => {
+		openDropdowns[key] = !openDropdowns[key];
+	};
 
 	afterNavigate((navigation) => {
-		// this fixes https://github.com/themesberg/flowbite-svelte/issues/364
 		document.getElementById('svelte')?.scrollTo({ top: 0 });
 		closeDrawer();
-
 		activeMainSidebar = navigation.to?.url.pathname ?? '';
 	});
-
 </script>
 
-<Sidebar
-	class={drawerHidden ? 'hidden' : ''}
-	activeUrl={mainSidebarUrl}
-	activeClass="bg-gray-100 dark:bg-gray-700"
-	asideClass="fixed inset-0 z-30 flex-none h-full w-64 lg:h-auto border-e border-gray-200 dark:border-gray-600 lg:overflow-y-visible lg:pt-15 lg:block"
+<aside
+	class={`fixed inset-0 z-30 flex-none h-full w-64 lg:h-auto border-e border-gray-200 dark:border-gray-600 lg:overflow-y-visible lg:pt-15 lg:block ${drawerHidden ? 'hidden' : ''}`}
 >
-	<h4 class="sr-only">Main menu</h4>
-	<SidebarWrapper
-		divClass="overflow-y-auto px-3 pt-20 lg:pt-5 h-full bg-white scrolling-touch max-w-2xs lg:h-[calc(100vh-4rem)] lg:block dark:bg-gray-800 lg:me-0 lg:sticky top-2"
-	>
+	<div class="overflow-y-auto px-3 pt-20 lg:pt-5 h-full bg-white scrolling-touch max-w-2xs lg:h-[calc(100vh-4rem)] lg:block dark:bg-gray-800 lg:me-0 lg:sticky top-2">
 		<nav class="divide-y divide-gray-200 dark:divide-gray-700">
-			<SidebarGroup ulClass={groupClass} class="mb-3">
-				<SidebarItem
-					label="Dashboard"
-					href="/app"
-					class={`${mainSidebarUrl === '/app' ? 'flex p-2 items-center rounded-lg bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					spanClass="ml-3"
-				>
-					<svelte:fragment slot="icon">
-						<Fa
-							icon={faPieChart}
-							class={`${iconClass} ${mainSidebarUrl === '/app' ? 'text-gray-900 dark:text-white' : ''}`}
-						/>
-					</svelte:fragment>
-				</SidebarItem>
+			<ul class="pt-2 space-y-2 mb-3">
+				<li>
+					<a
+						href="/app"
+						class={`flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${mainSidebarUrl === '/app' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					>
+						<PieChart class={`${iconClass} ${mainSidebarUrl === '/app' ? 'text-gray-900 dark:text-white' : ''}`} />
+						<span class="ml-3">Dashboard</span>
+					</a>
+				</li>
 				
-				<SidebarDropdownWrapper label="Leads">
-					<SidebarDropdownItem
-						label="Open Leads"
-						href="/app/leads/open"
-						class={`${mainSidebarUrl === '/app/leads/open' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-					<SidebarDropdownItem
-						label="Create Lead"
-						href="/app/leads/new"
-						class={`${mainSidebarUrl === '/app/leads/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-				</SidebarDropdownWrapper>
+				<li>
+					<button
+						type="button"
+						class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+						onclick={() => toggleDropdown('leads')}
+					>
+						<span class="flex-1 ml-3 text-left whitespace-nowrap">Leads</span>
+						<ChevronDown class={`w-3 h-3 transition-transform ${openDropdowns.leads ? 'rotate-180' : ''}`} />
+					</button>
+					{#if openDropdowns.leads}
+						<ul class="py-2 space-y-2">
+							<li>
+								<a
+									href="/app/leads/open"
+									class={`flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 ${mainSidebarUrl === '/app/leads/open' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+								>
+									Open Leads
+								</a>
+							</li>
+							<li>
+								<a
+									href="/app/leads/new"
+									class={`flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 ${mainSidebarUrl === '/app/leads/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+								>
+									Create Lead
+								</a>
+							</li>
+						</ul>
+					{/if}
+				</li>
 
-				<SidebarDropdownWrapper label="Accounts">
-					<SidebarDropdownItem
-						label="All Accounts"
-						href="/app/accounts"
-						class={`${mainSidebarUrl === '/app/accounts' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-					<SidebarDropdownItem
-						label="New Account"
-						href="/app/accounts/new"
-						class={`${mainSidebarUrl === '/app/accounts/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-					<SidebarDropdownItem
-						label="Account Opportunities"
-						href="/app/accounts/opportunities"
-						class={`${mainSidebarUrl === '/app/accounts/opportunities' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-				</SidebarDropdownWrapper>
-				<SidebarDropdownWrapper label="Cases">
-					<SidebarDropdownItem
-						label="All Cases"
-						href="/app/cases"
-						class={`${mainSidebarUrl === '/app/cases' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-					<SidebarDropdownItem
-						label="New Case"
-						href="/app/cases/new"
-						class={`${mainSidebarUrl === '/app/cases/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-				</SidebarDropdownWrapper>
+				<li>
+					<button
+						type="button"
+						class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+						onclick={() => toggleDropdown('accounts')}
+					>
+						<span class="flex-1 ml-3 text-left whitespace-nowrap">Accounts</span>
+						<ChevronDown class={`w-3 h-3 transition-transform ${openDropdowns.accounts ? 'rotate-180' : ''}`} />
+					</button>
+					{#if openDropdowns.accounts}
+						<ul class="py-2 space-y-2">
+							<li>
+								<a
+									href="/app/accounts"
+									class={`flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 ${mainSidebarUrl === '/app/accounts' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+								>
+									All Accounts
+								</a>
+							</li>
+							<li>
+								<a
+									href="/app/accounts/new"
+									class={`flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 ${mainSidebarUrl === '/app/accounts/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+								>
+									New Account
+								</a>
+							</li>
+							<li>
+								<a
+									href="/app/accounts/opportunities"
+									class={`flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 ${mainSidebarUrl === '/app/accounts/opportunities' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+								>
+									Account Opportunities
+								</a>
+							</li>
+						</ul>
+					{/if}
+				</li>
 
-				<SidebarDropdownWrapper label="Tasks">
-					<SidebarDropdownItem
-						label="List"
-						href="/app/tasks/list"
-						class={`${mainSidebarUrl === '/app/tasks/list' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-					<!-- <SidebarDropdownItem
-						label="Boards"
-						href="/app/tasks"
-						class={`${mainSidebarUrl === '/app/tasks' ? 'bg-blue-100 font-semibold dark:bg-blue-700' : ''}`}
-					/> -->
-					<SidebarDropdownItem
-						label="Calendar"
-						href="/app/tasks/calendar"
-						class={`${mainSidebarUrl === '/app/tasks/calendar' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-				</SidebarDropdownWrapper>
+				<li>
+					<button
+						type="button"
+						class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+						onclick={() => toggleDropdown('cases')}
+					>
+						<span class="flex-1 ml-3 text-left whitespace-nowrap">Cases</span>
+						<ChevronDown class={`w-3 h-3 transition-transform ${openDropdowns.cases ? 'rotate-180' : ''}`} />
+					</button>
+					{#if openDropdowns.cases}
+						<ul class="py-2 space-y-2">
+							<li>
+								<a
+									href="/app/cases"
+									class={`flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 ${mainSidebarUrl === '/app/cases' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+								>
+									All Cases
+								</a>
+							</li>
+							<li>
+								<a
+									href="/app/cases/new"
+									class={`flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 ${mainSidebarUrl === '/app/cases/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+								>
+									New Case
+								</a>
+							</li>
+						</ul>
+					{/if}
+				</li>
 
-				<!-- <SidebarDropdownWrapper label="Invoices">
-					<SidebarDropdownItem
-						label="All Invoices"
-						href="/app/invoices"
-						class={`${mainSidebarUrl === '/app/invoices' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-					<SidebarDropdownItem
-						label="Create Invoice"
-						href="/app/invoices/new"
-						class={`${mainSidebarUrl === '/app/invoices/new' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					/>
-				</SidebarDropdownWrapper> -->
+				<li>
+					<button
+						type="button"
+						class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+						onclick={() => toggleDropdown('tasks')}
+					>
+						<span class="flex-1 ml-3 text-left whitespace-nowrap">Tasks</span>
+						<ChevronDown class={`w-3 h-3 transition-transform ${openDropdowns.tasks ? 'rotate-180' : ''}`} />
+					</button>
+					{#if openDropdowns.tasks}
+						<ul class="py-2 space-y-2">
+							<li>
+								<a
+									href="/app/tasks/list"
+									class={`flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 ${mainSidebarUrl === '/app/tasks/list' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+								>
+									List
+								</a>
+							</li>
+							<li>
+								<a
+									href="/app/tasks/calendar"
+									class={`flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 ${mainSidebarUrl === '/app/tasks/calendar' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+								>
+									Calendar
+								</a>
+							</li>
+						</ul>
+					{/if}
+				</li>
 
-				<SidebarItem
-					label="Support"
-					href="/app/support"
-					class={`${mainSidebarUrl === '/app/support' ? 'flex p-2 items-center rounded-lg bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
-					spanClass="ml-3"
-				>
-					<svelte:fragment slot="icon">
-						<Fa
-							icon={faQuestion}
-							class={`${iconClass} ${mainSidebarUrl === '/app/support' ? 'text-gray-900 dark:text-white' : ''}`}
-						/>
-					</svelte:fragment>
-				</SidebarItem>
-			</SidebarGroup>
-			
+				<li>
+					<a
+						href="/app/support"
+						class={`flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${mainSidebarUrl === '/app/support' ? 'bg-gray-100 font-semibold dark:bg-gray-700' : ''}`}
+					>
+						<HelpCircle class={`${iconClass} ${mainSidebarUrl === '/app/support' ? 'text-gray-900 dark:text-white' : ''}`} />
+						<span class="ml-3">Support</span>
+					</a>
+				</li>
+			</ul>
 		</nav>
-	</SidebarWrapper>
-</Sidebar>
+	</div>
+</aside>
 
 <div
 	hidden={drawerHidden}
