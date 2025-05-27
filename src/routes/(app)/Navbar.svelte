@@ -1,92 +1,116 @@
 <script>
-	import {
-	Avatar,
-		DarkMode,
-		Dropdown,
-		DropdownHeader,
-		DropdownItem,
-		NavBrand,
-		NavHamburger,
-		NavLi,
-		NavUl,
-		Navbar,
-	} from 'flowbite-svelte';
-	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 	import '../../app.css';
 	import imgLogo from '$lib/assets/images/logo.png';
-	import { faUserFriends, faBuilding, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-	import Fa from 'svelte-fa';
+	import { Users, Building, LogOut, Menu, Moon, Sun, ChevronDown } from 'lucide-svelte';
 
-export let org_name = 'BottleCRM';
-export let fluid = true;
-export let drawerHidden = false;
-export let list = false;
-export let name = 'Neil Sims';
-export let email = "";
-export let userPic = '';
+	let {
+		org_name = 'BottleCRM',
+		fluid = true,
+		drawerHidden = $bindable(false),
+		list = false,
+		name = 'Neil Sims',
+		email = "",
+		userPic = ''
+	} = $props();
+
+	let isDark = $state(false);
+	let dropdownOpen = $state(false);
+
+	const toggleDarkMode = () => {
+		isDark = !isDark;
+		document.documentElement.classList.toggle('dark');
+	};
+
+	const toggleDropdown = () => {
+		dropdownOpen = !dropdownOpen;
+	};
 </script>
 
-<Navbar {fluid} class="text-black" color="default" let:NavContainer>
-	<NavHamburger
-		onClick={() => (drawerHidden = !drawerHidden)}
-		class="m-0 me-3 md:block lg:hidden"
-	/>
-<NavBrand href="/" class={list ? 'w-40' : 'lg:w-60'}>
-    <img src={imgLogo} class="me-2.5 h-6 sm:h-8" alt="BottleCRM" />
-    <span
-        class="ml-px self-center text-xl font-semibold whitespace-nowrap sm:text-2xl dark:text-white"
-    >
-        {org_name}
-    </span>
-</NavBrand>
-	<div class="hidden lg:block lg:ps-3">
-		{#if list}
-			<NavUl class="ml-2" activeUrl="/" activeClass="text-primary-600 dark:text-primary-500">
-				<NavLi href="/">Home</NavLi>
-				<NavLi href="#top">Messages</NavLi>
-				<NavLi href="#top">Profile</NavLi>
-				<NavLi href="#top">Settings</NavLi>
-				<NavLi class="cursor-pointer">
-					Dropdown
-					<ChevronDownOutline class="ms-0 inline" />
-				</NavLi>
-				<Dropdown class="z-20 w-44">
-					<DropdownItem href="#top">Item 1</DropdownItem>
-					<DropdownItem href="#top">Item 2</DropdownItem>
-					<DropdownItem href="#top">Item 3</DropdownItem>
-				</Dropdown>
-			</NavUl>
-		{:else}
-			&nbsp;
-		{/if}
-	</div>
-	<div class="ms-auto flex items-center text-gray-500 sm:order-2 dark:text-gray-400">
-		<!-- <Notifications />
-		<AppsMenu /> -->
-		<DarkMode />
-		<!-- <UserMenu {...Users[4]} /> -->
-
-		<button class="ms-3 rounded-full ring-gray-400 focus:ring-4 dark:ring-gray-600">
-			<Avatar size="sm" src={userPic} tabindex={0} />
+<nav class="bg-white border-gray-200 dark:bg-gray-800 border-b px-4 lg:px-6 py-2.5">
+	<div class={`flex flex-wrap justify-between items-center mx-auto ${fluid ? 'max-w-screen-xl' : ''}`}>
+		<button
+			onclick={() => (drawerHidden = !drawerHidden)}
+			class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:block lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+		>
+			<Menu class="w-6 h-6" />
 		</button>
-		<Dropdown placement="bottom-end" class="min-w-[220px] shadow-lg rounded-lg border border-gray-100 dark:border-gray-700">
-			<DropdownHeader class="pb-2 border-b border-gray-100 dark:border-gray-700 mb-2">
-				<span class="block text-base font-semibold text-gray-900 dark:text-white">{name}</span>
-				<span class="block truncate text-sm font-medium text-gray-500 dark:text-gray-400">{email}</span>
-			</DropdownHeader>
-			<DropdownItem href="/app/users" class="flex items-center gap-2">
-				<Fa icon={faUserFriends} class="w-4 h-4 text-gray-400" />
-				Users
-			</DropdownItem>
-			<DropdownItem href="/org" class="flex items-center gap-2">
-				<Fa icon={faBuilding} class="w-4 h-4 text-gray-400" />
-				All Organizations
-			</DropdownItem>
-			<div class="my-2 border-t border-gray-100 dark:border-gray-700"></div>
-			<DropdownItem href="/logout" class="flex items-center gap-2 text-red-600 dark:text-red-400">
-				<Fa icon={faSignOutAlt} class="w-4 h-4" />
-				Sign out
-			</DropdownItem>
-		</Dropdown>
+
+		<a href="/" class={`flex items-center ${list ? 'w-40' : 'lg:w-60'}`}>
+			<img src={imgLogo} class="mr-3 h-6 sm:h-8" alt="BottleCRM" />
+			<span class="self-center text-xl font-semibold whitespace-nowrap sm:text-2xl dark:text-white">
+				{org_name}
+			</span>
+		</a>
+
+		<div class="hidden lg:block lg:ps-3">
+			{#if list}
+				<ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
+					<li><a href="/" class="block py-2 pr-4 pl-3 text-gray-700 hover:text-primary-700 dark:text-gray-400 dark:hover:text-white">Home</a></li>
+					<li><a href="#top" class="block py-2 pr-4 pl-3 text-gray-700 hover:text-primary-700 dark:text-gray-400 dark:hover:text-white">Messages</a></li>
+					<li><a href="#top" class="block py-2 pr-4 pl-3 text-gray-700 hover:text-primary-700 dark:text-gray-400 dark:hover:text-white">Profile</a></li>
+					<li><a href="#top" class="block py-2 pr-4 pl-3 text-gray-700 hover:text-primary-700 dark:text-gray-400 dark:hover:text-white">Settings</a></li>
+				</ul>
+			{/if}
+		</div>
+
+		<div class="flex items-center lg:order-2">
+			<button
+				onclick={toggleDarkMode}
+				class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
+			>
+				{#if isDark}
+					<Sun class="w-5 h-5" />
+				{:else}
+					<Moon class="w-5 h-5" />
+				{/if}
+			</button>
+
+			<div class="relative">
+				<button
+					onclick={toggleDropdown}
+					class="flex mx-3 text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+				>
+					<img class="w-8 h-8 rounded-full" src={userPic} alt="user" />
+				</button>
+
+				{#if dropdownOpen}
+					<div class="absolute right-0 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600 min-w-[220px]">
+						<div class="px-4 py-3 border-b border-gray-100 dark:border-gray-600">
+							<span class="block text-sm font-semibold text-gray-900 dark:text-white">{name}</span>
+							<span class="block text-sm text-gray-500 dark:text-gray-400 truncate">{email}</span>
+						</div>
+						<ul class="py-1">
+							<li>
+								<a
+									href="/app/users"
+									class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+								>
+									<Users class="w-4 h-4 text-gray-400" />
+									Users
+								</a>
+							</li>
+							<li>
+								<a
+									href="/org"
+									class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+								>
+									<Building class="w-4 h-4 text-gray-400" />
+									All Organizations
+								</a>
+							</li>
+							<li class="border-t border-gray-100 dark:border-gray-600">
+								<a
+									href="/logout"
+									class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-400"
+								>
+									<LogOut class="w-4 h-4" />
+									Sign out
+								</a>
+							</li>
+						</ul>
+					</div>
+				{/if}
+			</div>
+		</div>
 	</div>
-</Navbar>
+</nav>

@@ -4,8 +4,7 @@
 	import Sidebar from './Sidebar.svelte';
 	let { data, children } = $props();
 
-	let drawerHidden = $state(false);
-	// export let data;
+	let drawerHidden = $state(true);
 </script>
 
 <header
