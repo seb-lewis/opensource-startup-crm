@@ -59,25 +59,25 @@
 	};
 
 	const roleColors = {
-		ADMIN: 'bg-red-50 text-red-700 border-red-200',
-		USER: 'bg-blue-50 text-blue-700 border-blue-200',
-		SALES_REP: 'bg-green-50 text-green-700 border-green-200',
-		SUPPORT_REP: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-		READ_ONLY: 'bg-gray-50 text-gray-700 border-gray-200'
+		ADMIN: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800',
+		USER: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800',
+		SALES_REP: 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800',
+		SUPPORT_REP: 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800',
+		READ_ONLY: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'
 	};
 </script>
 
-<div class="min-h-screen bg-gray-50 py-8">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
 	<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 		<!-- Header with Logout -->
 		<div class="mb-8 flex items-center justify-between">
 			<div>
-				<h1 class="text-3xl font-bold text-gray-900">Organization Settings</h1>
-				<p class="mt-1 text-sm text-gray-500">Manage your organization and team members</p>
+				<h1 class="text-3xl font-bold text-gray-900 dark:text-white">Organization Settings</h1>
+				<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage your organization and team members</p>
 			</div>
 			<a 
 				href="/logout" 
-				class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-200 hover:bg-gray-50 hover:text-red-600 transition-colors"
+				class="inline-flex items-center gap-2 rounded-lg bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-red-600 dark:hover:text-red-400 transition-colors"
 			>
 				<LogOut class="h-4 w-4" />
 				Logout
@@ -85,16 +85,16 @@
 		</div>
 
 		<!-- Organization Details Card -->
-		<div class="mb-8 overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+		<div class="mb-8 overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700">
 			<div class="px-6 py-5">
 				<div class="flex items-start justify-between">
 					<div class="flex items-center gap-3">
-						<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
-							<Building2 class="h-6 w-6 text-blue-600" />
+						<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
+							<Building2 class="h-6 w-6 text-blue-600 dark:text-blue-400" />
 						</div>
 						<div>
-							<h2 class="text-xl font-semibold text-gray-900">{org.name}</h2>
-							<div class="mt-1 flex flex-wrap items-center gap-4 text-sm text-gray-500">
+							<h2 class="text-xl font-semibold text-gray-900 dark:text-white">{org.name}</h2>
+							<div class="mt-1 flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
 								{#if org.domain}
 									<span class="flex items-center gap-1">
 										<Globe class="h-4 w-4" />
@@ -111,7 +111,7 @@
 					{#if !editing}
 						<button
 							type="button"
-							class="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+							class="rounded-lg p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300"
 							on:click={startEdit}
 							aria-label="Edit organization"
 						>
@@ -121,14 +121,14 @@
 				</div>
 
 				{#if org.description && !editing}
-					<p class="mt-4 text-gray-600">{org.description}</p>
+					<p class="mt-4 text-gray-600 dark:text-gray-300">{org.description}</p>
 				{/if}
 
 				{#if editing}
 					<form method="POST" action="?/update" class="mt-6 space-y-6">
 						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 							<div>
-								<label for="org-name" class="block text-sm font-medium text-gray-700">
+								<label for="org-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 									Organization Name
 								</label>
 								<div class="mt-1 relative">
@@ -138,14 +138,14 @@
 										type="text"
 										bind:value={formOrg.name}
 										required
-										class="block w-full rounded-lg border-gray-300 pl-10 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+										class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white pl-10 shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm"
 									/>
-									<Building2 class="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+									<Building2 class="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
 								</div>
 							</div>
 
 							<div>
-								<label for="org-domain" class="block text-sm font-medium text-gray-700">
+								<label for="org-domain" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 									Domain
 								</label>
 								<div class="mt-1 relative">
@@ -155,15 +155,15 @@
 										type="text"
 										bind:value={formOrg.domain}
 										placeholder="yourcompany.com"
-										class="block w-full rounded-lg border-gray-300 pl-10 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+										class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white pl-10 shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm placeholder-gray-400 dark:placeholder-gray-500"
 									/>
-									<Globe class="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+									<Globe class="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
 								</div>
 							</div>
 						</div>
 
 						<div>
-							<label for="org-description" class="block text-sm font-medium text-gray-700">
+							<label for="org-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 								Description
 							</label>
 							<textarea
@@ -171,7 +171,7 @@
 								name="description"
 								rows="3"
 								bind:value={formOrg.description}
-								class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+								class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm placeholder-gray-400 dark:placeholder-gray-500"
 								placeholder="Describe your organization"
 							></textarea>
 						</div>
@@ -179,7 +179,7 @@
 						<div class="flex justify-end gap-3">
 							<button
 								type="button"
-								class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+								class="inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600"
 								on:click={cancelEdit}
 							>
 								<X class="h-4 w-4" />
@@ -187,7 +187,7 @@
 							</button>
 							<button 
 								type="submit" 
-								class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
+								class="inline-flex items-center gap-2 rounded-lg bg-blue-600 dark:bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 dark:hover:bg-blue-700"
 							>
 								<Check class="h-4 w-4" />
 								Save Changes
@@ -199,23 +199,23 @@
 		</div>
 
 		<!-- Users Management Card -->
-		<div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+		<div class="overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700">
 			<div class="px-6 py-5">
 				<div class="flex items-center justify-between">
 					<div class="flex items-center gap-3">
-						<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
-							<Users class="h-5 w-5 text-green-600" />
+						<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/30">
+							<Users class="h-5 w-5 text-green-600 dark:text-green-400" />
 						</div>
-						<h3 class="text-lg font-semibold text-gray-900">Team Members</h3>
+						<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Team Members</h3>
 					</div>
 				</div>
 
 				<!-- Add User Form -->
-				<div class="mt-6 rounded-lg bg-gray-50 p-4">
-					<h4 class="text-sm font-medium text-gray-900 mb-3">Add New Member</h4>
+				<div class="mt-6 rounded-lg bg-gray-50 dark:bg-gray-700/50 p-4">
+					<h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Add New Member</h4>
 					<form method="POST" action="?/add_user" class="flex flex-col gap-3 sm:flex-row sm:items-end">
 						<div class="flex-1">
-							<label for="add-user-email" class="block text-xs font-medium text-gray-700 mb-1">
+							<label for="add-user-email" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
 								Email Address
 							</label>
 							<input 
@@ -223,18 +223,18 @@
 								name="email" 
 								type="email" 
 								required 
-								class="block w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+								class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 placeholder-gray-400 dark:placeholder-gray-500" 
 								placeholder="user@example.com" 
 							/>
 						</div>
 						<div class="sm:w-32">
-							<label for="add-user-role" class="block text-xs font-medium text-gray-700 mb-1">
+							<label for="add-user-role" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
 								Role
 							</label>
 							<select 
 								id="add-user-role" 
 								name="role" 
-								class="block w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
+								class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
 							>
 								<option value="USER">User</option>
 								<option value="ADMIN">Admin</option>
@@ -242,7 +242,7 @@
 						</div>
 						<button 
 							type="submit" 
-							class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
+							class="inline-flex items-center gap-2 rounded-lg bg-blue-600 dark:bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 dark:hover:bg-blue-700"
 						>
 							<Plus class="h-4 w-4" />
 							Add Member
@@ -253,16 +253,16 @@
 				<!-- Users Table -->
 				<div class="mt-6 overflow-hidden">
 					<div class="overflow-x-auto">
-						<table class="min-w-full divide-y divide-gray-200">
-							<thead class="bg-gray-50">
+						<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+							<thead class="bg-gray-50 dark:bg-gray-700/50">
 								<tr>
-									<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+									<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
 										Member
 									</th>
-									<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+									<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
 										Role
 									</th>
-									<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+									<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
 										Joined
 									</th>
 									<th class="relative px-6 py-3">
@@ -270,9 +270,9 @@
 									</th>
 								</tr>
 							</thead>
-							<tbody class="divide-y divide-gray-200 bg-white">
+							<tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
 								{#each users as user, i}
-									<tr class="hover:bg-gray-50">
+									<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
 										<td class="px-6 py-4 whitespace-nowrap">
 											<div class="flex items-center">
 												{#if user.avatar}
@@ -282,20 +282,20 @@
 														class="h-10 w-10 rounded-full object-cover"
 													/>
 												{:else}
-													<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200">
-														<User class="h-5 w-5 text-gray-500" />
+													<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-600">
+														<User class="h-5 w-5 text-gray-500 dark:text-gray-400" />
 													</div>
 												{/if}
 												<div class="ml-4">
-													<div class="text-sm font-medium text-gray-900">
+													<div class="text-sm font-medium text-gray-900 dark:text-white">
 														{user.name}
 														{#if user.isSelf}
-															<span class="ml-2 inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+															<span class="ml-2 inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-900/30 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:text-blue-300">
 																You
 															</span>
 														{/if}
 													</div>
-													<div class="text-sm text-gray-500">{user.email}</div>
+													<div class="text-sm text-gray-500 dark:text-gray-400">{user.email}</div>
 												</div>
 											</div>
 										</td>
@@ -311,7 +311,7 @@
 														<input type="hidden" name="user_id" value={user.id} />
 														<select 
 															name="role" 
-															class="rounded-lg border-gray-300 text-xs focus:border-blue-500 focus:ring-blue-500"
+															class="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-xs focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
 														>
 															<option value="USER" selected={user.role === 'USER'}>User</option>
 															<option value="ADMIN" selected={user.role === 'ADMIN'}>Admin</option>
@@ -321,14 +321,14 @@
 														</select>
 														<button 
 															type="submit" 
-															class="rounded-lg bg-green-600 p-1.5 text-white hover:bg-green-700"
+															class="rounded-lg bg-green-600 dark:bg-green-600 p-1.5 text-white hover:bg-green-700 dark:hover:bg-green-700"
 															title="Save"
 														>
 															<Check class="h-3.5 w-3.5" />
 														</button>
 														<button 
 															type="button" 
-															class="rounded-lg bg-gray-600 p-1.5 text-white hover:bg-gray-700" 
+															class="rounded-lg bg-gray-600 dark:bg-gray-600 p-1.5 text-white hover:bg-gray-700 dark:hover:bg-gray-700" 
 															on:click={() => { users[i].editingRole = false }}
 															title="Cancel"
 														>
@@ -338,7 +338,7 @@
 												{:else}
 													<button
 														type="button"
-														class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors {roleColors[user.role]} hover:bg-opacity-80"
+														class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors {roleColors[user.role]} hover:bg-opacity-80 dark:hover:bg-opacity-80"
 														on:click={() => { users[i].editingRole = true }}
 														title="Click to edit role"
 													>
@@ -349,12 +349,12 @@
 												{/if}
 											{/if}
 										</td>
-										<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+										<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
 											{user.joined}
 										</td>
 										<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
 											{#if user.isSelf}
-												<span class="text-gray-300 cursor-not-allowed">—</span>
+												<span class="text-gray-300 dark:text-gray-600 cursor-not-allowed">—</span>
 											{:else}
 												<form 
 													method="POST" 
@@ -369,7 +369,7 @@
 													<input type="hidden" name="user_id" value={user.id} />
 													<button 
 														type="submit" 
-														class="rounded-lg p-2 text-red-600 hover:bg-red-50 hover:text-red-700"
+														class="rounded-lg p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300"
 														title="Remove user"
 													>
 														<Trash2 class="h-4 w-4" />

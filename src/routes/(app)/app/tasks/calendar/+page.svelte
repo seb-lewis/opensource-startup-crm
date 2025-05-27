@@ -99,28 +99,28 @@
   $: selectedTasks = tasksByDate[selectedDate] || [];
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 sm:p-6 lg:p-8">
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-4 sm:p-6 lg:p-8">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="mb-8 text-center">
       <div class="flex items-center justify-center gap-3 mb-4">
-        <Calendar class="w-8 h-8 text-blue-600" />
-        <h1 class="text-3xl font-bold text-gray-900">Task Calendar</h1>
+        <Calendar class="w-8 h-8 text-blue-600 dark:text-blue-400" />
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Task Calendar</h1>
       </div>
-      <p class="text-gray-600">Manage and track your tasks with ease</p>
+      <p class="text-gray-600 dark:text-gray-300">Manage and track your tasks with ease</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Calendar Section -->
       <div class="lg:col-span-2">
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
           <!-- Calendar Header -->
-          <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+          <div class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 px-6 py-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-4">
                 <button
                   onclick={previousMonth}
-                  class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                  class="p-2 rounded-lg bg-white/10 hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20 transition-colors"
                 >
                   <ChevronLeft class="w-5 h-5 text-white" />
                 </button>
@@ -129,14 +129,14 @@
                 </h2>
                 <button
                   onclick={nextMonth}
-                  class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                  class="p-2 rounded-lg bg-white/10 hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20 transition-colors"
                 >
                   <ChevronRight class="w-5 h-5 text-white" />
                 </button>
               </div>
               <button
                 onclick={goToToday}
-                class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg font-medium transition-colors"
+                class="px-4 py-2 bg-white/10 hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20 text-white rounded-lg font-medium transition-colors"
               >
                 Today
               </button>
@@ -144,9 +144,9 @@
           </div>
 
           <!-- Days of Week -->
-          <div class="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+          <div class="grid grid-cols-7 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
             {#each ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as day}
-              <div class="p-4 text-center text-sm font-medium text-gray-600 border-r border-gray-200 last:border-r-0">
+              <div class="p-4 text-center text-sm font-medium text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-600 last:border-r-0">
                 {day}
               </div>
             {/each}
@@ -158,27 +158,27 @@
               {#if date}
                 <button
                   onclick={() => selectDay(date)}
-                  class="relative h-16 sm:h-20 p-2 border-r border-b border-gray-200 last:border-r-0 
-                         hover:bg-blue-50 transition-colors group
-                         {formatDate(date) === selectedDate ? 'bg-blue-600 text-white' : ''}
-                         {isToday(date) && formatDate(date) !== selectedDate ? 'bg-blue-100 text-blue-700' : ''}
-                         {!isToday(date) && formatDate(date) !== selectedDate ? 'text-gray-900' : ''}"
+                  class="relative h-16 sm:h-20 p-2 border-r border-b border-gray-200 dark:border-gray-600 last:border-r-0 
+                         hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors group
+                         {formatDate(date) === selectedDate ? 'bg-blue-600 dark:bg-blue-700 text-white' : ''}
+                         {isToday(date) && formatDate(date) !== selectedDate ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : ''}
+                         {!isToday(date) && formatDate(date) !== selectedDate ? 'text-gray-900 dark:text-gray-100' : ''}"
                 >
                   <div class="text-sm font-medium">
                     {date.getDate()}
                   </div>
                   {#if hasTasks(date)}
                     <div class="absolute bottom-1 right-1 w-2 h-2 rounded-full 
-                               {formatDate(date) === selectedDate ? 'bg-white' : 'bg-blue-500'}">
+                               {formatDate(date) === selectedDate ? 'bg-white' : 'bg-blue-500 dark:bg-blue-400'}">
                     </div>
                     <div class="absolute bottom-1 left-1 text-xs font-medium
-                               {formatDate(date) === selectedDate ? 'text-white' : 'text-blue-600'}">
+                               {formatDate(date) === selectedDate ? 'text-white' : 'text-blue-600 dark:text-blue-400'}">
                       {tasksByDate[formatDate(date)].length}
                     </div>
                   {/if}
                 </button>
               {:else}
-                <div class="h-16 sm:h-20 border-r border-b border-gray-200 bg-gray-50"></div>
+                <div class="h-16 sm:h-20 border-r border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800"></div>
               {/if}
             {/each}
           </div>
@@ -187,9 +187,9 @@
 
       <!-- Tasks Section -->
       <div class="lg:col-span-1">
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 h-fit">
-          <div class="p-6 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 h-fit">
+          <div class="p-6 border-b border-gray-200 dark:border-gray-600">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
               Tasks for {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { 
                 weekday: 'long', 
                 year: 'numeric', 
@@ -197,7 +197,7 @@
                 day: 'numeric' 
               })}
             </h3>
-            <div class="text-sm text-gray-600">
+            <div class="text-sm text-gray-600 dark:text-gray-300">
               {selectedTasks.length} task{selectedTasks.length !== 1 ? 's' : ''}
             </div>
           </div>
@@ -208,61 +208,61 @@
                 {#each selectedTasks as task}
                   <a 
                     href="/app/tasks/{task.id}"
-                    class="block p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors border border-gray-200"
+                    class="block p-4 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-xl transition-colors border border-gray-200 dark:border-gray-600"
                   >
                     <div class="flex items-start justify-between mb-2">
-                      <h4 class="font-medium text-gray-900 overflow-hidden text-ellipsis" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{task.title}</h4>
+                      <h4 class="font-medium text-gray-900 dark:text-white overflow-hidden text-ellipsis" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{task.title}</h4>
                       <svelte:component 
                         this={getStatusIcon(task.status)} 
-                        class="w-4 h-4 text-gray-400 flex-shrink-0 ml-2"
+                        class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 ml-2"
                       />
                     </div>
                     
                     {#if task.description}
-                      <p class="text-sm text-gray-600 mb-3 overflow-hidden text-ellipsis" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{task.description}</p>
+                      <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 overflow-hidden text-ellipsis" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{task.description}</p>
                     {/if}
 
                     <div class="flex items-center justify-between">
                       <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-lg">
+                        <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs font-medium rounded-lg">
                           {task.type}
                         </span>
                         <span class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-lg
-                               {task.priority === 'High' ? 'bg-red-100 text-red-700' : 
-                                 task.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' : 
-                                 'bg-green-100 text-green-700'}">
+                               {task.priority === 'High' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' : 
+                                 task.priority === 'Medium' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' : 
+                                 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300'}">
                           <svelte:component this={getPriorityIcon(task.priority)} class="w-3 h-3" />
                           {task.priority}
                         </span>
                       </div>
-                      <span class="text-xs text-gray-500 font-medium">{task.status}</span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400 font-medium">{task.status}</span>
                     </div>
                   </a>
                 {/each}
               </div>
             {:else}
               <div class="text-center py-12">
-                <Calendar class="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p class="text-gray-500 text-sm">No tasks scheduled for this date</p>
-                <p class="text-gray-400 text-xs mt-1">Select a different date to view tasks</p>
+                <Calendar class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <p class="text-gray-500 dark:text-gray-400 text-sm">No tasks scheduled for this date</p>
+                <p class="text-gray-400 dark:text-gray-500 text-xs mt-1">Select a different date to view tasks</p>
               </div>
             {/if}
           </div>
         </div>
 
         <!-- Quick Stats -->
-        <div class="mt-6 bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-          <h4 class="font-semibold text-gray-900 mb-4">This Month</h4>
+        <div class="mt-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
+          <h4 class="font-semibold text-gray-900 dark:text-white mb-4">This Month</h4>
           <div class="space-y-3">
             <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-600">Total Tasks</span>
-              <span class="font-medium text-gray-900">
+              <span class="text-sm text-gray-600 dark:text-gray-300">Total Tasks</span>
+              <span class="font-medium text-gray-900 dark:text-white">
                 {totalMonthlyTasks}
               </span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-600">Days with Tasks</span>
-              <span class="font-medium text-gray-900">{monthlyTasks.length}</span>
+              <span class="text-sm text-gray-600 dark:text-gray-300">Days with Tasks</span>
+              <span class="font-medium text-gray-900 dark:text-white">{monthlyTasks.length}</span>
             </div>
           </div>
         </div>

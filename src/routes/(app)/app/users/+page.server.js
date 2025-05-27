@@ -14,6 +14,7 @@ export async function load({ params, locals }) {
             role: 'ADMIN'
         }
     });
+    console.log('User Organization:', userOrg);
     if (!userOrg) {
         return {
             error: {
