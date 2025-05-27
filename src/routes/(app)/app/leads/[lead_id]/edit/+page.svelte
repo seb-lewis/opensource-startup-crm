@@ -1,18 +1,8 @@
 <script>
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
-  import { 
-    Alert, 
-    Button, 
-    Card, 
-    Input, 
-    Label, 
-    Select, 
-    Spinner, 
-    Textarea,
-    Toast 
-  } from 'flowbite-svelte';
   import { fly } from 'svelte/transition';
+  import { ArrowLeft, Save, X, User, Building, Mail, Phone, Calendar, Star, Target, DollarSign, AlertCircle } from '@lucide/svelte';
 
   export let data;
   
@@ -49,12 +39,12 @@
   
   // Lead status options
   const statusOptions = [
-    { value: 'NEW', name: 'New' },
-    { value: 'PENDING', name: 'Pending' },
-    { value: 'CONTACTED', name: 'Contacted' },
-    { value: 'QUALIFIED', name: 'Qualified' },
-    { value: 'UNQUALIFIED', name: 'Unqualified' },
-    { value: 'CONVERTED', name: 'Converted' }
+    { value: 'NEW', name: 'New', color: 'bg-blue-100 text-blue-800' },
+    { value: 'PENDING', name: 'Pending', color: 'bg-yellow-100 text-yellow-800' },
+    { value: 'CONTACTED', name: 'Contacted', color: 'bg-purple-100 text-purple-800' },
+    { value: 'QUALIFIED', name: 'Qualified', color: 'bg-green-100 text-green-800' },
+    { value: 'UNQUALIFIED', name: 'Unqualified', color: 'bg-red-100 text-red-800' },
+    { value: 'CONVERTED', name: 'Converted', color: 'bg-emerald-100 text-emerald-800' }
   ];
   
   // Lead source options
@@ -71,12 +61,12 @@
   
   // Rating options
   const ratingOptions = [
-    { value: 'Hot', name: 'Hot' },
-    { value: 'Warm', name: 'Warm' },
-    { value: 'Cold', name: 'Cold' }
+    { value: 'Hot', name: 'Hot 🔥', color: 'text-red-600' },
+    { value: 'Warm', name: 'Warm 🌡️', color: 'text-orange-600' },
+    { value: 'Cold', name: 'Cold ❄️', color: 'text-blue-600' }
   ];
   
-  // Common industry options
+  // Industry options (expanded)
   const industryOptions = [
     { value: 'Technology', name: 'Technology' },
     { value: 'Finance', name: 'Finance' },
@@ -86,6 +76,12 @@
     { value: 'Retail', name: 'Retail' },
     { value: 'Real Estate', name: 'Real Estate' },
     { value: 'Consulting', name: 'Consulting' },
+    { value: 'Marketing', name: 'Marketing' },
+    { value: 'Legal', name: 'Legal' },
+    { value: 'Construction', name: 'Construction' },
+    { value: 'Transportation', name: 'Transportation' },
+    { value: 'Hospitality', name: 'Hospitality' },
+    { value: 'Entertainment', name: 'Entertainment' },
     { value: 'Other', name: 'Other' }
   ];
 
@@ -95,236 +91,342 @@
   }
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
-  <!-- Sticky Top Bar -->
-  <header class="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-blue-100 shadow-sm">
-    <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-      <div class="flex items-center gap-2">
-        <a href="/app/leads/{lead.id}" aria-label="Back to lead view" class="text-blue-700 hover:text-blue-900 rounded-full p-2 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-        </a>
-        <h1 class="text-xl md:text-2xl font-bold text-blue-900">Edit Lead</h1>
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <header class="sticky top-0 z-20 bg-white border-b border-gray-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center space-x-4">
+          <button 
+            on:click={() => goto(`/app/leads/${lead.id}`)}
+            class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+          >
+            <ArrowLeft class="w-5 h-5 text-gray-600" />
+          </button>
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Edit Lead</h1>
+            <p class="text-sm text-gray-500">Editing {lead.firstName} {lead.lastName}</p>
+          </div>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-6 py-10">
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Success/Error Messages -->
     {#if formSubmitted && !errorMessage}
-      <div in:fly={{ y: -20 }} class="mb-8">
-        <Toast dismissable color="green" class="mb-5">
-          <span class="font-medium">Success!</span> Lead updated successfully.
-        </Toast>
+      <div in:fly={{ y: -20 }} class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-green-800">Lead updated successfully!</p>
+          </div>
+        </div>
       </div>
     {/if}
 
     {#if errorMessage}
-      <div in:fly={{ y: -20 }} class="mb-8">
-        <Alert color="red" dismissable>
-          <span class="font-medium">Error:</span> {errorMessage}
-        </Alert>
+      <div in:fly={{ y: -20 }} class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+        <div class="flex items-center">
+          <AlertCircle class="w-5 h-5 text-red-400 flex-shrink-0" />
+          <div class="ml-3">
+            <p class="text-sm font-medium text-red-800">{errorMessage}</p>
+          </div>
+        </div>
       </div>
     {/if}
 
-    <p class="text-sm text-gray-600 mb-6">Editing lead: <span class="font-medium">{lead.firstName} {lead.lastName}</span></p>
-
-    <Card class="px-4 sm:px-6 py-4 pb-8 max-w-5xl shadow-lg border border-gray-200 bg-white rounded-lg mx-auto">
-      <form 
-        method="POST" 
-        use:enhance={({ formData }) => {
-          const isValid = validateForm(formData);
-          if (!isValid) return;
+    <!-- Form -->
+    <form 
+      method="POST" 
+      use:enhance={({ formData }) => {
+        const isValid = validateForm(formData);
+        if (!isValid) return;
+        
+        isSubmitting = true;
+        return async ({ result, update }) => {
+          isSubmitting = false;
+          formSubmitted = true;
           
-          isSubmitting = true;
-          return async ({ result, update }) => {
-            isSubmitting = false;
-            formSubmitted = true;
-            
-            if (result.type === 'success') {
-              if (result.data?.success) {
-                await update();
-                setTimeout(() => {
-                  goto(`/app/leads/${lead.id}`);
-                }, 1500);
-              } else if (result.data?.error) {
-                errorMessage = result.data.error;
-              }
-            } else {
-              errorMessage = 'An unexpected error occurred';
+          if (result.type === 'success') {
+            if (result.data?.success) {
+              await update();
+              setTimeout(() => {
+                goto(`/app/leads/${lead.id}`);
+              }, 1500);
+            } else if (result.data?.error) {
+              errorMessage = result.data.error;
             }
-          };
-        }}
-      >
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <!-- Personal Information -->
-          <div class="space-y-4 bg-gray-50 p-6 rounded-lg border border-gray-200">
-            <h3 class="text-lg font-semibold text-blue-900 mb-4">Basic Information</h3>
-            
+          } else {
+            errorMessage = 'An unexpected error occurred';
+          }
+        };
+      }}
+      class="space-y-8"
+    >
+      <!-- Personal Information Section -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div class="flex items-center space-x-2">
+            <User class="w-5 h-5 text-gray-600" />
+            <h2 class="text-lg font-semibold text-gray-900">Personal Information</h2>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <Label for="firstName" class="mb-1">First Name <span class="text-red-500">*</span></Label>
-              <Input
+              <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
+                First Name <span class="text-red-500">*</span>
+              </label>
+              <input
                 id="firstName"
                 name="firstName"
                 type="text"
                 required
                 value={lead.firstName}
-                placeholder="First Name"
-                color={errors.firstName ? 'red' : ''}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all {errors.firstName ? 'border-red-500 ring-2 ring-red-200' : ''}"
+                placeholder="Enter first name"
               />
               {#if errors.firstName}
-                <p class="text-sm text-red-500 mt-1">{errors.firstName}</p>
+                <p class="mt-1 text-sm text-red-600">{errors.firstName}</p>
               {/if}
             </div>
             
             <div>
-              <Label for="lastName" class="mb-1">Last Name <span class="text-red-500">*</span></Label>
-              <Input
+              <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
+                Last Name <span class="text-red-500">*</span>
+              </label>
+              <input
                 id="lastName"
                 name="lastName"
                 type="text"
                 required
                 value={lead.lastName}
-                placeholder="Last Name"
-                color={errors.lastName ? 'red' : ''}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all {errors.lastName ? 'border-red-500 ring-2 ring-red-200' : ''}"
+                placeholder="Enter last name"
               />
               {#if errors.lastName}
-                <p class="text-sm text-red-500 mt-1">{errors.lastName}</p>
+                <p class="mt-1 text-sm text-red-600">{errors.lastName}</p>
               {/if}
             </div>
             
             <div>
-              <Label for="email" class="mb-1">Email</Label>
-              <Input
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                <Mail class="w-4 h-4 inline mr-1" />
+                Email Address
+              </label>
+              <input
                 id="email"
                 name="email"
                 type="email"
                 value={lead.email || ''}
-                placeholder="Email Address"
-                color={errors.email ? 'red' : ''}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all {errors.email ? 'border-red-500 ring-2 ring-red-200' : ''}"
+                placeholder="email@example.com"
               />
               {#if errors.email}
-                <p class="text-sm text-red-500 mt-1">{errors.email}</p>
+                <p class="mt-1 text-sm text-red-600">{errors.email}</p>
               {/if}
             </div>
             
             <div>
-              <Label for="phone" class="mb-1">Phone</Label>
-              <Input
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                <Phone class="w-4 h-4 inline mr-1" />
+                Phone Number
+              </label>
+              <input
                 id="phone"
                 name="phone"
                 type="tel"
                 value={lead.phone || ''}
-                placeholder="Phone Number"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="+1 (555) 123-4567"
               />
             </div>
           </div>
-          
-          <!-- Company Information -->
-          <div class="space-y-4 bg-gray-50 p-6 rounded-lg border border-gray-200">
-            <h3 class="text-lg font-semibold text-blue-900 mb-4">Company Information</h3>
-            
+        </div>
+      </div>
+
+      <!-- Company Information Section -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div class="flex items-center space-x-2">
+            <Building class="w-5 h-5 text-gray-600" />
+            <h2 class="text-lg font-semibold text-gray-900">Company Information</h2>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <Label for="company" class="mb-1">Company</Label>
-              <Input
+              <label for="company" class="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+              <input
                 id="company"
                 name="company"
                 type="text"
                 value={lead.company || ''}
-                placeholder="Company Name"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="Enter company name"
               />
             </div>
             
             <div>
-              <Label for="title" class="mb-1">Job Title</Label>
-              <Input
+              <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Job Title</label>
+              <input
                 id="title"
                 name="title"
                 type="text"
                 value={lead.title || ''}
-                placeholder="Job Title"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="Enter job title"
               />
             </div>
             
-            <div>
-              <Label for="industry" class="mb-1">Industry</Label>
-              <Select id="industry" name="industry" value={lead.industry || ''}>
+            <div class="md:col-span-2">
+              <label for="industry" class="block text-sm font-medium text-gray-700 mb-2">Industry</label>
+              <select
+                id="industry"
+                name="industry"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              >
                 <option value="">Select Industry</option>
                 {#each industryOptions as option}
-                  <option value={option.value}>{option.name}</option>
+                  <option value={option.value} selected={lead.industry === option.value}>{option.name}</option>
                 {/each}
-              </Select>
+              </select>
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- Lead Information -->
-          <div class="space-y-4 bg-gray-50 p-6 rounded-lg border border-gray-200 md:col-span-2">
-            <h3 class="text-lg font-semibold text-blue-900 mb-4">Lead Details</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label for="status" class="mb-1">Status</Label>
-                <Select id="status" name="status" value={lead.status}>
-                  {#each statusOptions as option}
-                    <option value={option.value}>{option.name}</option>
-                  {/each}
-                </Select>
-              </div>
-              
-              <div>
-                <Label for="leadSource" class="mb-1">Lead Source</Label>
-                <Select id="leadSource" name="leadSource" value={lead.leadSource || ''}>
-                  <option value="">Select Source</option>
-                  {#each sourceOptions as option}
-                    <option value={option.value}>{option.name}</option>
-                  {/each}
-                </Select>
-              </div>
-              
-              <div>
-                <Label for="rating" class="mb-1">Rating</Label>
-                <Select id="rating" name="rating" value={lead.rating || ''}>
-                  <option value="">Select Rating</option>
-                  {#each ratingOptions as option}
-                    <option value={option.value}>{option.name}</option>
-                  {/each}
-                </Select>
-              </div>
-            </div>
-            
+      <!-- Lead Details Section -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div class="flex items-center space-x-2">
+            <Target class="w-5 h-5 text-gray-600" />
+            <h2 class="text-lg font-semibold text-gray-900">Lead Details</h2>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div>
-              <Label for="ownerId" class="mb-1">Lead Owner</Label>
-              <Select id="ownerId" name="ownerId" value={lead.ownerId}>
-                {#each users as user}
-                  <option value={user.id}>{user.name}</option>
+              <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+              <select
+                id="status"
+                name="status"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              >
+                {#each statusOptions as option}
+                  <option value={option.value} selected={lead.status === option.value}>{option.name}</option>
                 {/each}
-              </Select>
+              </select>
             </div>
-
+            
             <div>
-              <Label for="description" class="mb-1">Description</Label>
-              <Textarea
-                id="description"
-                name="description"
-                rows="4"
-                value={lead.description || ''}
-                placeholder="Add additional information about this lead..."
+              <label for="leadSource" class="block text-sm font-medium text-gray-700 mb-2">Lead Source</label>
+              <select
+                id="leadSource"
+                name="leadSource"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              >
+                <option value="">Select Source</option>
+                {#each sourceOptions as option}
+                  <option value={option.value} selected={lead.leadSource === option.value}>{option.name}</option>
+                {/each}
+              </select>
+            </div>
+            
+            <div>
+              <label for="rating" class="block text-sm font-medium text-gray-700 mb-2">
+                <Star class="w-4 h-4 inline mr-1" />
+                Rating
+              </label>
+              <select
+                id="rating"
+                name="rating"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              >
+                <option value="">Select Rating</option>
+                {#each ratingOptions as option}
+                  <option value={option.value} selected={lead.rating === option.value}>{option.name}</option>
+                {/each}
+              </select>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label for="ownerId" class="block text-sm font-medium text-gray-700 mb-2">Lead Owner</label>
+              <select
+                id="ownerId"
+                name="ownerId"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              >
+                {#each users as user}
+                  <option value={user.id} selected={lead.ownerId === user.id}>{user.name}</option>
+                {/each}
+              </select>
+            </div>
+            
+            <div>
+              <label for="annualRevenue" class="block text-sm font-medium text-gray-700 mb-2">
+                <DollarSign class="w-4 h-4 inline mr-1" />
+                Annual Revenue (Optional)
+              </label>
+              <input
+                id="annualRevenue"
+                name="annualRevenue"
+                type="number"
+                step="0.01"
+                value={lead.annualRevenue || ''}
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="Enter annual revenue"
               />
             </div>
           </div>
+
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description / Notes</label>
+            <textarea
+              id="description"
+              name="description"
+              rows="4"
+              value={lead.description || ''}
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-vertical"
+              placeholder="Add notes, requirements, or any additional information about this lead..."
+            ></textarea>
+          </div>
         </div>
+      </div>
         
-        <!-- Action buttons -->
-        <div class="flex justify-end items-center gap-3 mt-8 pt-4 border-t border-gray-100">
-          <Button type="button" color="alternative" onclick={cancelEdit}>Cancel</Button>
-          <Button type="submit" color="blue" disabled={isSubmitting}>
-            {#if isSubmitting}
-              <Spinner size="sm" class="mr-2" />
-            {/if}
-            Save Changes
-          </Button>
-        </div>
-      </form>
-    </Card>
+      <!-- Action Buttons -->
+      <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+        <button
+          type="button"
+          on:click={cancelEdit}
+          class="inline-flex items-center px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+        >
+          <X class="w-4 h-4 mr-2" />
+          Cancel
+        </button>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          class="inline-flex items-center px-6 py-3 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        >
+          {#if isSubmitting}
+            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          {:else}
+            <Save class="w-4 h-4 mr-2" />
+          {/if}
+          Save Changes
+        </button>
+      </div>
+    </form>
   </main>
 </div>

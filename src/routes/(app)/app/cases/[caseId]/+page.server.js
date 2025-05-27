@@ -42,9 +42,5 @@ export const actions = {
       }
     });
     return { success: true };
-  },
-  delete: async ({ params }) => {
-    await prisma.case.delete({ where: { id: params.caseId } });
-    throw redirect(303, '/app/cases');
   }
 };
