@@ -62,7 +62,6 @@
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Here you would typically send the form data to your backend
-      console.log('Form submitted:', formData);
       
       submitSuccess = true;
       

@@ -41,8 +41,6 @@
     // Simulate subscription - replace with actual implementation
     if (emailForUpdates) {
       subscribed = true;
-      // Here you would integrate with your email service
-      console.log('Subscribed:', emailForUpdates);
     }
   }
 
