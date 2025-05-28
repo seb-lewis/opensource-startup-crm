@@ -98,8 +98,8 @@
       answer: "Yes! BottleCRM is 100% free and open-source. You can download, install, customize, and use it without any subscription fees or hidden costs. We also offer optional paid support services for hosting and customization."
     },
     {
-      question: "How does BottleCRM compare to Salesforce or HubSpot?",
-      answer: "BottleCRM offers many of the same core features as expensive CRM platforms but without the high monthly costs. While enterprise CRMs might have more advanced features, BottleCRM provides everything most startups and small businesses need to manage customer relationships effectively."
+      question: "How does BottleCRM compare to traditional CRM platforms?",
+      answer: "BottleCRM offers many of the same core features as enterprise CRM platforms but without the high monthly costs. While some commercial CRMs might have more advanced features, BottleCRM provides everything most startups and small businesses need to manage customer relationships effectively."
     },
     {
       question: "Can I self-host BottleCRM on my own servers?",
@@ -131,17 +131,17 @@
       userLimit: "Unlimited"
     },
     {
-      name: "Salesforce",
-      price: "$25-300/user/month",
+      name: "Enterprise CRM Solutions",
+      price: "$25-300+/user/month",
       openSource: false,
       selfHosted: false,
       customizable: true,
-      support: "Paid",
+      support: "Paid Only",
       userLimit: "Per seat pricing"
     },
     {
-      name: "HubSpot",
-      price: "$50-3200/month",
+      name: "Popular Cloud CRMs",
+      price: "$50-3200+/month",
       openSource: false,
       selfHosted: false,
       customizable: "Limited",
@@ -149,12 +149,12 @@
       userLimit: "Contact-based pricing"
     },
     {
-      name: "Pipedrive",
-      price: "$15-99/user/month",
+      name: "Traditional CRM Platforms",
+      price: "$15-99+/user/month",
       openSource: false,
       selfHosted: false,
       customizable: "Limited",
-      support: "Paid",
+      support: "Paid Only",
       userLimit: "Per seat pricing"
     }
   ];
@@ -189,8 +189,8 @@
 
 <svelte:head>
   <title>BottleCRM | Free Open-Source CRM Software for Startups & Small Businesses - No Subscription Fees</title>
-  <meta name="description" content="BottleCRM: 100% free, self-hostable CRM software for startups and small businesses. Manage contacts, sales pipeline, tasks & analytics. Open-source alternative to Salesforce & HubSpot. Download now!" />
-  <meta name="keywords" content="free crm software, open source crm, startup crm, small business crm, crm software, customer relationship management, lead management, sales automation, svelte crm, django crm, self hosted crm, salesforce alternative, hubspot alternative, free sales software, crm for startups, no subscription crm" />
+  <meta name="description" content="BottleCRM: 100% free, self-hostable CRM software for startups and small businesses. Manage contacts, sales pipeline, tasks & analytics. Open-source alternative to expensive CRM solutions. Download now!" />
+  <meta name="keywords" content="free crm software, open source crm, startup crm, small business crm, crm software, customer relationship management, lead management, sales automation, svelte crm, django crm, self hosted crm, affordable crm alternative, free sales software, crm for startups, no subscription crm" />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
@@ -254,7 +254,7 @@
         <ul class="mb-8 space-y-3 text-lg">
           <li class="flex items-center">
             <Check class="w-6 h-6 text-green-400 mr-3 flex-shrink-0" />
-            <span class="break-words">No monthly fees - Save $600-3600/year per user</span>
+            <span class="break-words">No monthly fees - Save thousands per year</span>
           </li>
           <li class="flex items-center">
             <Check class="w-6 h-6 text-green-400 mr-3 flex-shrink-0" />
@@ -352,10 +352,10 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
       <h2 class="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-6">
-        Why Choose BottleCRM Over <span class="text-red-600">Expensive Alternatives?</span>
+        Why Choose BottleCRM Over <span class="text-red-600">Expensive CRM Solutions?</span>
       </h2>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-        Compare BottleCRM with popular CRM solutions and see how much you can save while getting the same powerful features.
+        Compare BottleCRM with typical commercial CRM solutions and see how much you can save while getting powerful features.
       </p>
     </div>
 
@@ -364,8 +364,8 @@
         <table class="min-w-full bg-white rounded-xl shadow-lg overflow-hidden">
           <thead class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
             <tr>
-              <th class="px-3 sm:px-6 py-4 text-left text-xs sm:text-sm font-semibold whitespace-nowrap">CRM Solution</th>
-              <th class="px-3 sm:px-6 py-4 text-center text-xs sm:text-sm font-semibold whitespace-nowrap">Pricing</th>
+              <th class="px-3 sm:px-6 py-4 text-left text-xs sm:text-sm font-semibold whitespace-nowrap">CRM Category</th>
+              <th class="px-3 sm:px-6 py-4 text-center text-xs sm:text-sm font-semibold whitespace-nowrap">Typical Pricing</th>
               <th class="px-3 sm:px-6 py-4 text-center text-xs sm:text-sm font-semibold whitespace-nowrap">Open Source</th>
               <th class="px-3 sm:px-6 py-4 text-center text-xs sm:text-sm font-semibold whitespace-nowrap">Self-Hosted</th>
               <th class="px-3 sm:px-6 py-4 text-center text-xs sm:text-sm font-semibold whitespace-nowrap">Customizable</th>
@@ -407,11 +407,11 @@
 
     <div class="mt-8 text-center">
       <p class="text-lg text-gray-600 mb-4">
-        <strong class="text-green-600">Annual Savings with BottleCRM:</strong> 
-        $3,000 - $36,000 per year for a 10-person team
+        <strong class="text-green-600">Potential Annual Savings with BottleCRM:</strong> 
+        $3,000 - $36,000+ per year for a typical team
       </p>
       <a href="/pricing" class="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold">
-        See detailed pricing comparison
+        See detailed cost comparison
         <ChevronRight class="ml-2 w-4 h-4" />
       </a>
     </div>
@@ -605,16 +605,16 @@
         <h3 class="text-2xl font-bold mb-4">💰 Your Annual Savings Calculator</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
           <div>
-            <div class="text-3xl font-bold text-yellow-300">$3,000</div>
-            <div class="text-sm text-blue-100">5 Users vs Salesforce</div>
+            <div class="text-3xl font-bold text-yellow-300">$3,000+</div>
+            <div class="text-sm text-blue-100">5 Users vs Enterprise CRM</div>
           </div>
           <div>
-            <div class="text-3xl font-bold text-yellow-300">$6,000</div>
-            <div class="text-sm text-blue-100">10 Users vs HubSpot</div>
+            <div class="text-3xl font-bold text-yellow-300">$6,000+</div>
+            <div class="text-sm text-blue-100">10 Users vs Cloud CRM</div>
           </div>
           <div>
-            <div class="text-3xl font-bold text-yellow-300">$18,000</div>
-            <div class="text-sm text-blue-100">30 Users vs Pipedrive</div>
+            <div class="text-3xl font-bold text-yellow-300">$18,000+</div>
+            <div class="text-sm text-blue-100">30 Users vs Commercial CRM</div>
           </div>
         </div>
       </div>
