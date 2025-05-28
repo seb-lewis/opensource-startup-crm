@@ -51,8 +51,8 @@
 
 <svelte:head>
   <title>Migrate to BottleCRM | Free CRM Migration Tools & Professional Migration Services</title>
-  <meta name="description" content="Migrate from Salesforce, HubSpot, Pipedrive to BottleCRM and save thousands annually. Free migration tools coming soon. Professional migration services available." />
-  <meta name="keywords" content="crm migration, migrate from salesforce, hubspot migration, pipedrive migration, crm data migration, free crm migration tools, salesforce alternative, crm migration service" />
+  <meta name="description" content="Migrate from popular CRM platforms to BottleCRM and save thousands annually. Free migration tools coming soon. Professional migration services available." />
+  <meta name="keywords" content="crm migration, migrate crm, crm data migration, free crm migration tools, open source crm, crm migration service" />
   
   <!-- Open Graph -->
   <meta property="og:title" content="Migrate to BottleCRM | Save Thousands on CRM Costs" />
@@ -83,12 +83,12 @@
       </div>
       
       <h1 class="text-4xl md:text-6xl font-extrabold mb-6">
-        Stop Paying for CRM. <span class="text-yellow-300">Start Saving Today.</span>
+        Break Free from CRM Subscriptions. <span class="text-yellow-300">Own Your Data.</span>
       </h1>
       
       <p class="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
-        Migrate from expensive CRM platforms like Salesforce, HubSpot, or Pipedrive to BottleCRM. 
-        Keep all your data, gain more control, and save $1,800-72,000 per year.
+        Migrate from expensive subscription-based CRM platforms to BottleCRM. 
+        Keep all your data, gain complete control, and eliminate monthly fees forever.
       </p>
       
       <div class="flex flex-col sm:flex-row sm:justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12">
@@ -128,12 +128,12 @@
         Migrate From Any CRM Platform
       </h2>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-        We're building migration tools for all major CRM platforms. See what you can expect when migrating from your current system.
+        We're building migration tools for all major CRM platforms. See what you can expect when migrating from popular systems.
       </p>
     </div>
 
     <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-      <!-- Salesforce -->
+      <!-- Enterprise CRM Platform A -->
       <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 relative overflow-hidden">
         <div class="absolute top-4 right-4">
           <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
@@ -143,9 +143,9 @@
         
         <div class="text-center mb-6">
           <div class="text-4xl mb-4">🏢</div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">Salesforce</h3>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Enterprise CRM Platform</h3>
           <div class="flex justify-center space-x-4 text-sm">
-            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">Medium</span>
+            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">Complex</span>
             <span class="px-2 py-1 bg-green-100 text-green-800 rounded">2-4 weeks</span>
           </div>
         </div>
@@ -168,29 +168,29 @@
             <ul class="space-y-1">
               <li class="text-sm text-gray-600 flex items-center">
                 <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Custom fields
+                Custom fields mapping
               </li>
               <li class="text-sm text-gray-600 flex items-center">
                 <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Complex workflows
+                Complex workflow recreation
               </li>
               <li class="text-sm text-gray-600 flex items-center">
                 <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                API limitations
+                API rate limitations
               </li>
             </ul>
           </div>
           
           <div class="pt-4 border-t border-gray-200">
             <div class="flex justify-between items-center">
-              <span class="text-sm font-medium text-gray-900">Annual Savings:</span>
+              <span class="text-sm font-medium text-gray-900">Typical Savings:</span>
               <span class="text-lg font-bold text-green-600">$3,000-36,000/year</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- HubSpot -->
+      <!-- Marketing-Focused CRM -->
       <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 relative overflow-hidden">
         <div class="absolute top-4 right-4">
           <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
@@ -200,9 +200,9 @@
         
         <div class="text-center mb-6">
           <div class="text-4xl mb-4">🧡</div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">HubSpot</h3>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Marketing-Focused CRM</h3>
           <div class="flex justify-center space-x-4 text-sm">
-            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">Easy</span>
+            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">Moderate</span>
             <span class="px-2 py-1 bg-green-100 text-green-800 rounded">1-2 weeks</span>
           </div>
         </div>
@@ -224,25 +224,25 @@
             <ul class="space-y-1">
               <li class="text-sm text-gray-600 flex items-center">
                 <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Marketing automation
+                Marketing automation setup
               </li>
               <li class="text-sm text-gray-600 flex items-center">
                 <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Custom properties
+                Custom properties mapping
               </li>
             </ul>
           </div>
           
           <div class="pt-4 border-t border-gray-200">
             <div class="flex justify-between items-center">
-              <span class="text-sm font-medium text-gray-900">Annual Savings:</span>
-              <span class="text-lg font-bold text-green-600">$6,000-72,000/year</span>
+              <span class="text-sm font-medium text-gray-900">Typical Savings:</span>
+              <span class="text-lg font-bold text-green-600">$6,000-60,000/year</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Pipedrive -->
+      <!-- Sales Pipeline CRM -->
       <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 relative overflow-hidden">
         <div class="absolute top-4 right-4">
           <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
@@ -252,9 +252,9 @@
         
         <div class="text-center mb-6">
           <div class="text-4xl mb-4">🟢</div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">Pipedrive</h3>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Sales Pipeline CRM</h3>
           <div class="flex justify-center space-x-4 text-sm">
-            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">Easy</span>
+            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">Simple</span>
             <span class="px-2 py-1 bg-green-100 text-green-800 rounded">1 week</span>
           </div>
         </div>
@@ -276,25 +276,25 @@
             <ul class="space-y-1">
               <li class="text-sm text-gray-600 flex items-center">
                 <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Pipeline customization
+                Pipeline stage mapping
               </li>
               <li class="text-sm text-gray-600 flex items-center">
                 <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Activity types
+                Activity type recreation
               </li>
             </ul>
           </div>
           
           <div class="pt-4 border-t border-gray-200">
             <div class="flex justify-between items-center">
-              <span class="text-sm font-medium text-gray-900">Annual Savings:</span>
-              <span class="text-lg font-bold text-green-600">$1,800-21,600/year</span>
+              <span class="text-sm font-medium text-gray-900">Typical Savings:</span>
+              <span class="text-lg font-bold text-green-600">$1,800-20,000/year</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Zoho CRM -->
+      <!-- All-in-One CRM Suite -->
       <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 relative overflow-hidden">
         <div class="absolute top-4 right-4">
           <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
@@ -304,9 +304,9 @@
         
         <div class="text-center mb-6">
           <div class="text-4xl mb-4">🔴</div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">Zoho CRM</h3>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">All-in-One CRM Suite</h3>
           <div class="flex justify-center space-x-4 text-sm">
-            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">Medium</span>
+            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">Complex</span>
             <span class="px-2 py-1 bg-green-100 text-green-800 rounded">2-3 weeks</span>
           </div>
         </div>
@@ -329,119 +329,19 @@
             <ul class="space-y-1">
               <li class="text-sm text-gray-600 flex items-center">
                 <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Custom modules
+                Custom module recreation
               </li>
               <li class="text-sm text-gray-600 flex items-center">
                 <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Workflow rules
+                Workflow rule mapping
               </li>
             </ul>
           </div>
           
           <div class="pt-4 border-t border-gray-200">
             <div class="flex justify-between items-center">
-              <span class="text-sm font-medium text-gray-900">Annual Savings:</span>
-              <span class="text-lg font-bold text-green-600">$1,200-14,400/year</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CSV/Excel -->
-      <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 relative overflow-hidden">
-        <div class="absolute top-4 right-4">
-          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-            Available Now
-          </span>
-        </div>
-        
-        <div class="text-center mb-6">
-          <div class="text-4xl mb-4">📊</div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">CSV/Excel</h3>
-          <div class="flex justify-center space-x-4 text-sm">
-            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">Easy</span>
-            <span class="px-2 py-1 bg-green-100 text-green-800 rounded">1-3 days</span>
-          </div>
-        </div>
-        
-        <div class="space-y-4">
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">Data Types:</h4>
-            <div class="flex flex-wrap gap-1">
-              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">Any structured data</span>
-              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">Contact lists</span>
-              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">Lead databases</span>
-            </div>
-          </div>
-          
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">Challenges:</h4>
-            <ul class="space-y-1">
-              <li class="text-sm text-gray-600 flex items-center">
-                <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Data formatting
-              </li>
-              <li class="text-sm text-gray-600 flex items-center">
-                <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Duplicate removal
-              </li>
-            </ul>
-          </div>
-          
-          <div class="pt-4 border-t border-gray-200">
-            <div class="flex justify-between items-center">
-              <span class="text-sm font-medium text-gray-900">Annual Savings:</span>
-              <span class="text-lg font-bold text-green-600">Immediate</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Google Sheets -->
-      <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 relative overflow-hidden">
-        <div class="absolute top-4 right-4">
-          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-            Available Now
-          </span>
-        </div>
-        
-        <div class="text-center mb-6">
-          <div class="text-4xl mb-4">📈</div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">Google Sheets</h3>
-          <div class="flex justify-center space-x-4 text-sm">
-            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">Easy</span>
-            <span class="px-2 py-1 bg-green-100 text-green-800 rounded">1-3 days</span>
-          </div>
-        </div>
-        
-        <div class="space-y-4">
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">Data Types:</h4>
-            <div class="flex flex-wrap gap-1">
-              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">Contact data</span>
-              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">Lead lists</span>
-              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">Sales tracking</span>
-            </div>
-          </div>
-          
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">Challenges:</h4>
-            <ul class="space-y-1">
-              <li class="text-sm text-gray-600 flex items-center">
-                <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Data validation
-              </li>
-              <li class="text-sm text-gray-600 flex items-center">
-                <AlertCircle class="w-3 h-3 text-orange-500 mr-2" />
-                Format consistency
-              </li>
-            </ul>
-          </div>
-          
-          <div class="pt-4 border-t border-gray-200">
-            <div class="flex justify-between items-center">
-              <span class="text-sm font-medium text-gray-900">Annual Savings:</span>
-              <span class="text-lg font-bold text-green-600">Immediate</span>
+              <span class="text-sm font-medium text-gray-900">Typical Savings:</span>
+              <span class="text-lg font-bold text-green-600">$1,200-15,000/year</span>
             </div>
           </div>
         </div>
@@ -642,10 +542,10 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
       <h2 class="text-4xl font-extrabold text-gray-900 mb-6">
-        Why Migrate to BottleCRM?
+        Why Choose BottleCRM?
       </h2>
       <p class="text-xl text-gray-600">
-        Beyond just saving money, BottleCRM offers advantages that paid alternatives can't match.
+        Experience the freedom of open-source CRM with enterprise-level features.
       </p>
     </div>
 
@@ -654,8 +554,8 @@
         <div class="rounded-full bg-green-100 p-4 inline-block mb-6">
           <DollarSign class="w-8 h-8 text-green-600" />
         </div>
-        <h3 class="text-xl font-bold text-gray-900 mb-4">Massive Cost Savings</h3>
-        <p class="text-gray-600 mb-4">Save $1,800-72,000 annually by eliminating subscription fees.</p>
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Eliminate Subscription Costs</h3>
+        <p class="text-gray-600 mb-4">Stop paying monthly fees. One-time setup, lifetime ownership.</p>
         <div class="text-2xl font-bold text-green-600">$0/month</div>
       </div>
       
@@ -906,11 +806,11 @@
 <section class="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 text-white py-20">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <h2 class="text-4xl md:text-5xl font-extrabold mb-6">
-      Ready to Break Free from CRM Subscriptions?
+      Ready to Own Your CRM Data?
     </h2>
     <p class="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
       Start preparing for your migration today. Download BottleCRM, explore the features, 
-      and get ready to save thousands while gaining complete control over your customer data.
+      and experience the freedom of open-source CRM.
     </p>
     
     <div class="flex flex-col sm:flex-row sm:justify-center space-y-4 sm:space-y-0 sm:space-x-6">
