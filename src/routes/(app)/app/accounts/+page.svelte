@@ -153,7 +153,7 @@
         </div>
         <div>
           <p class="text-sm text-green-600 dark:text-green-400 font-medium">Active</p>
-          <p class="text-2xl font-bold text-green-900 dark:text-green-100">{accounts.filter(a => !a.closedAt).length}</p>
+          <p class="text-2xl font-bold text-green-900 dark:text-green-100">{accounts.filter(a => a.isActive).length}</p>
         </div>
       </div>
     </div>
@@ -252,14 +252,21 @@
                         <p class="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           {account.name}
                         </p>
-                        {#if account.closedAt}
-                          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 mt-1">
-                            Closed
-                          </span>
-                        {:else}
+                        {#if account.isActive}
                           <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 mt-1">
                             Active
                           </span>
+                        {:else}
+                          <div class="mt-1">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400">
+                              Closed
+                            </span>
+                            {#if account.closedAt}
+                              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                {formatDate(account.closedAt)}
+                              </p>
+                            {/if}
+                          </div>
                         {/if}
                       </a>
                     </div>
@@ -335,15 +342,15 @@
                        title="View Account">
                       <Eye class="w-4 h-4" />
                     </a>
+                    <a href="/app/opportunities/new?accountId={account.id}" 
+                       class="p-2 text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" 
+                       title="Add Opportunity">
+                      <Plus class="w-4 h-4" />
+                    </a>
                     <a href="/app/accounts/{account.id}/edit" 
                        class="p-2 text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" 
                        title="Edit Account">
                       <Edit class="w-4 h-4" />
-                    </a>
-                    <a href="/app/accounts/{account.id}/delete" 
-                       class="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" 
-                       title="Delete Account">
-                      <Trash2 class="w-4 h-4" />
                     </a>
                   </div>
                 </td>
