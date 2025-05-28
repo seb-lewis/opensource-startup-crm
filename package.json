@@ -42,14 +42,11 @@
 		]
 	},
 	"dependencies": {
-		"@fortawesome/free-brands-svg-icons": "^6.7.2",
-		"@fortawesome/free-solid-svg-icons": "^6.7.2",
 		"@lucide/svelte": "^0.511.0",
 		"@prisma/client": "6.5.0",
 		"axios": "^1.8.4",
 		"date-fns": "^4.1.0",
 		"marked": "^15.0.8",
-		"svelte-fa": "^4.0.3",
 		"svelte-highlight": "^7.8.3",
 		"svelte-meta-tags": "^4.3.0",
 		"uuid": "^11.1.0",
