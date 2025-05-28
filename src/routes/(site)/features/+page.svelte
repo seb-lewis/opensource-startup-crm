@@ -43,15 +43,78 @@
 </script>
 
 <svelte:head>
-  <title>BottleCRM Features | Complete Free CRM Software Feature List - Contact Management, Sales Pipeline & More</title>
-  <meta name="description" content="Explore BottleCRM's comprehensive feature set: contact management, sales pipeline, task automation, analytics, invoicing & more. Free, open-source CRM with enterprise-grade capabilities." />
-  <meta name="keywords" content="crm features, contact management software, sales pipeline management, task automation, crm analytics, free crm features, open source crm capabilities, business management software, customer relationship management features, crm functionality" />
+  <title>BottleCRM Features: Free & Open Source CRM Software</title>
+  <meta name="description" content="Explore BottleCRM's powerful features: contact management, sales pipeline, task automation, analytics & more. A free, open-source CRM for growing businesses." />
+  <meta name="keywords" content="bottlecrm features, free crm features, open source crm, crm software features, contact management, sales pipeline, task automation, crm analytics, business management software" />
   
   <!-- Open Graph -->
-  <meta property="og:title" content="BottleCRM Features | Complete Free CRM Software Feature List" />
-  <meta property="og:description" content="Discover all BottleCRM features: contact management, sales automation, analytics, invoicing & more. Enterprise-grade CRM capabilities, completely free." />
+  <meta property="og:title" content="BottleCRM Features: Free & Open Source CRM Software" />
+  <meta property="og:description" content="Discover BottleCRM's comprehensive features: contact management, sales automation, analytics & more. Enterprise-grade, free, and open-source." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://bottlecrm.com/features" />
+  <meta property="og:url" content="https://bottlecrm.io/features" />
+  <meta property="og:image" content="https://bottlecrm.io/logo_social.png" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "BottleCRM Features",
+      "description": "Explore BottleCRM's powerful features: contact management, sales pipeline, task automation, analytics & more. A free, open-source CRM for growing businesses.",
+      "url": "https://bottlecrm.io/features",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "BottleCRM",
+        "url": "https://bottlecrm.io"
+      },
+      "mainEntity": {
+        "@type": "SoftwareApplication",
+        "name": "BottleCRM",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web (Cross-platform)",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "BottleCRM is a free and open-source Customer Relationship Management (CRM) software offering enterprise-grade features like contact management, sales pipeline, task automation, analytics, and invoicing.",
+        "url": "https://bottlecrm.io",
+        "softwareVersion": "1.0", // Update as versions change
+        "keywords": "crm, free crm, open source crm, contact management, sales pipeline, business software",
+        "featureList": [
+          "Advanced Contact Management",
+          "Sales Pipeline Management (Coming Soon)",
+          "Task & Activity Management",
+          "Communication Center (Coming Soon)",
+          "Real-time Analytics Dashboard (Coming Soon)",
+          "Advanced Reporting System (Coming Soon)",
+          "Invoice & Billing Management (Coming Soon)",
+          "Customer Support Center (Coming Soon)",
+          "Marketing Campaign Management (Coming Soon)",
+          "Mobile-First Design",
+          "Data Security & Privacy",
+          "API & Integrations (Coming Soon)",
+          "Self-Hosting & Deployment",
+          "Complete Customization",
+          "Multi-language Support (Coming Soon)"
+        ],
+        "provider": {
+          "@type": "Organization",
+          "name": "BottleCRM",
+          "url": "https://bottlecrm.io",
+          "logo": "https://bottlecrm.io/logo.png" // Add a relevant logo URL
+        }
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "BottleCRM",
+        "url": "https://bottlecrm.io",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://bottlecrm.io/logo.png" // Add a relevant logo URL
+        }
+      }
+    }
+  </script>
 </svelte:head>
 
 <!-- Hero Section -->
@@ -1208,7 +1271,7 @@
           <li class="flex items-center text-sm text-gray-700">
             <Check class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
             <span>Full source code access</span>
-          </li>
+                   </li>
           <li class="flex items-center text-sm text-gray-700">
             <Check class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
             <span>Custom integrations</span>

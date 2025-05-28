@@ -24,37 +24,51 @@
 </script>
 
 <svelte:head>
-  <title>Terms of Service | BottleCRM - Free Open Source CRM Software</title>
-  <meta name="description" content="Terms of Service for BottleCRM - Free, open-source CRM software. Learn about our MIT license, free software usage, and optional paid support services." />
-  <meta name="keywords" content="bottlecrm terms of service, open source crm license, mit license, free crm software terms, crm legal terms" />
-  
+  <title>Terms of Service | Free Open Source CRM - BottleCRM</title>
+  <meta name="description" content="Read the Terms of Service for BottleCRM, a free and open source CRM software for startups and small businesses. MIT licensed. No hidden fees." />
+  <meta name="keywords" content="free crm, open source crm, crm software, mit license, bottlecrm, terms of service, startup crm, small business crm" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://bottlecrm.io/terms-of-service" />
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://bottlecrm.com/terms-of-service" />
-  <meta property="og:title" content="Terms of Service | BottleCRM" />
-  <meta property="og:description" content="Terms of Service for BottleCRM - Free, open-source CRM software with MIT license." />
+  <meta property="og:url" content="https://bottlecrm.io/terms-of-service" />
+  <meta property="og:title" content="Terms of Service | Free Open Source CRM - BottleCRM" />
+  <meta property="og:description" content="Terms of Service for BottleCRM, a free and open source CRM software for startups and small businesses. MIT licensed." />
+  <meta property="og:site_name" content="BottleCRM" />
+  <meta property="og:image" content="https://bottlecrm.io/og-image.png" />
 
   <!-- Twitter -->
-  <meta property="twitter:card" content="summary" />
-  <meta property="twitter:url" content="https://bottlecrm.com/terms-of-service" />
-  <meta property="twitter:title" content="Terms of Service | BottleCRM" />
-  <meta property="twitter:description" content="Terms of Service for BottleCRM - Free, open-source CRM software with MIT license." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://bottlecrm.io/terms-of-service" />
+  <meta name="twitter:title" content="Terms of Service | Free Open Source CRM - BottleCRM" />
+  <meta name="twitter:description" content="Terms of Service for BottleCRM, a free and open source CRM software for startups and small businesses. MIT licensed." />
+  <meta name="twitter:image" content="https://bottlecrm.io/og-image.png" />
 
   <!-- Structured Data -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "Terms of Service - BottleCRM",
-      "description": "Terms of Service for BottleCRM free open-source CRM software",
-      "url": "https://bottlecrm.com/terms-of-service",
-      "lastReviewed": "2024-12-01",
-      "about": {
-        "@type": "SoftwareApplication",
-        "name": "BottleCRM"
+  {@html `
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Terms of Service - BottleCRM",
+        "description": "Terms of Service for BottleCRM, a free and open source CRM software for startups and small businesses. MIT licensed.",
+        "url": "https://bottlecrm.io/terms-of-service",
+        "lastReviewed": "2024-12-01",
+        "about": {
+          "@type": "SoftwareApplication",
+          "name": "BottleCRM",
+          "applicationCategory": "Customer Relationship Management",
+          "operatingSystem": "All",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        }
       }
-    }
-  </script>
+    </script>
+  `}
 </svelte:head>
 
 <!-- Header Section -->

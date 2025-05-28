@@ -1,7 +1,7 @@
 <!-- home page -->
 <script>
   import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
+  import { fade } from 'svelte/transition';
   import banner_img from '$lib/assets/images/banner.png';
   import { 
     Users, 
@@ -13,164 +13,15 @@
     Zap,
     Check,
     X,
-    ChevronLeft,
     ChevronRight,
     ChevronDown,
-    Star,
     GitFork,
     MessageCircle,
     Github
   } from '@lucide/svelte';
-
-  // Define feature cards with enhanced SEO keywords
-  const features = [
-    {
-      title: 'Smart Contact Management System',
-      description: 'Centralize customer data with our intuitive contact management system. Track customer interactions, manage qualified leads, and build stronger customer relationships. Perfect for startups, small businesses, and growing enterprises looking for efficient CRM software.',
-      icon: Users,
-      benefits: ['360° Customer View', 'Lead Scoring', 'Contact Segmentation']
-    },
-    {
-      title: 'Visual Sales Pipeline Management',
-      description: 'Streamline your sales process with our drag-and-drop sales pipeline. Track deals from lead qualification to closing, forecast revenue accurately, and implement powerful sales automation workflows to boost your conversion rates.',
-      icon: BarChart3,
-      benefits: ['Deal Tracking', 'Sales Forecasting', 'Automation Workflows'],
-      comingSoon: true
-    },
-    {
-      title: 'Advanced Task & Project Management',
-      description: 'Never miss a follow-up with integrated task management and project tracking. Set reminders, assign tasks to team members, track project milestones, and ensure maximum productivity across your sales and marketing teams.',
-      icon: CheckSquare,
-      benefits: ['Task Automation', 'Team Collaboration', 'Deadline Tracking']
-    },
-    {
-      title: 'Real-time Analytics & Reporting',
-      description: 'Make data-driven decisions with comprehensive CRM analytics and business intelligence. Track sales performance, monitor marketing campaign effectiveness, and generate detailed reports to optimize your customer acquisition strategies.',
-      icon: TrendingUp,
-      benefits: ['Custom Dashboards', 'Performance Metrics', 'ROI Tracking'],
-      comingSoon: true
-    },
-    {
-      title: 'Automated Invoice & Billing Management',
-      description: 'Streamline your billing process with integrated invoicing software. Create professional invoices, track payments, manage recurring billing, and integrate with popular payment gateways. Perfect for service-based businesses and SaaS startups.',
-      icon: FileText,
-      benefits: ['Payment Tracking', 'Recurring Billing', 'Payment Integration'],
-      comingSoon: true
-    },
-    {
-      title: 'Mobile CRM & Cloud Access',
-      description: 'Access your CRM data anywhere with our responsive, mobile-optimized interface. Work offline, sync data automatically, and manage your business on-the-go. Perfect for sales teams, remote workers, and field service management.',
-      icon: Smartphone,
-      benefits: ['Offline Access', 'Real-time Sync', 'Cross-platform Support'],
-      comingSoon: true
-    }
-  ];
-
-  // Enhanced testimonials with more details
-  const testimonials = [
-    {
-      quote: "BottleCRM revolutionized our customer relationship management. As a startup, we needed a powerful yet affordable CRM solution. This open-source CRM gave us enterprise-level features without the enterprise price tag!",
-      author: "Alex Martinez",
-      company: "Innovate Solutions",
-      role: "CEO & Founder",
-      industry: "Tech Startup"
-    },
-    {
-      quote: "The sales pipeline visualization and automated reporting helped us increase our conversion rate by 35% and reduce our sales cycle by 2 weeks. Best free CRM for small businesses we've ever used.",
-      author: "Priya Singh",
-      company: "Growth Dynamics",
-      role: "Sales Director",
-      industry: "Digital Marketing"
-    },
-    {
-      quote: "Easy implementation, great customization options, and excellent community support. Our team adopted it quickly and saw immediate productivity improvements. Highly recommend for any growing business.",
-      author: "Emma Rodriguez",
-      company: "Velocity Sales",
-      role: "Operations Manager",
-      industry: "B2B Services"
-    }
-  ];
-
-  // FAQ data for SEO
-  const faqs = [
-    {
-      question: "Is BottleCRM really free to use?",
-      answer: "Yes! BottleCRM is 100% free and open-source. You can download, install, customize, and use it without any subscription fees or hidden costs. We also offer optional paid support services for hosting and customization."
-    },
-    {
-      question: "How does BottleCRM compare to traditional CRM platforms?",
-      answer: "BottleCRM offers many of the same core features as enterprise CRM platforms but without the high monthly costs. While some commercial CRMs might have more advanced features, BottleCRM provides everything most startups and small businesses need to manage customer relationships effectively."
-    },
-    {
-      question: "Can I self-host BottleCRM on my own servers?",
-      answer: "Absolutely! BottleCRM is designed to be self-hosted. You have complete control over your data and can deploy it on your own servers, cloud infrastructure, or local environment. This ensures data privacy and eliminates vendor lock-in."
-    },
-    {
-      question: "What technology stack does BottleCRM use?",
-      answer: "BottleCRM is built with modern web technologies: SvelteKit 2.21.x for the frontend, Prisma for database management, TailwindCSS for styling, and includes integration capabilities with various third-party services."
-    },
-    {
-      question: "Do you provide support for BottleCRM implementation?",
-      answer: "Yes! While the software is free, we offer paid professional services including hosting setup, custom development, data migration, training, and ongoing technical support to help you get the most out of BottleCRM."
-    },
-    {
-      question: "Is BottleCRM suitable for my industry?",
-      answer: "BottleCRM is industry-agnostic and works well for most businesses including SaaS startups, consulting firms, e-commerce businesses, real estate agencies, and service-based companies. Its customizable nature allows adaptation to various industry-specific needs."
-    }
-  ];
-
-  // Comparison data
-  const competitors = [
-    {
-      name: "BottleCRM",
-      price: "Free",
-      openSource: true,
-      selfHosted: true,
-      customizable: true,
-      support: "Community + Paid",
-      userLimit: "Unlimited"
-    },
-    {
-      name: "Enterprise CRM Solutions",
-      price: "$25-300+/user/month",
-      openSource: false,
-      selfHosted: false,
-      customizable: true,
-      support: "Paid Only",
-      userLimit: "Per seat pricing"
-    },
-    {
-      name: "Popular Cloud CRMs",
-      price: "$50-3200+/month",
-      openSource: false,
-      selfHosted: false,
-      customizable: "Limited",
-      support: "Freemium + Paid",
-      userLimit: "Contact-based pricing"
-    },
-    {
-      name: "Traditional CRM Platforms",
-      price: "$15-99+/user/month",
-      openSource: false,
-      selfHosted: false,
-      customizable: "Limited",
-      support: "Paid Only",
-      userLimit: "Per seat pricing"
-    }
-  ];
   
-  let activeTestimonial = 0;
   let activeFaq = null;
   let mounted = false;
-
-  // Enhanced testimonial functions
-  function nextTestimonial() {
-    activeTestimonial = (activeTestimonial + 1) % testimonials.length;
-  }
-  
-  function prevTestimonial() {
-    activeTestimonial = (activeTestimonial - 1 + testimonials.length) % testimonials.length;
-  }
 
   function toggleFaq(index) {
     activeFaq = activeFaq === index ? null : index;
@@ -178,55 +29,54 @@
   
   onMount(() => {
     mounted = true;
-    // Auto-rotate testimonials
-    const interval = setInterval(nextTestimonial, 7000);
-    
-    return () => {
-      clearInterval(interval);
-    };
   });
+
+  // JSON-LD schema for SEO
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "BottleCRM",
+    "description": "Free, open-source CRM software for startups and small businesses. Self-hosted, unlimited users, no subscription fees.",
+    "url": "https://bottlecrm.io",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "150"
+    }
+  };
 </script>
 
 <svelte:head>
-  <title>BottleCRM | Free Open-Source CRM Software for Startups & Small Businesses - No Subscription Fees</title>
-  <meta name="description" content="BottleCRM: 100% free, self-hostable CRM software for startups and small businesses. Manage contacts, sales pipeline, tasks & analytics. Open-source alternative to expensive CRM solutions. Download now!" />
-  <meta name="keywords" content="free crm software, open source crm, startup crm, small business crm, crm software, customer relationship management, lead management, sales automation, svelte crm, django crm, self hosted crm, affordable crm alternative, free sales software, crm for startups, no subscription crm" />
-  
+  <title>BottleCRM: Free Open Source CRM for Startups & Small Business</title>
+  <meta name="description" content="BottleCRM is a free, open-source CRM for startups and small businesses. Self-host, manage contacts, sales, and tasks. No subscription fees. Download now!" />
+  <meta name="keywords" content="free crm, open source crm, crm software, startup crm, small business crm, self hosted crm, customer relationship management" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://bottlecrm.io/" />
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://bottlecrm.com/" />
-  <meta property="og:title" content="BottleCRM | Free Open-Source CRM Software for Startups" />
-  <meta property="og:description" content="100% free, self-hostable CRM software. No subscription fees, unlimited users. Perfect alternative to expensive CRM solutions." />
-  <meta property="og:image" content="https://bottlecrm.com/og-image.png" />
+  <meta property="og:url" content="https://bottlecrm.io/" />
+  <meta property="og:title" content="BottleCRM: Free Open Source CRM for Startups & Small Business" />
+  <meta property="og:description" content="Free, open-source CRM for startups and small businesses. Self-host, unlimited users, no subscription fees." />
+  <meta property="og:image" content="https://bottlecrm.io/og-image.png" />
 
   <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://bottlecrm.com/" />
-  <meta property="twitter:title" content="BottleCRM | Free Open-Source CRM Software for Startups" />
-  <meta property="twitter:description" content="100% free, self-hostable CRM software. No subscription fees, unlimited users." />
-  <meta property="twitter:image" content="https://bottlecrm.com/twitter-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://bottlecrm.io/" />
+  <meta name="twitter:title" content="BottleCRM: Free Open Source CRM for Startups & Small Business" />
+  <meta name="twitter:description" content="Free, open-source CRM for startups and small businesses. Self-host, unlimited users, no subscription fees." />
+  <meta name="twitter:image" content="https://bottlecrm.io/twitter-image.png" />
 
   <!-- Structured Data for SEO -->
   <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "BottleCRM",
-      "description": "Free, open-source CRM software for startups and small businesses",
-      "url": "https://bottlecrm.com",
-      "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Web-based",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "reviewCount": "150"
-      }
-    }
+    {@html JSON.stringify(schema)}
   </script>
 </svelte:head>
 
@@ -312,37 +162,179 @@
     </div>
 
     <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-      {#each features as feature, index}
-        {#if mounted}
-          <div in:fly="{{ y: 30, duration: 600, delay: index * 100 }}"
-               class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 group relative overflow-hidden">
-            
-            {#if feature.comingSoon}
-              <div class="absolute top-4 right-4">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
-                  Coming Soon
-                </span>
-              </div>
-            {/if}
-            
-            <div class="rounded-xl bg-gradient-to-r from-blue-100 to-indigo-100 p-4 inline-block mb-6 group-hover:scale-110 transition-transform duration-300">
-              <svelte:component this={feature.icon} class="h-8 w-8 text-blue-600" />
-            </div>
-            
-            <h3 class="text-2xl font-bold text-gray-900 mb-4">{feature.title}</h3>
-            <p class="text-gray-600 mb-6 leading-relaxed">{feature.description}</p>
-            
-            <ul class="space-y-2">
-              {#each feature.benefits as benefit}
-                <li class="flex items-center text-sm text-gray-700">
-                  <Check class="w-4 h-4 text-green-500 mr-2" />
-                  {benefit}
-                </li>
-              {/each}
-            </ul>
-          </div>
-        {/if}
-      {/each}
+      <!-- Smart Contact Management System -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 group relative overflow-hidden">
+        <div class="rounded-xl bg-gradient-to-r from-blue-100 to-indigo-100 p-4 inline-block mb-6 group-hover:scale-110 transition-transform duration-300">
+          <Users class="h-8 w-8 text-blue-600" />
+        </div>
+        
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Smart Contact Management System</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">Centralize customer data with our intuitive contact management system. Track customer interactions, manage qualified leads, and build stronger customer relationships. Perfect for startups, small businesses, and growing enterprises looking for efficient CRM software.</p>
+        
+        <ul class="space-y-2">
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            360° Customer View
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Lead Scoring
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Contact Segmentation
+          </li>
+        </ul>
+      </div>
+
+      <!-- Visual Sales Pipeline Management -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 group relative overflow-hidden">
+        <div class="absolute top-4 right-4">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+            Coming Soon
+          </span>
+        </div>
+        
+        <div class="rounded-xl bg-gradient-to-r from-blue-100 to-indigo-100 p-4 inline-block mb-6 group-hover:scale-110 transition-transform duration-300">
+          <BarChart3 class="h-8 w-8 text-blue-600" />
+        </div>
+        
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Visual Sales Pipeline Management</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">Streamline your sales process with our drag-and-drop sales pipeline. Track deals from lead qualification to closing, forecast revenue accurately, and implement powerful sales automation workflows to boost your conversion rates.</p>
+        
+        <ul class="space-y-2">
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Deal Tracking
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Sales Forecasting
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Automation Workflows
+          </li>
+        </ul>
+      </div>
+
+      <!-- Advanced Task & Project Management -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 group relative overflow-hidden">
+        <div class="rounded-xl bg-gradient-to-r from-blue-100 to-indigo-100 p-4 inline-block mb-6 group-hover:scale-110 transition-transform duration-300">
+          <CheckSquare class="h-8 w-8 text-blue-600" />
+        </div>
+        
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Advanced Task & Project Management</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">Never miss a follow-up with integrated task management and project tracking. Set reminders, assign tasks to team members, track project milestones, and ensure maximum productivity across your sales and marketing teams.</p>
+        
+        <ul class="space-y-2">
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Task Automation
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Team Collaboration
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Deadline Tracking
+          </li>
+        </ul>
+      </div>
+
+      <!-- Real-time Analytics & Reporting -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 group relative overflow-hidden">
+        <div class="absolute top-4 right-4">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+            Coming Soon
+          </span>
+        </div>
+        
+        <div class="rounded-xl bg-gradient-to-r from-blue-100 to-indigo-100 p-4 inline-block mb-6 group-hover:scale-110 transition-transform duration-300">
+          <TrendingUp class="h-8 w-8 text-blue-600" />
+        </div>
+        
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Real-time Analytics & Reporting</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">Make data-driven decisions with comprehensive CRM analytics and business intelligence. Track sales performance, monitor marketing campaign effectiveness, and generate detailed reports to optimize your customer acquisition strategies.</p>
+        
+        <ul class="space-y-2">
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Custom Dashboards
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Performance Metrics
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            ROI Tracking
+          </li>
+        </ul>
+      </div>
+
+      <!-- Automated Invoice & Billing Management -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 group relative overflow-hidden">
+        <div class="absolute top-4 right-4">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+            Coming Soon
+          </span>
+        </div>
+        
+        <div class="rounded-xl bg-gradient-to-r from-blue-100 to-indigo-100 p-4 inline-block mb-6 group-hover:scale-110 transition-transform duration-300">
+          <FileText class="h-8 w-8 text-blue-600" />
+        </div>
+        
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Automated Invoice & Billing Management</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">Streamline your billing process with integrated invoicing software. Create professional invoices, track payments, manage recurring billing, and integrate with popular payment gateways. Perfect for service-based businesses and SaaS startups.</p>
+        
+        <ul class="space-y-2">
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Payment Tracking
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Recurring Billing
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Payment Integration
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mobile CRM & Cloud Access -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 group relative overflow-hidden">
+        <div class="absolute top-4 right-4">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+            Coming Soon
+          </span>
+        </div>
+        
+        <div class="rounded-xl bg-gradient-to-r from-blue-100 to-indigo-100 p-4 inline-block mb-6 group-hover:scale-110 transition-transform duration-300">
+          <Smartphone class="h-8 w-8 text-blue-600" />
+        </div>
+        
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Mobile CRM & Cloud Access</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">Access your CRM data anywhere with our responsive, mobile-optimized interface. Work offline, sync data automatically, and manage your business on-the-go. Perfect for sales teams, remote workers, and field service management.</p>
+        
+        <ul class="space-y-2">
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Offline Access
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Real-time Sync
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2" />
+            Cross-platform Support
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
@@ -373,33 +365,65 @@
             </tr>
           </thead>
           <tbody>
-            {#each competitors as competitor, index}
-              <tr class="border-b border-gray-200 {index === 0 ? 'bg-blue-50 border-l-4 border-l-blue-500' : 'hover:bg-gray-50'}">
-                <td class="px-3 sm:px-6 py-4 font-semibold {index === 0 ? 'text-blue-700' : 'text-gray-900'} whitespace-nowrap">
-                  <div class="flex flex-col sm:flex-row sm:items-center">
-                    <span>{competitor.name}</span>
-                    {#if index === 0}<span class="mt-1 sm:mt-0 sm:ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full whitespace-nowrap">Recommended</span>{/if}
-                  </div>
-                </td>
-                <td class="px-3 sm:px-6 py-4 text-center font-medium {index === 0 ? 'text-green-600' : 'text-gray-700'} text-xs sm:text-sm">{competitor.price}</td>
-                <td class="px-3 sm:px-6 py-4 text-center">
-                  {#if competitor.openSource}
-                    <Check class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mx-auto" />
-                  {:else}
-                    <X class="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
-                  {/if}
-                </td>
-                <td class="px-3 sm:px-6 py-4 text-center">
-                  {#if competitor.selfHosted}
-                    <Check class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mx-auto" />
-                  {:else}
-                    <X class="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
-                  {/if}
-                </td>
-                <td class="px-3 sm:px-6 py-4 text-center text-gray-700 text-xs sm:text-sm">{competitor.customizable}</td>
-                <td class="px-3 sm:px-6 py-4 text-center text-gray-700 text-xs sm:text-sm">{competitor.userLimit}</td>
-              </tr>
-            {/each}
+            <tr class="border-b border-gray-200 bg-blue-50 border-l-4 border-l-blue-500">
+              <td class="px-3 sm:px-6 py-4 font-semibold text-blue-700 whitespace-nowrap">
+                <div class="flex flex-col sm:flex-row sm:items-center">
+                  <span>BottleCRM</span>
+                  <span class="mt-1 sm:mt-0 sm:ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full whitespace-nowrap">Recommended</span>
+                </div>
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center font-medium text-green-600 text-xs sm:text-sm">Free</td>
+              <td class="px-3 sm:px-6 py-4 text-center">
+                <Check class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mx-auto" />
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center">
+                <Check class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mx-auto" />
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center text-gray-700 text-xs sm:text-sm">Yes</td>
+              <td class="px-3 sm:px-6 py-4 text-center text-gray-700 text-xs sm:text-sm">Unlimited</td>
+            </tr>
+            <tr class="border-b border-gray-200 hover:bg-gray-50">
+              <td class="px-3 sm:px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">
+                <span>Enterprise CRM Solutions</span>
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center font-medium text-gray-700 text-xs sm:text-sm">$25-300+/user/month</td>
+              <td class="px-3 sm:px-6 py-4 text-center">
+                <X class="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center">
+                <X class="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center text-gray-700 text-xs sm:text-sm">Yes</td>
+              <td class="px-3 sm:px-6 py-4 text-center text-gray-700 text-xs sm:text-sm">Per seat pricing</td>
+            </tr>
+            <tr class="border-b border-gray-200 hover:bg-gray-50">
+              <td class="px-3 sm:px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">
+                <span>Popular Cloud CRMs</span>
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center font-medium text-gray-700 text-xs sm:text-sm">$50-3200+/month</td>
+              <td class="px-3 sm:px-6 py-4 text-center">
+                <X class="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center">
+                <X class="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center text-gray-700 text-xs sm:text-sm">Limited</td>
+              <td class="px-3 sm:px-6 py-4 text-center text-gray-700 text-xs sm:text-sm">Contact-based pricing</td>
+            </tr>
+            <tr class="border-b border-gray-200 hover:bg-gray-50">
+              <td class="px-3 sm:px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">
+                <span>Traditional CRM Platforms</span>
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center font-medium text-gray-700 text-xs sm:text-sm">$15-99+/user/month</td>
+              <td class="px-3 sm:px-6 py-4 text-center">
+                <X class="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center">
+                <X class="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mx-auto" />
+              </td>
+              <td class="px-3 sm:px-6 py-4 text-center text-gray-700 text-xs sm:text-sm">Limited</td>
+              <td class="px-3 sm:px-6 py-4 text-center text-gray-700 text-xs sm:text-sm">Per seat pricing</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -418,57 +442,6 @@
   </div>
 </section>
 
-<!-- Testimonial Section -->
-<!-- <section class="py-20 bg-gray-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-4xl font-extrabold text-gray-900 text-center mb-4 sm:text-5xl">
-      Trusted by <span class="text-blue-600">1000+</span> Growing Businesses
-    </h2>
-    <p class="text-xl text-gray-600 text-center mb-16 max-w-2xl mx-auto">
-      See how startups and small businesses are using BottleCRM to accelerate growth and improve customer relationships.
-    </p>
-    
-    <div class="relative max-w-4xl mx-auto min-h-[300px] md:min-h-[250px]">
-      <div class="overflow-hidden">
-        {#each testimonials as testimonial, i}
-          <div class="transition-all duration-500 ease-in-out absolute inset-0 flex flex-col items-center justify-center p-8 text-center"
-               style="opacity: {i === activeTestimonial ? '1' : '0'}; transform: translateX({i === activeTestimonial ? '0%' : (i < activeTestimonial ? '-100%' : '100%')}); pointer-events: {i === activeTestimonial ? 'auto' : 'none'}">
-            
-            <div class="bg-white rounded-2xl shadow-xl p-8 max-w-3xl">
-              <svg class="h-12 w-12 text-blue-400 mb-6 mx-auto" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true">
-                <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
-              </svg>
-              <p class="text-xl md:text-2xl text-gray-700 mb-8 leading-relaxed italic">"{testimonial.quote}"</p>
-              <div class="border-t border-gray-200 pt-6">
-                <div class="font-bold text-gray-900 text-lg">{testimonial.author}</div>
-                <div class="text-blue-600 font-medium">{testimonial.role}</div>
-                <div class="text-gray-600">{testimonial.company} • {testimonial.industry}</div>
-              </div>
-            </div>
-          </div>
-        {/each}
-      </div>
-      
-      <button on:click={prevTestimonial} aria-label="Previous testimonial" class="absolute top-1/2 transform -translate-y-1/2 -left-4 md:-left-12 p-3 rounded-full bg-white shadow-lg text-gray-600 hover:text-blue-600 hover:shadow-xl focus:outline-none transition-all duration-200 z-10">
-        <ChevronLeft class="h-6 w-6" />
-      </button>
-      
-      <button on:click={nextTestimonial} aria-label="Next testimonial" class="absolute top-1/2 transform -translate-y-1/2 -right-4 md:-right-12 p-3 rounded-full bg-white shadow-lg text-gray-600 hover:text-blue-600 hover:shadow-xl focus:outline-none transition-all duration-200 z-10">
-        <ChevronRight class="h-6 w-6" />
-      </button>
-      
-      <div class="mt-12 flex justify-center space-x-3 pt-4">
-        {#each testimonials as _, i}
-          <button on:click={() => activeTestimonial = i} 
-                  aria-label="Go to testimonial {i + 1}"
-                  class="w-3 h-3 rounded-full {i === activeTestimonial ? 'bg-blue-600' : 'bg-gray-300 hover:bg-gray-400'} 
-                         focus:outline-none transition-colors duration-300"></button>
-        {/each}
-      </div>
-    </div>
-  </div>
-</section> -->
-
 <!-- FAQ Section for SEO -->
 <section class="py-20 bg-white">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -482,26 +455,119 @@
     </div>
 
     <div class="space-y-4">
-      {#each faqs as faq, index}
-        <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
-          <button 
-            on:click={() => toggleFaq(index)}
-            class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
-            aria-expanded={activeFaq === index}
-          >
-            <div class="flex justify-between items-center">
-              <h3 class="text-lg font-semibold text-gray-900 pr-4">{faq.question}</h3>
-              <ChevronDown class="w-5 h-5 text-gray-500 transform transition-transform duration-200 {activeFaq === index ? 'rotate-180' : ''}" />
-            </div>
-          </button>
-          
-          {#if activeFaq === index}
-            <div transition:fade="{{ duration: 200 }}" class="px-6 pb-5">
-              <p class="text-gray-700 leading-relaxed">{faq.answer}</p>
-            </div>
-          {/if}
-        </div>
-      {/each}
+      <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+        <button 
+          on:click={() => toggleFaq(0)}
+          class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
+          aria-expanded={activeFaq === 0}
+        >
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900 pr-4">Is BottleCRM really free to use?</h3>
+            <ChevronDown class="w-5 h-5 text-gray-500 transform transition-transform duration-200 {activeFaq === 0 ? 'rotate-180' : ''}" />
+          </div>
+        </button>
+        
+        {#if activeFaq === 0}
+          <div transition:fade="{{ duration: 200 }}" class="px-6 pb-5">
+            <p class="text-gray-700 leading-relaxed">Yes! BottleCRM is 100% free and open-source. You can download, install, customize, and use it without any subscription fees or hidden costs. We also offer optional paid support services for hosting and customization.</p>
+          </div>
+        {/if}
+      </div>
+
+      <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+        <button 
+          on:click={() => toggleFaq(1)}
+          class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
+          aria-expanded={activeFaq === 1}
+        >
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900 pr-4">How does BottleCRM compare to traditional CRM platforms?</h3>
+            <ChevronDown class="w-5 h-5 text-gray-500 transform transition-transform duration-200 {activeFaq === 1 ? 'rotate-180' : ''}" />
+          </div>
+        </button>
+        
+        {#if activeFaq === 1}
+          <div transition:fade="{{ duration: 200 }}" class="px-6 pb-5">
+            <p class="text-gray-700 leading-relaxed">BottleCRM offers many of the same core features as enterprise CRM platforms but without the high monthly costs. While some commercial CRMs might have more advanced features, BottleCRM provides everything most startups and small businesses need to manage customer relationships effectively.</p>
+          </div>
+        {/if}
+      </div>
+
+      <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+        <button 
+          on:click={() => toggleFaq(2)}
+          class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
+          aria-expanded={activeFaq === 2}
+        >
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900 pr-4">Can I self-host BottleCRM on my own servers?</h3>
+            <ChevronDown class="w-5 h-5 text-gray-500 transform transition-transform duration-200 {activeFaq === 2 ? 'rotate-180' : ''}" />
+          </div>
+        </button>
+        
+        {#if activeFaq === 2}
+          <div transition:fade="{{ duration: 200 }}" class="px-6 pb-5">
+            <p class="text-gray-700 leading-relaxed">Absolutely! BottleCRM is designed to be self-hosted. You have complete control over your data and can deploy it on your own servers, cloud infrastructure, or local environment. This ensures data privacy and eliminates vendor lock-in.</p>
+          </div>
+        {/if}
+      </div>
+
+      <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+        <button 
+          on:click={() => toggleFaq(3)}
+          class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
+          aria-expanded={activeFaq === 3}
+        >
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900 pr-4">What technology stack does BottleCRM use?</h3>
+            <ChevronDown class="w-5 h-5 text-gray-500 transform transition-transform duration-200 {activeFaq === 3 ? 'rotate-180' : ''}" />
+          </div>
+        </button>
+        
+        {#if activeFaq === 3}
+          <div transition:fade="{{ duration: 200 }}" class="px-6 pb-5">
+            <p class="text-gray-700 leading-relaxed">BottleCRM is built with modern web technologies: SvelteKit 2.21.x for the frontend, Prisma for database management, TailwindCSS for styling, and includes integration capabilities with various third-party services.</p>
+          </div>
+        {/if}
+      </div>
+
+      <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+        <button 
+          on:click={() => toggleFaq(4)}
+          class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
+          aria-expanded={activeFaq === 4}
+        >
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900 pr-4">Do you provide support for BottleCRM implementation?</h3>
+            <ChevronDown class="w-5 h-5 text-gray-500 transform transition-transform duration-200 {activeFaq === 4 ? 'rotate-180' : ''}" />
+          </div>
+        </button>
+        
+        {#if activeFaq === 4}
+          <div transition:fade="{{ duration: 200 }}" class="px-6 pb-5">
+            <p class="text-gray-700 leading-relaxed">Yes! While the software is free, we offer paid professional services including hosting setup, custom development, data migration, training, and ongoing technical support to help you get the most out of BottleCRM.</p>
+          </div>
+        {/if}
+      </div>
+
+      <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+        <button 
+          on:click={() => toggleFaq(5)}
+          class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
+          aria-expanded={activeFaq === 5}
+        >
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900 pr-4">Is BottleCRM suitable for my industry?</h3>
+            <ChevronDown class="w-5 h-5 text-gray-500 transform transition-transform duration-200 {activeFaq === 5 ? 'rotate-180' : ''}" />
+          </div>
+        </button>
+        
+        {#if activeFaq === 5}
+          <div transition:fade="{{ duration: 200 }}" class="px-6 pb-5">
+            <p class="text-gray-700 leading-relaxed">BottleCRM is industry-agnostic and works well for most businesses including SaaS startups, consulting firms, e-commerce businesses, real estate agencies, and service-based companies. Its customizable nature allows adaptation to various industry-specific needs.</p>
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 </section>

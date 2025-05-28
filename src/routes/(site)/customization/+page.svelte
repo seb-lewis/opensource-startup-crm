@@ -43,34 +43,73 @@
 </script>
 
 <svelte:head>
-  <title>BottleCRM Customization | Custom CRM Development & Professional Services</title>
-  <meta name="description" content="Customize BottleCRM to fit your business perfectly. Free DIY customization tools or professional development services. Open-source CRM with unlimited customization possibilities." />
-  <meta name="keywords" content="crm customization, custom crm development, crm integration services, open source crm customization, svelte crm development, custom fields crm, crm workflow automation, crm api integration, professional crm services, bottlecrm customization" />
-  
+  <title>BottleCRM Customization: Free Open Source CRM & Custom Development</title>
+  <meta name="description" content="Customize BottleCRM, the free open-source CRM, to fit your business. DIY tools & expert services for branding, integrations, and workflow automation. Unlimited possibilities." />
+  <meta name="keywords" content="free crm, open source crm, crm customization, custom crm development, crm integration, svelte crm, crm workflow, crm api, bottlecrm, business crm, crm software" />
+  <link rel="canonical" href="https://bottlecrm.io/customization" />
+  <meta name="robots" content="index, follow" />
+
   <!-- Open Graph -->
-  <meta property="og:title" content="BottleCRM Customization | Custom CRM Development Services" />
-  <meta property="og:description" content="Transform BottleCRM to match your exact business needs. Professional customization services available." />
-  
-  <!-- Structured Data -->
+  <meta property="og:title" content="BottleCRM Customization: Free Open Source CRM & Custom Development" />
+  <meta property="og:description" content="Customize BottleCRM to fit your business. Free CRM with unlimited customization, DIY guides, and professional services." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://bottlecrm.io/customization" />
+  <meta property="og:image" content="https://bottlecrm.io/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BottleCRM Customization: Free Open Source CRM & Custom Development" />
+  <meta name="twitter:description" content="Customize BottleCRM to fit your business. Free CRM with unlimited customization, DIY guides, and professional services." />
+  <meta name="twitter:image" content="https://bottlecrm.io/og-image.png" />
+
+  <!-- Structured Data: SoftwareApplication & Service -->
   <script type="application/ld+json">
-    {
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "BottleCRM",
+      "applicationCategory": "Customer Relationship Management",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "license": "https://opensource.org/licenses/MIT",
+      "url": "https://bottlecrm.io",
+      "description": "BottleCRM is a free, open-source CRM application with unlimited customization, DIY tools, and professional development services.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "BottleCRM"
+      }
+    })}
+  </script>
+  <script type="application/ld+json">
+    {JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Service",
       "name": "BottleCRM Customization Services",
-      "description": "Professional CRM customization and development services for BottleCRM",
+      "description": "Professional and DIY CRM customization for BottleCRM: branding, integrations, workflow automation, and more.",
       "provider": {
         "@type": "Organization",
         "name": "BottleCRM"
       },
+      "areaServed": "Worldwide",
       "offers": [
         {
           "@type": "Offer",
           "name": "Professional Customization",
           "price": "497",
           "priceCurrency": "USD"
+        },
+        {
+          "@type": "Offer",
+          "name": "Enterprise Customization",
+          "price": "1497",
+          "priceCurrency": "USD"
         }
       ]
-    }
+    })}
   </script>
 </svelte:head>
 

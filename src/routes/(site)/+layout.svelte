@@ -75,7 +75,7 @@
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <meta name="language" content="English" />
   <meta name="author" content="MicroPyramid" />
-  <link rel="canonical" href="https://bottlecrm.com{page.url.pathname}" />
+  <link rel="canonical" href="https://bottlecrm.io{page.url.pathname}" />
   
   <!-- Enhanced Open Graph -->
   <meta property="og:site_name" content="BottleCRM" />

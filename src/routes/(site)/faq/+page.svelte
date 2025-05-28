@@ -31,39 +31,68 @@
 </script>
 
 <svelte:head>
-  <title>BottleCRM FAQ | Frequently Asked Questions About Free Open-Source CRM Software</title>
-  <meta name="description" content="Find answers to common questions about BottleCRM - free, open-source CRM software. Learn about pricing, features, self-hosting, support, and how to get started with your free CRM solution." />
-  <meta name="keywords" content="bottlecrm faq, free crm questions, open source crm help, crm software support, self hosted crm faq, startup crm questions, crm pricing questions, free alternative crm, open source crm alternative" />
-  
+  <title>BottleCRM FAQ | Free Open Source CRM for Startups & SMBs</title>
+  <meta name="description" content="Answers to common questions about BottleCRM, the free open-source CRM for startups and small businesses. Learn about features, pricing, support, and self-hosting." />
+  <meta name="keywords" content="free crm, open source crm, bottlecrm, crm faq, self hosted crm, startup crm, small business crm, crm support, crm pricing, crm features" />
+  <link rel="canonical" href="https://bottlecrm.io/faq" />
+  <meta name="robots" content="index, follow" />
+
   <!-- Open Graph -->
-  <meta property="og:title" content="BottleCRM FAQ | Everything You Need to Know" />
-  <meta property="og:description" content="Get answers to all your questions about BottleCRM - the free, open-source CRM software for startups and small businesses." />
-  
-  <!-- Structured Data -->
-  <script type="application/ld+json">
+  <meta property="og:title" content="BottleCRM FAQ | Free Open Source CRM for Startups & SMBs" />
+  <meta property="og:description" content="Find answers to your questions about BottleCRM, the free open-source CRM for startups and small businesses." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://bottlecrm.io/faq" />
+  <meta property="og:image" content="https://bottlecrm.io/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BottleCRM FAQ | Free Open Source CRM for Startups & SMBs" />
+  <meta name="twitter:description" content="Answers to common questions about BottleCRM, the free open-source CRM for startups and small businesses." />
+  <meta name="twitter:image" content="https://bottlecrm.io/og-image.png" />
+
+  <!-- FAQPage Schema.org Structured Data -->
+  {@html `
+    <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Is BottleCRM really completely free?",
+          "name": "Is BottleCRM really free?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes! BottleCRM core software is completely free with no hidden costs, user limits, trial periods, or subscription fees."
+            "text": "Yes, BottleCRM is 100% free and open-source with no user limits or hidden fees."
           }
         },
         {
-          "@type": "Question", 
-          "name": "How does BottleCRM compare to commercial CRM platforms?",
+          "@type": "Question",
+          "name": "Can I self-host BottleCRM?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "BottleCRM provides many of the same core features as commercial CRM platforms but without monthly subscription costs. You can save thousands per year compared to paid alternatives."
+            "text": "Absolutely! You can deploy BottleCRM on your own server or cloud for full data control."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What features are included in BottleCRM?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "All core CRM features: contact management, sales pipeline, tasks, analytics, and more are included for free."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does BottleCRM make money?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We offer optional paid services like setup, support, and custom development. The software itself is always free."
           }
         }
       ]
     }
-  </script>
+    </script>
+  `}
 </svelte:head>
 
 <!-- Hero Section -->

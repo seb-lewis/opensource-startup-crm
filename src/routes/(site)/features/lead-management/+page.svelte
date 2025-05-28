@@ -50,18 +50,50 @@
   onMount(() => {
     mounted = true;
   });
+
+  // JSON-LD schema for SoftwareApplication
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "BottleCRM Lead Management",
+    "url": "https://bottlecrm.io/features/lead-management",
+    "applicationCategory": "CRM Application",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock"
+    },
+    "description": "Free, open-source CRM lead management software for startups and small businesses. Capture, score, nurture, and convert leads with automated workflows.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "BottleCRM"
+    }
+  };
 </script>
 
 <svelte:head>
-  <title>Lead Management Software | Free CRM Lead Generation & Nurturing - BottleCRM</title>
-  <meta name="description" content="Powerful lead management software with BottleCRM. Capture, score, nurture & convert leads with automated workflows. Free, open-source lead generation CRM for startups & small businesses." />
-  <meta name="keywords" content="lead management software, lead generation crm, lead nurturing automation, lead scoring system, free lead management, crm lead tracking, lead conversion software, sales lead management, lead qualification tools, marketing automation" />
-  
+  <title>Free CRM Lead Management Software | BottleCRM</title>
+  <meta name="description" content="Free, open-source CRM lead management software for startups & small businesses. Capture, score, nurture & convert leads with automated workflows." />
+  <meta name="keywords" content="lead management software, free crm, lead generation, lead nurturing, open source crm, sales crm, lead scoring, crm for startups, crm for small business" />
+  <link rel="canonical" href="https://bottlecrm.io/features/lead-management" />
+  <meta name="robots" content="index, follow" />
+
   <!-- Open Graph -->
-  <meta property="og:title" content="Lead Management Software | Free CRM Lead Generation & Nurturing - BottleCRM" />
-  <meta property="og:description" content="Capture, score, nurture & convert leads with BottleCRM's powerful lead management features. Free, open-source lead generation CRM." />
+  <meta property="og:title" content="Free CRM Lead Management Software | BottleCRM" />
+  <meta property="og:description" content="Free, open-source CRM lead management software for startups & small businesses. Capture, score, nurture & convert leads with automated workflows." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://bottlecrm.com/features/lead-management" />
+  <meta property="og:url" content="https://bottlecrm.io/features/lead-management" />
+  <meta property="og:image" content="https://bottlecrm.io/og-lead-management.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free CRM Lead Management Software | BottleCRM" />
+  <meta name="twitter:description" content="Free, open-source CRM lead management software for startups & small businesses. Capture, score, nurture & convert leads with automated workflows." />
+  <meta name="twitter:image" content="https://bottlecrm.io/og-lead-management.png" />
+
+  <script type="application/ld+json">{JSON.stringify(schema)}</script>
 </svelte:head>
 
 <!-- Hero Section -->
