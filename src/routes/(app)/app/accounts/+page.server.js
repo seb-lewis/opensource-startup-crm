@@ -19,6 +19,7 @@ export async function load({ locals, url, params }) {
         const status = url.searchParams.get('status');
         if (status === 'open') {
             where.closedAt = null;
+            where.active = true;
         } else if (status === 'closed') {
             where.closedAt = { not: null };
         }
@@ -73,6 +74,7 @@ export async function load({ locals, url, params }) {
         return {
             accounts: accounts.map(account => ({
                 ...account,
+                isActive: account.isActive, // Use only the active field, ignore closedAt for display purposes
                 opportunityCount: account.opportunities.length,
                 contactCount: account.relatedContacts.length,
                 taskCount: account.tasks.length,

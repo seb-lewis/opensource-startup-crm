@@ -1,9 +1,31 @@
 <script>
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
-  import { Tabs, TabItem, Button, Badge, Textarea, Card, Modal } from 'flowbite-svelte';
   import { onMount } from 'svelte';
   import { invalidateAll } from '$app/navigation';
+  import { 
+    ArrowLeft, 
+    Edit, 
+    Lock, 
+    Unlock, 
+    Trash2, 
+    Users, 
+    Target, 
+    DollarSign, 
+    AlertTriangle,
+    Plus,
+    ExternalLink,
+    Phone,
+    Mail,
+    Globe,
+    Building,
+    MapPin,
+    Calendar,
+    MessageSquare,
+    CheckSquare,
+    FolderOpen,
+    Send
+  } from '@lucide/svelte';
 
   export let data;
   export let form;
@@ -23,6 +45,9 @@
   let isSubmittingComment = false;
   let commentError = '';
 
+  // Active tab state
+  let activeTab = 'contacts';
+
   async function submitComment() {
     commentError = '';
     if (!newComment.trim()) return;
@@ -35,7 +60,6 @@
         body: formData
       });
       if (res.ok) {
-        // Instead of invalidateAll, fetch comments directly for instant update
         const commentsRes = await fetch(window.location.pathname + '?commentsOnly=1');
         if (commentsRes.ok) {
           const data = await commentsRes.json();
@@ -75,40 +99,38 @@
     }).format(value);
   }
 
-  // Determine badge color based on opportunity stage
+  // Badge color functions
   function getStageBadgeColor(stage) {
     switch (stage?.toLowerCase()) {
-      case 'prospecting': return 'blue';
-      case 'qualification': return 'purple';
-      case 'proposal': return 'indigo';
-      case 'negotiation': return 'yellow';
-      case 'closed_won': return 'green';
-      case 'closed_lost': return 'red';
-      default: return 'gray';
+      case 'prospecting': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400';
+      case 'qualification': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400';
+      case 'proposal': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400';
+      case 'negotiation': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
+      case 'closed_won': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
+      case 'closed_lost': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   }
 
-  // Determine case status badge color
   function getCaseStatusBadgeColor(status) {
     switch (status?.toLowerCase()) {
-      case 'open': return 'yellow';
-      case 'in_progress': return 'blue';
-      case 'closed': return 'green';
-      default: return 'gray';
+      case 'open': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
+      case 'in_progress': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400';
+      case 'closed': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   }
 
-  // Determine quote status badge color
   function getQuoteStatusBadgeColor(status) {
     switch (status?.toLowerCase()) {
-      case 'draft': return 'gray';
-      case 'needs_review': return 'yellow';
-      case 'in_review': return 'blue';
-      case 'approved': return 'green';
-      case 'rejected': return 'red';
-      case 'presented': return 'purple';
-      case 'accepted': return 'indigo';
-      default: return 'gray';
+      case 'draft': return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+      case 'needs_review': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
+      case 'in_review': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400';
+      case 'approved': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
+      case 'rejected': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
+      case 'presented': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400';
+      case 'accepted': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   }
 
@@ -120,578 +142,720 @@
   }
 </script>
 
-<div class="p-4">
-  <!-- Back Button and Header -->
-  <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
-    <div class="flex items-center mb-4 md:mb-0">
-      <a 
-        class="mr-3 inline-flex items-center text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500"
-        href="/app/accounts"
-      >
-        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        Back
-      </a>
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{account.name}</h1>
-    </div>
-    
-    <div class="flex items-center space-x-2">
-      {#if account.closedAt}
-        <form method="POST" action="?/reopenAccount">
-          <Button type="submit" size="sm" color="green" class="ml-2">
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m-4 6H4m0 0l4 4m-4-4l4-4"></path>
-            </svg>
-            Reopen Account
-          </Button>
-        </form>
-      {:else}
-        <Button href="/app/accounts/{account.id}/edit" size="sm" color="light">
-          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-          </svg>
-          Edit
-        </Button>
-        <Button onclick={() => showCloseModal = true} size="sm" color="yellow" class="ml-2">
-          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-          </svg>
-          Close Account
-        </Button>
-      {/if}
-      <Button href="/app/accounts/{account.id}/delete" size="sm" color="red" class="ml-2">
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-        </svg>
-        Delete
-      </Button>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <!-- Header -->
+  <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-6">
+        <div class="flex items-center space-x-4">
+          <a 
+            href="/app/accounts"
+            class="inline-flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+          >
+            <ArrowLeft class="w-5 h-5 mr-2" />
+            Back to Accounts
+          </a>
+          <div class="border-l border-gray-300 dark:border-gray-600 pl-4">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{account.name}</h1>
+            <div class="flex items-center mt-1 space-x-2">
+              <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                account?.isActive ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' : 
+                'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+              }`}>
+                {account.isActive ? 'Active' : 'Inactive'}
+              </span>
+              {#if account.type}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                  {account.type}
+                </span>
+              {/if}
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+          {#if account.closedAt}
+            <form method="POST" action="?/reopenAccount">
+              <button 
+                type="submit" 
+                class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                <Unlock class="w-4 h-4 mr-2" />
+                Reopen Account
+              </button>
+            </form>
+          {:else}
+            <a 
+              href="/app/accounts/{account.id}/edit"
+              class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              <Edit class="w-4 h-4 mr-2" />
+              Edit
+            </a>
+            <button 
+              onclick={() => showCloseModal = true}
+              class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              <Lock class="w-4 h-4 mr-2" />
+              Close Account
+            </button>
+          {/if}
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <!-- Account Details Card -->
-    <div class="md:col-span-2">
-      <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
-        <div class="mb-4 flex justify-between">
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Account Information</h2>
-          <Badge color={account.closedAt ? "red" : account.active ? "green" : "gray"}>
-            {account.closedAt ? "Closed" : account.active ? "Active" : "Inactive"}
-          </Badge>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Name</h3>
-            <p class="text-base text-gray-900 dark:text-white">{account.name || 'N/A'}</p>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Main Content -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- Account Information -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Account Information</h2>
           </div>
-          
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Industry</h3>
-            <p class="text-base text-gray-900 dark:text-white">{account.industry || 'N/A'}</p>
-          </div>
-          
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Type</h3>
-            <p class="text-base text-gray-900 dark:text-white">{account.type || 'N/A'}</p>
-          </div>
-          
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Website</h3>
-            {#if account.website}
-              <a 
-                href={account.website.startsWith('http') ? account.website : `https://${account.website}`} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="text-blue-600 dark:text-blue-500 hover:underline flex items-center"
-              >
-                {account.website}
-                <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                </svg>
-              </a>
-            {:else}
-              <p class="text-base text-gray-900 dark:text-white">N/A</p>
-            {/if}
-          </div>
-          
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</h3>
-            {#if account.phone}
-              <a href={`tel:${account.phone}`} class="text-blue-600 dark:text-blue-500 hover:underline">
-                {account.phone}
-              </a>
-            {:else}
-              <p class="text-base text-gray-900 dark:text-white">N/A</p>
-            {/if}
-          </div>
-          
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</h3>
-            {#if account.email}
-              <a href={`mailto:${account.email}`} class="text-blue-600 dark:text-blue-500 hover:underline">
-                {account.email}
-              </a>
-            {:else}
-              <p class="text-base text-gray-900 dark:text-white">N/A</p>
-            {/if}
-          </div>
-          
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Annual Revenue</h3>
-            <p class="text-base text-gray-900 dark:text-white">
-              {account.annualRevenue ? formatCurrency(account.annualRevenue) : 'N/A'}
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Employees</h3>
-            <p class="text-base text-gray-900 dark:text-white">
-              {account.numberOfEmployees ? account.numberOfEmployees.toLocaleString() : 'N/A'}
-            </p>
-          </div>
-
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Ownership</h3>
-            <p class="text-base text-gray-900 dark:text-white">{account.accountOwnership || 'N/A'}</p>
-          </div>
-
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Ticker Symbol</h3>
-            <p class="text-base text-gray-900 dark:text-white">{account.tickerSymbol || 'N/A'}</p>
-          </div>
-
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Rating</h3>
-            <p class="text-base text-gray-900 dark:text-white">{account.rating || 'N/A'}</p>
-          </div>
-
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">SIC Code</h3>
-            <p class="text-base text-gray-900 dark:text-white">{account.sicCode || 'N/A'}</p>
-          </div>
-        </div>
-        
-        <hr class="my-4 border-gray-200 dark:border-gray-700">
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-          <div class="md:col-span-2">
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Address</h3>
-            <address class="text-base text-gray-900 dark:text-white not-italic">
-              {account.street || ''}<br>
-              {account.city || ''}{account.city && account.state ? ', ' : ''}{account.state || ''} {account.postalCode || ''}<br>
-              {account.country || ''}
-            </address>
-          </div>
-          
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Created</h3>
-            <p class="text-base text-gray-900 dark:text-white">{formatDate(account.createdAt)}</p>
-          </div>
-          
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Last Updated</h3>
-            <p class="text-base text-gray-900 dark:text-white">{formatDate(account.updatedAt)}</p>
-          </div>
-          
-          {#if account.description}
-            <div class="md:col-span-2 mt-2">
-              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</h3>
-              <p class="text-base text-gray-900 dark:text-white whitespace-pre-line">{account.description}</p>
-            </div>
-          {/if}
-          
-          {#if account.closedAt}
-            <div class="md:col-span-2 mt-4 bg-red-50 dark:bg-gray-700 border border-red-200 dark:border-red-700 p-4 rounded-lg">
-              <div class="flex">
-                <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                </svg>
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-4">
                 <div>
-                  <p class="font-medium text-red-800 dark:text-red-200">This account was closed on {formatDate(account.closedAt)}.</p>
-                  <p class="text-red-700 dark:text-red-300">Reason: {account.closureReason || 'No reason provided'}</p>
+                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Name</label>
+                  <p class="mt-1 text-sm text-gray-900 dark:text-white">{account.name || 'N/A'}</p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Industry</label>
+                  <p class="mt-1 text-sm text-gray-900 dark:text-white">{account.industry || 'N/A'}</p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Website</label>
+                  {#if account.website}
+                    <a 
+                      href={account.website.startsWith('http') ? account.website : `https://${account.website}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      class="mt-1 inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      <Globe class="w-4 h-4 mr-1" />
+                      {account.website}
+                      <ExternalLink class="w-3 h-3 ml-1" />
+                    </a>
+                  {:else}
+                    <p class="mt-1 text-sm text-gray-900 dark:text-white">N/A</p>
+                  {/if}
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</label>
+                  {#if account.phone}
+                    <a href={`tel:${account.phone}`} class="mt-1 inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                      <Phone class="w-4 h-4 mr-1" />
+                      {account.phone}
+                    </a>
+                  {:else}
+                    <p class="mt-1 text-sm text-gray-900 dark:text-white">N/A</p>
+                  {/if}
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</label>
+                  {#if account.email}
+                    <a href={`mailto:${account.email}`} class="mt-1 inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                      <Mail class="w-4 h-4 mr-1" />
+                      {account.email}
+                    </a>
+                  {:else}
+                    <p class="mt-1 text-sm text-gray-900 dark:text-white">N/A</p>
+                  {/if}
+                </div>
+              </div>
+              
+              <div class="space-y-4">
+                <div>
+                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Annual Revenue</label>
+                  <p class="mt-1 text-sm text-gray-900 dark:text-white">
+                    {account.annualRevenue ? formatCurrency(account.annualRevenue) : 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Employees</label>
+                  <p class="mt-1 text-sm text-gray-900 dark:text-white">
+                    {account.numberOfEmployees ? account.numberOfEmployees.toLocaleString() : 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Ownership</label>
+                  <p class="mt-1 text-sm text-gray-900 dark:text-white">{account.accountOwnership || 'N/A'}</p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Rating</label>
+                  <p class="mt-1 text-sm text-gray-900 dark:text-white">{account.rating || 'N/A'}</p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">SIC Code</label>
+                  <p class="mt-1 text-sm text-gray-900 dark:text-white">{account.sicCode || 'N/A'}</p>
                 </div>
               </div>
             </div>
-          {/if}
-        </div>
-      </div>
-    </div>
-    
-    <!-- Account Stats Card -->
-    <div class="md:col-span-1">
-      <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Overview</h2>
-        
-        <div class="space-y-6">
-          <div class="flex justify-between items-center">
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Contacts</h3>
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">{contacts.length}</p>
-            </div>
-            <svg class="w-10 h-10 text-blue-600 dark:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            </svg>
-          </div>
-          
-          <div class="flex justify-between items-center">
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Opportunities</h3>
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">{opportunities.length}</p>
-            </div>
-            <svg class="w-10 h-10 text-green-600 dark:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          
-          <div class="flex justify-between items-center">
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Pipeline Value</h3>
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">
-                {formatCurrency(opportunities.reduce((sum, opp) => sum + (opp.amount || 0), 0))}
-              </p>
-            </div>
-            <svg class="w-10 h-10 text-yellow-600 dark:text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          
-          <div class="flex justify-between items-center">
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Open Cases</h3>
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">
-                {cases.filter(c => c.status !== 'CLOSED').length}
-              </p>
-            </div>
-            <svg class="w-10 h-10 text-red-600 dark:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-        </div>
-        
-        <div class="mt-6">
-          <Button href="/app/contacts/new?accountId={account.id}" color="blue" class="w-full justify-center">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-            </svg>
-            Add Contact
-          </Button>
-          <Button href="/app/opportunities/new?accountId={account.id}" color="green" class="w-full justify-center mt-3">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-            Add Opportunity
-          </Button>
-          <Button href="/app/tasks/new?accountId={account.id}" color="purple" class="w-full justify-center mt-3">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-            </svg>
-            Add Task
-          </Button>
-          <Button href="/app/cases/new?accountId={account.id}" color="red" class="w-full justify-center mt-3">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-            </svg>
-            Open Case
-          </Button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Tabs for Related Information -->
-  <div class="mt-6">
-    <Tabs>
-      <TabItem open title="Contacts ({contacts.length})">
-        <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
-          {#if contacts.length === 0}
-            <div class="p-8 text-center">
-              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <p class="mt-2 text-gray-500 dark:text-gray-400">No contacts found for this account</p>
-              <Button href="/app/contacts/new?accountId={account.id}" color="blue" class="mt-3">Add Contact</Button>
-            </div>
-          {:else}
-            <div class="overflow-x-auto relative">
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
-                    <th scope="col" class="px-6 py-3">Name</th>
-                    <th scope="col" class="px-6 py-3">Title</th>
-                    <th scope="col" class="px-6 py-3 hidden md:table-cell">Email</th>
-                    <th scope="col" class="px-6 py-3 hidden lg:table-cell">Phone</th>
-                    <th scope="col" class="px-6 py-3">Role</th>
-                    <th scope="col" class="px-6 py-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {#each contacts as contact}
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                        <a href="/app/contacts/{contact.id}" class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline">
-                          {contact.firstName} {contact.lastName}
-                        </a>
-                        {#if contact.isPrimary}
-                          <Badge color="blue" size="xs">Primary</Badge>
-                        {/if}
-                      </td>
-                      <td class="px-6 py-4">{contact.title || 'N/A'}</td>
-                      <td class="px-6 py-4 hidden md:table-cell">
-                        {#if contact.email}
-                          <a href="mailto:{contact.email}" class="text-blue-600 dark:text-blue-500 hover:underline">
-                            {contact.email}
-                          </a>
-                        {:else}
-                          N/A
-                        {/if}
-                      </td>
-                      <td class="px-6 py-4 hidden lg:table-cell">
-                        {#if contact.phone}
-                          <a href="tel:{contact.phone}" class="text-blue-600 dark:text-blue-500 hover:underline">
-                            {contact.phone}
-                          </a>
-                        {:else}
-                          N/A
-                        {/if}
-                      </td>
-                      <td class="px-6 py-4">{contact.role || 'N/A'}</td>
-                      <td class="px-6 py-4 text-right">
-                        <a href="/app/contacts/{contact.id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a>
-                      </td>
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
-            </div>
-          {/if}
-        </div>
-      </TabItem>
-      
-      <TabItem title="Opportunities ({opportunities.length})">
-        <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
-          {#if opportunities.length === 0}
-            <div class="p-8 text-center">
-              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <p class="mt-2 text-gray-500 dark:text-gray-400">No opportunities found for this account</p>
-              <Button href="/app/opportunities/new?accountId={account.id}" color="green" class="mt-3">Add Opportunity</Button>
-            </div>
-          {:else}
-            <div class="overflow-x-auto relative">
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
-                    <th scope="col" class="px-6 py-3">Name</th>
-                    <th scope="col" class="px-6 py-3">Value</th>
-                    <th scope="col" class="px-6 py-3">Stage</th>
-                    <th scope="col" class="px-6 py-3 hidden md:table-cell">Close Date</th>
-                    <th scope="col" class="px-6 py-3 hidden lg:table-cell">Probability</th>
-                    <th scope="col" class="px-6 py-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {#each opportunities as opportunity}
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                        <a href="/app/opportunities/{opportunity.id}" class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline">
-                          {opportunity.name}
-                        </a>
-                      </td>
-                      <td class="px-6 py-4">{formatCurrency(opportunity.amount)}</td>
-                      <td class="px-6 py-4">
-                        <Badge color={getStageBadgeColor(opportunity.stage)}>{opportunity.stage || 'Unknown'}</Badge>
-                      </td>
-                      <td class="px-6 py-4 hidden md:table-cell">{formatDate(opportunity.closeDate)}</td>
-                      <td class="px-6 py-4 hidden lg:table-cell">{opportunity.probability ? `${opportunity.probability}%` : 'N/A'}</td>
-                      <td class="px-6 py-4 text-right">
-                        <a href="/app/opportunities/{opportunity.id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a>
-                      </td>
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
-            </div>
-          {/if}
-        </div>
-      </TabItem>
-      
-      <TabItem title="Notes ({comments.length})">
-        <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md p-6">
-          <div class="mb-6">
-            <label for="comment" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Add a note</label>
-            <Textarea id="comment" rows="3" placeholder="Write your note here..." bind:value={newComment} />
-            {#if commentError}
-              <p class="text-red-600 mt-2">{commentError}</p>
+            
+            {#if account.street || account.city || account.state || account.country}
+              <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Address</label>
+                <div class="mt-1 flex items-start text-sm text-gray-900 dark:text-white">
+                  <MapPin class="w-4 h-4 mr-2 mt-0.5 text-gray-400" />
+                  <address class="not-italic">
+                    {account.street || ''}<br>
+                    {account.city || ''}{account.city && account.state ? ', ' : ''}{account.state || ''} {account.postalCode || ''}<br>
+                    {account.country || ''}
+                  </address>
+                </div>
+              </div>
             {/if}
-            <div class="mt-2 flex justify-end">
-              <Button size="sm" color="blue" onclick={submitComment} disabled={isSubmittingComment}>
-                {#if isSubmittingComment}Adding...{:else}Add Note{/if}
-              </Button>
-            </div>
-          </div>
-          {#if comments.length === 0}
-            <div class="p-8 text-center">
-              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-              </svg>
-              <p class="mt-2 text-gray-500 dark:text-gray-400">No notes found for this account</p>
-            </div>
-          {:else}
-            <div class="space-y-4">
-              {#each comments as comment}
-                <Card>
-                  <div class="flex justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-medium text-gray-900 dark:text-white">{comment.author?.name || 'Unknown'}</span>
-                      <span class="text-xs text-gray-500">
-                        {formatDate(comment.createdAt)} {#if comment.isPrivate}<Badge color="red" size="xs">Private</Badge>{/if}
-                      </span>
+            
+            {#if account.description}
+              <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
+                <p class="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-line">{account.description}</p>
+              </div>
+            {/if}
+            
+            {#if account.closedAt}
+              <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div class="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4">
+                  <div class="flex">
+                    <AlertTriangle class="w-5 h-5 text-red-500 mr-3 flex-shrink-0" />
+                    <div>
+                      <p class="font-medium text-red-800 dark:text-red-200">This account was closed on {formatDate(account.closedAt)}.</p>
+                      <p class="text-red-700 dark:text-red-300 mt-1">Reason: {account.closureReason || 'No reason provided'}</p>
                     </div>
                   </div>
-                  <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{comment.body}</p>
-                </Card>
-              {/each}
+                </div>
+              </div>
+            {/if}
+            
+            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <label class="text-gray-500 dark:text-gray-400">Created</label>
+                <p class="text-gray-900 dark:text-white">{formatDate(account.createdAt)}</p>
+              </div>
+              <div>
+                <label class="text-gray-500 dark:text-gray-400">Last Updated</label>
+                <p class="text-gray-900 dark:text-white">{formatDate(account.updatedAt)}</p>
+              </div>
             </div>
-          {/if}
+          </div>
         </div>
-      </TabItem>
-      
-      <TabItem title="Tasks ({tasks.length})">
-        <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
-          {#if tasks.length === 0}
-            <div class="p-8 text-center">
-              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-              </svg>
-              <p class="mt-2 text-gray-500 dark:text-gray-400">No tasks found for this account</p>
-              <Button href="/app/tasks/new?accountId={account.id}" color="purple" class="mt-3">Add Task</Button>
-            </div>
-          {:else}
-            <div class="overflow-x-auto relative">
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
-                    <th scope="col" class="px-6 py-3">Subject</th>
-                    <th scope="col" class="px-6 py-3">Status</th>
-                    <th scope="col" class="px-6 py-3">Priority</th>
-                    <th scope="col" class="px-6 py-3 hidden md:table-cell">Due Date</th>
-                    <th scope="col" class="px-6 py-3 hidden lg:table-cell">Assigned To</th>
-                    <th scope="col" class="px-6 py-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {#each tasks as task}
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                        <a href="/app/tasks/{task.id}" class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline">
-                          {task.subject}
-                        </a>
-                      </td>
-                      <td class="px-6 py-4">
-                        <Badge color={task.status === 'Completed' ? 'green' : task.status === 'In Progress' ? 'blue' : 'yellow'}>
-                          {task.status}
-                        </Badge>
-                      </td>
-                      <td class="px-6 py-4">
-                        <Badge color={task.priority === 'High' ? 'red' : task.priority === 'Normal' ? 'gray' : 'blue'}>
-                          {task.priority}
-                        </Badge>
-                      </td>
-                      <td class="px-6 py-4 hidden md:table-cell">{formatDate(task.dueDate)}</td>
-                      <td class="px-6 py-4 hidden lg:table-cell">{task.owner?.name || 'Unassigned'}</td>
-                      <td class="px-6 py-4 text-right">
-                        <a href="/app/tasks/{task.id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a>
-                      </td>
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
-            </div>
-          {/if}
+
+        <!-- Related Records Tabs -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <!-- Tab Navigation -->
+          <div class="border-b border-gray-200 dark:border-gray-700">
+            <nav class="flex space-x-8 px-6" aria-label="Tabs">
+              <button
+                onclick={() => activeTab = 'contacts'}
+                class={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'contacts' 
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
+              >
+                Contacts ({contacts.length})
+              </button>
+              <button
+                onclick={() => activeTab = 'opportunities'}
+                class={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'opportunities' 
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
+              >
+                Opportunities ({opportunities.length})
+              </button>
+              <button
+                onclick={() => activeTab = 'tasks'}
+                class={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'tasks' 
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
+              >
+                Tasks ({tasks.length})
+              </button>
+              <button
+                onclick={() => activeTab = 'cases'}
+                class={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'cases' 
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
+              >
+                Cases ({cases.length})
+              </button>
+              <button
+                onclick={() => activeTab = 'notes'}
+                class={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'notes' 
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
+              >
+                Notes ({comments.length})
+              </button>
+            </nav>
+          </div>
+
+          <!-- Tab Content -->
+          <div class="p-6">
+            {#if activeTab === 'contacts'}
+              {#if contacts.length === 0}
+                <div class="text-center py-12">
+                  <Users class="mx-auto h-12 w-12 text-gray-400" />
+                  <p class="mt-2 text-gray-500 dark:text-gray-400">No contacts found for this account</p>
+                  <a 
+                    href="/app/contacts/new?accountId={account.id}"
+                    class="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    <Plus class="w-4 h-4 mr-2" />
+                    Add Contact
+                  </a>
+                </div>
+              {:else}
+                <div class="overflow-x-auto">
+                  <table class="min-w-full">
+                    <thead>
+                      <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Title</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">Email</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden lg:table-cell">Phone</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Role</th>
+                        <th class="pb-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                      {#each contacts as contact}
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <td class="py-4 font-medium text-gray-900 dark:text-white">
+                            <a href="/app/contacts/{contact.id}" class="hover:text-blue-600 dark:hover:text-blue-400 hover:underline">
+                              {contact.firstName} {contact.lastName}
+                            </a>
+                            {#if contact.isPrimary}
+                              <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                                Primary
+                              </span>
+                            {/if}
+                          </td>
+                          <td class="py-4 text-gray-900 dark:text-white">{contact.title || 'N/A'}</td>
+                          <td class="py-4 text-gray-900 dark:text-white hidden md:table-cell">
+                            {#if contact.email}
+                              <a href="mailto:{contact.email}" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                {contact.email}
+                              </a>
+                            {:else}
+                              N/A
+                            {/if}
+                          </td>
+                          <td class="py-4 text-gray-900 dark:text-white hidden lg:table-cell">
+                            {#if contact.phone}
+                              <a href="tel:{contact.phone}" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                {contact.phone}
+                              </a>
+                            {:else}
+                              N/A
+                            {/if}
+                          </td>
+                          <td class="py-4 text-gray-900 dark:text-white">{contact.role || 'N/A'}</td>
+                          <td class="py-4 text-right">
+                            <a href="/app/contacts/{contact.id}" class="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium">View</a>
+                          </td>
+                        </tr>
+                      {/each}
+                    </tbody>
+                  </table>
+                </div>
+              {/if}
+            {/if}
+
+            {#if activeTab === 'opportunities'}
+              {#if opportunities.length === 0}
+                <div class="text-center py-12">
+                  <Target class="mx-auto h-12 w-12 text-gray-400" />
+                  <p class="mt-2 text-gray-500 dark:text-gray-400">No opportunities found for this account</p>
+                  <a 
+                    href="/app/opportunities/new?accountId={account.id}"
+                    class="mt-4 inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    <Plus class="w-4 h-4 mr-2" />
+                    Add Opportunity
+                  </a>
+                </div>
+              {:else}
+                <div class="overflow-x-auto">
+                  <table class="min-w-full">
+                    <thead>
+                      <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Value</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Stage</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">Close Date</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden lg:table-cell">Probability</th>
+                        <th class="pb-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                      {#each opportunities as opportunity}
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <td class="py-4 font-medium text-gray-900 dark:text-white">
+                            <a href="/app/opportunities/{opportunity.id}" class="hover:text-blue-600 dark:hover:text-blue-400 hover:underline">
+                              {opportunity.name}
+                            </a>
+                          </td>
+                          <td class="py-4 text-gray-900 dark:text-white">{formatCurrency(opportunity.amount)}</td>
+                          <td class="py-4">
+                            <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStageBadgeColor(opportunity.stage)}`}>
+                              {opportunity.stage || 'Unknown'}
+                            </span>
+                          </td>
+                          <td class="py-4 text-gray-900 dark:text-white hidden md:table-cell">{formatDate(opportunity.closeDate)}</td>
+                          <td class="py-4 text-gray-900 dark:text-white hidden lg:table-cell">{opportunity.probability ? `${opportunity.probability}%` : 'N/A'}</td>
+                          <td class="py-4 text-right">
+                            <a href="/app/opportunities/{opportunity.id}" class="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium">View</a>
+                          </td>
+                        </tr>
+                      {/each}
+                    </tbody>
+                  </table>
+                </div>
+              {/if}
+            {/if}
+
+            {#if activeTab === 'tasks'}
+              {#if tasks.length === 0}
+                <div class="text-center py-12">
+                  <CheckSquare class="mx-auto h-12 w-12 text-gray-400" />
+                  <p class="mt-2 text-gray-500 dark:text-gray-400">No tasks found for this account</p>
+                  <a 
+                    href="/app/tasks/new?accountId={account.id}"
+                    class="mt-4 inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    <Plus class="w-4 h-4 mr-2" />
+                    Add Task
+                  </a>
+                </div>
+              {:else}
+                <div class="overflow-x-auto">
+                  <table class="min-w-full">
+                    <thead>
+                      <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Subject</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Priority</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">Due Date</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden lg:table-cell">Assigned To</th>
+                        <th class="pb-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                      {#each tasks as task}
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <td class="py-4 font-medium text-gray-900 dark:text-white">
+                            <a href="/app/tasks/{task.id}" class="hover:text-blue-600 dark:hover:text-blue-400 hover:underline">
+                              {task.subject}
+                            </a>
+                          </td>
+                          <td class="py-4">
+                            <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              task.status === 'Completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' : 
+                              task.status === 'In Progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400' : 
+                              'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
+                            }`}>
+                              {task.status}
+                            </span>
+                          </td>
+                          <td class="py-4">
+                            <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              task.priority === 'High' ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400' : 
+                              task.priority === 'Normal' ? 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300' : 
+                              'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
+                            }`}>
+                              {task.priority}
+                            </span>
+                          </td>
+                          <td class="py-4 text-gray-900 dark:text-white hidden md:table-cell">{formatDate(task.dueDate)}</td>
+                          <td class="py-4 text-gray-900 dark:text-white hidden lg:table-cell">{task.owner?.name || 'Unassigned'}</td>
+                          <td class="py-4 text-right">
+                            <a href="/app/tasks/{task.id}" class="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium">View</a>
+                          </td>
+                        </tr>
+                      {/each}
+                    </tbody>
+                  </table>
+                </div>
+              {/if}
+            {/if}
+
+            {#if activeTab === 'cases'}
+              {#if cases.length === 0}
+                <div class="text-center py-12">
+                  <FolderOpen class="mx-auto h-12 w-12 text-gray-400" />
+                  <p class="mt-2 text-gray-500 dark:text-gray-400">No cases found for this account</p>
+                  <a 
+                    href="/app/cases/new?accountId={account.id}"
+                    class="mt-4 inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    <Plus class="w-4 h-4 mr-2" />
+                    Open Case
+                  </a>
+                </div>
+              {:else}
+                <div class="overflow-x-auto">
+                  <table class="min-w-full">
+                    <thead>
+                      <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Case Number</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Subject</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Priority</th>
+                        <th class="pb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">Created Date</th>
+                        <th class="pb-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                      {#each cases as caseItem}
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <td class="py-4 font-medium text-gray-900 dark:text-white">
+                            <a href="/app/cases/{caseItem.id}" class="hover:text-blue-600 dark:hover:text-blue-400 hover:underline">
+                              {caseItem.caseNumber}
+                            </a>
+                          </td>
+                          <td class="py-4 text-gray-900 dark:text-white">{caseItem.subject}</td>
+                          <td class="py-4">
+                            <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCaseStatusBadgeColor(caseItem.status)}`}>
+                              {caseItem.status}
+                            </span>
+                          </td>
+                          <td class="py-4">
+                            <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              caseItem.priority === 'High' ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400' : 
+                              caseItem.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400' : 
+                              'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
+                            }`}>
+                              {caseItem.priority}
+                            </span>
+                          </td>
+                          <td class="py-4 text-gray-900 dark:text-white hidden md:table-cell">{formatDate(caseItem.createdAt)}</td>
+                          <td class="py-4 text-right">
+                            <a href="/app/cases/{caseItem.id}" class="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium">View</a>
+                          </td>
+                        </tr>
+                      {/each}
+                    </tbody>
+                  </table>
+                </div>
+              {/if}
+            {/if}
+
+            {#if activeTab === 'notes'}
+              <div class="space-y-6">
+                <!-- Add Note Form -->
+                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                  <label for="comment" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Add a note</label>
+                  <textarea 
+                    id="comment" 
+                    rows="3" 
+                    placeholder="Write your note here..." 
+                    bind:value={newComment}
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  ></textarea>
+                  {#if commentError}
+                    <p class="text-red-600 text-sm mt-2">{commentError}</p>
+                  {/if}
+                  <div class="mt-3 flex justify-end">
+                    <button 
+                      onclick={submitComment} 
+                      disabled={isSubmittingComment}
+                      class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-lg transition-colors"
+                    >
+                      <Send class="w-4 h-4 mr-2" />
+                      {#if isSubmittingComment}Adding...{:else}Add Note{/if}
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Comments List -->
+                {#if comments.length === 0}
+                  <div class="text-center py-12">
+                    <MessageSquare class="mx-auto h-12 w-12 text-gray-400" />
+                    <p class="mt-2 text-gray-500 dark:text-gray-400">No notes found for this account</p>
+                  </div>
+                {:else}
+                  <div class="space-y-4">
+                    {#each comments as comment}
+                      <div class="bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4">
+                        <div class="flex justify-between items-start mb-2">
+                          <div class="flex items-center space-x-2">
+                            <span class="font-medium text-gray-900 dark:text-white">{comment.author?.name || 'Unknown'}</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">
+                              {formatDate(comment.createdAt)}
+                            </span>
+                            {#if comment.isPrivate}
+                              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400">
+                                Private
+                              </span>
+                            {/if}
+                          </div>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{comment.body}</p>
+                      </div>
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+            {/if}
+          </div>
         </div>
-      </TabItem>
-      
-      <TabItem title="Cases ({cases.length})">
-        <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
-          {#if cases.length === 0}
-            <div class="p-8 text-center">
-              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-              </svg>
-              <p class="mt-2 text-gray-500 dark:text-gray-400">No cases found for this account</p>
-              <Button href="/app/cases/new?accountId={account.id}" color="red" class="mt-3">Open Case</Button>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-6">
+        <!-- Quick Stats -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Overview</h2>
+          </div>
+          <div class="p-6 space-y-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Contacts</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{contacts.length}</p>
+              </div>
+              <Users class="w-8 h-8 text-blue-500" />
             </div>
-          {:else}
-            <div class="overflow-x-auto relative">
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
-                    <th scope="col" class="px-6 py-3">Case Number</th>
-                    <th scope="col" class="px-6 py-3">Subject</th>
-                    <th scope="col" class="px-6 py-3">Status</th>
-                    <th scope="col" class="px-6 py-3">Priority</th>
-                    <th scope="col" class="px-6 py-3 hidden md:table-cell">Created Date</th>
-                    <th scope="col" class="px-6 py-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {#each cases as caseItem}
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                        <a href="/app/cases/{caseItem.id}" class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline">
-                          {caseItem.caseNumber}
-                        </a>
-                      </td>
-                      <td class="px-6 py-4">{caseItem.subject}</td>
-                      <td class="px-6 py-4">
-                        <Badge color={getCaseStatusBadgeColor(caseItem.status)}>
-                          {caseItem.status}
-                        </Badge>
-                      </td>
-                      <td class="px-6 py-4">
-                        <Badge color={caseItem.priority === 'High' ? 'red' : caseItem.priority === 'Medium' ? 'yellow' : 'blue'}>
-                          {caseItem.priority}
-                        </Badge>
-                      </td>
-                      <td class="px-6 py-4 hidden md:table-cell">{formatDate(caseItem.createdAt)}</td>
-                      <td class="px-6 py-4 text-right">
-                        <a href="/app/cases/{caseItem.id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a>
-                      </td>
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
+            
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Opportunities</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{opportunities.length}</p>
+              </div>
+              <Target class="w-8 h-8 text-green-500" />
             </div>
-          {/if}
+            
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Pipeline Value</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">
+                  {formatCurrency(opportunities.reduce((sum, opp) => sum + (opp.amount || 0), 0))}
+                </p>
+              </div>
+              <DollarSign class="w-8 h-8 text-yellow-500" />
+            </div>
+            
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Open Cases</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">
+                  {cases.filter(c => c.status !== 'CLOSED').length}
+                </p>
+              </div>
+              <AlertTriangle class="w-8 h-8 text-red-500" />
+            </div>
+          </div>
         </div>
-      </TabItem>
-      
-    </Tabs>
+
+        <!-- Quick Actions -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Quick Actions</h2>
+          </div>
+          <div class="p-6 space-y-3">
+            <a 
+              href="/app/contacts/new?accountId={account.id}"
+              class="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              <Users class="w-4 h-4 mr-2" />
+              Add Contact
+            </a>
+            <a 
+              href="/app/opportunities/new?accountId={account.id}"
+              class="w-full inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              <Target class="w-4 h-4 mr-2" />
+              Add Opportunity
+            </a>
+            <a 
+              href="/app/tasks/new?accountId={account.id}"
+              class="w-full inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              <CheckSquare class="w-4 h-4 mr-2" />
+              Add Task
+            </a>
+            <a 
+              href="/app/cases/new?accountId={account.id}"
+              class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              <FolderOpen class="w-4 h-4 mr-2" />
+              Open Case
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Close Account Modal -->
-  <Modal bind:open={showCloseModal} size="md" autoclose={false} title="Close Account">
-    <form method="POST" action="?/closeAccount">
-      <p class="text-gray-700 dark:text-gray-300 mb-4">
-        You are about to close the account "{account.name}". This action will mark the account as closed but will retain all account data for historical purposes. Closed accounts cannot be modified without reopening them first.
-      </p>
-      
-      <div class="mb-4">
-        <label for="closureReason" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-          Reason for Closing <span class="text-red-600">*</span>
-        </label>
-        <Textarea id="closureReason" name="closureReason" rows="3" placeholder="Please provide a reason for closing this account..." bind:value={closureReason} />
-        {#if closeError}
-          <p class="mt-1 text-sm text-red-600 dark:text-red-500">{closeError}</p>
-        {/if}
+  {#if showCloseModal}
+    <div class="fixed inset-0 z-50 overflow-y-auto">
+      <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick={() => showCloseModal = false}></div>
+        
+        <div class="relative transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+          <form method="POST" action="?/closeAccount">
+            <div class="bg-white dark:bg-gray-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+              <div class="sm:flex sm:items-start">
+                <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20 sm:mx-0 sm:h-10 sm:w-10">
+                  <Lock class="h-6 w-6 text-red-600 dark:text-red-400" />
+                </div>
+                <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                  <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">Close Account</h3>
+                  <div class="mt-2">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      You are about to close the account "{account.name}". This action will mark the account as closed but will retain all account data for historical purposes.
+                    </p>
+                    
+                    <div class="mt-4">
+                      <label for="closureReason" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Reason for Closing <span class="text-red-500">*</span>
+                      </label>
+                      <textarea 
+                        id="closureReason" 
+                        name="closureReason" 
+                        rows="3" 
+                        placeholder="Please provide a reason for closing this account..." 
+                        bind:value={closureReason}
+                        class="mt-1 w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                      ></textarea>
+                      {#if closeError}
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{closeError}</p>
+                      {/if}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+              <button 
+                type="submit" 
+                class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+              >
+                Close Account
+              </button>
+              <button 
+                type="button" 
+                onclick={() => showCloseModal = false}
+                class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto dark:bg-gray-600 dark:text-white dark:ring-gray-500 dark:hover:bg-gray-500"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-      
-      <div class="flex justify-end gap-2">
-        <Button type="button" color="alternative" onclick={() => showCloseModal = false}>Cancel</Button>
-        <Button type="submit" color="red">Close Account</Button>
-      </div>
-    </form>
-  </Modal>
+    </div>
+  {/if}
 </div>
