@@ -33,7 +33,7 @@
 <svelte:head>
   <title>BottleCRM FAQ | Frequently Asked Questions About Free Open-Source CRM Software</title>
   <meta name="description" content="Find answers to common questions about BottleCRM - free, open-source CRM software. Learn about pricing, features, self-hosting, support, and how to get started with your free CRM solution." />
-  <meta name="keywords" content="bottlecrm faq, free crm questions, open source crm help, crm software support, self hosted crm faq, startup crm questions, crm pricing questions, salesforce alternative faq, hubspot alternative questions" />
+  <meta name="keywords" content="bottlecrm faq, free crm questions, open source crm help, crm software support, self hosted crm faq, startup crm questions, crm pricing questions, free alternative crm, open source crm alternative" />
   
   <!-- Open Graph -->
   <meta property="og:title" content="BottleCRM FAQ | Everything You Need to Know" />
@@ -55,10 +55,10 @@
         },
         {
           "@type": "Question", 
-          "name": "How does BottleCRM compare to Salesforce or HubSpot?",
+          "name": "How does BottleCRM compare to commercial CRM platforms?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "BottleCRM provides many of the same core features as expensive CRM platforms but without the high monthly costs. You can save $1,800-50,000 per year compared to commercial alternatives."
+            "text": "BottleCRM provides many of the same core features as commercial CRM platforms but without monthly subscription costs. You can save thousands per year compared to paid alternatives."
           }
         }
       ]
@@ -232,7 +232,7 @@
             aria-expanded={activeFaq === 'general-2'}
           >
             <div class="flex justify-between items-start">
-              <h3 class="text-lg font-semibold text-gray-900 pr-4 leading-relaxed">How does BottleCRM compare to Salesforce, HubSpot, or Pipedrive?</h3>
+              <h3 class="text-lg font-semibold text-gray-900 pr-4 leading-relaxed">How does BottleCRM compare to commercial CRM platforms?</h3>
               <ChevronDown class="w-5 h-5 text-gray-500 transform transition-transform duration-200 flex-shrink-0 mt-1 {activeFaq === 'general-2' ? 'rotate-180' : ''}" />
             </div>
           </button>
@@ -240,7 +240,7 @@
           {#if activeFaq === 'general-2'}
             <div transition:fade="{{ duration: 200 }}" class="px-6 pb-6 border-t border-gray-100">
               <div class="pt-4">
-                <p class="text-gray-700 leading-relaxed">BottleCRM provides many of the same core features as expensive CRM platforms but without the high monthly costs. While enterprise CRMs might have more advanced features, BottleCRM includes everything most startups and small businesses need: contact management, sales pipeline, task management, reporting, and email integration. You can save $1,800-50,000 per year compared to commercial alternatives.</p>
+                <p class="text-gray-700 leading-relaxed">BottleCRM provides many of the same core features as commercial CRM platforms but without monthly subscription costs. While enterprise solutions might have more advanced features, BottleCRM includes everything most startups and small businesses need: contact management, sales pipeline, task management, reporting, and email integration. You can save significant costs compared to paid alternatives.</p>
               </div>
             </div>
           {/if}
@@ -581,7 +581,7 @@
           {#if activeFaq === 'technical-6'}
             <div transition:fade="{{ duration: 200 }}" class="px-6 pb-6 border-t border-gray-100">
               <div class="pt-4">
-                <p class="text-gray-700 leading-relaxed">BottleCRM supports data import through CSV files and API integrations. For complex migrations from platforms like Salesforce, HubSpot, or Pipedrive, our Enterprise Setup service includes professional data migration assistance.</p>
+                <p class="text-gray-700 leading-relaxed">BottleCRM supports data import through CSV files and API integrations. For complex migrations from existing CRM platforms, our Enterprise Setup service includes professional data migration assistance to help you transition smoothly.</p>
               </div>
             </div>
           {/if}

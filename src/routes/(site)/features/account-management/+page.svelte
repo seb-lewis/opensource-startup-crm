@@ -454,27 +454,27 @@
         
         <ul class="space-y-2 text-left">
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">CSV/Excel import</span>
           </li>
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">Multiple data formats</span>
           </li>
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">Field mapping tools</span>
           </li>
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">Bulk data validation</span>
           </li>
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">Export scheduling</span>
           </li>
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">Data transformation</span>
           </li>
         </ul>
@@ -828,7 +828,7 @@
         Why Choose BottleCRM for Account Management?
       </h2>
       <p class="text-xl text-gray-600">
-        Compare our account management features with expensive alternatives.
+        Compare our account management features with traditional CRM solutions.
       </p>
     </div>
 
@@ -839,9 +839,9 @@
             <tr>
               <th class="px-6 py-4 text-left text-sm font-semibold">Feature</th>
               <th class="px-6 py-4 text-center text-sm font-semibold">BottleCRM</th>
-              <th class="px-6 py-4 text-center text-sm font-semibold">Salesforce</th>
-              <th class="px-6 py-4 text-center text-sm font-semibold">HubSpot</th>
-              <th class="px-6 py-4 text-center text-sm font-semibold">Pipedrive</th>
+              <th class="px-6 py-4 text-center text-sm font-semibold">Enterprise CRM A</th>
+              <th class="px-6 py-4 text-center text-sm font-semibold">Popular CRM B</th>
+              <th class="px-6 py-4 text-center text-sm font-semibold">Commercial CRM C</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
@@ -862,23 +862,23 @@
             <tr class="hover:bg-gray-50">
               <td class="px-6 py-4 font-medium text-gray-900">Self-Hosting Option</td>
               <td class="px-6 py-4 text-center"><Check class="w-5 h-5 text-green-500 mx-auto" /></td>
-              <td class="px-6 py-4 text-center text-gray-500">No</td>
-              <td class="px-6 py-4 text-center text-gray-500">No</td>
-              <td class="px-6 py-4 text-center text-gray-500">No</td>
+              <td class="px-6 py-4 text-center text-gray-500">Limited</td>
+              <td class="px-6 py-4 text-center text-gray-500">Not available</td>
+              <td class="px-6 py-4 text-center text-gray-500">Enterprise only</td>
             </tr>
             <tr class="hover:bg-gray-50">
-              <td class="px-6 py-4 font-medium text-gray-900">Monthly Cost</td>
+              <td class="px-6 py-4 font-medium text-gray-900">Monthly Cost Range</td>
               <td class="px-6 py-4 text-center font-bold text-green-600">$0</td>
-              <td class="px-6 py-4 text-center text-gray-700">$25-300/user</td>
-              <td class="px-6 py-4 text-center text-gray-700">$50-3200/month</td>
-              <td class="px-6 py-4 text-center text-gray-700">$15-99/user</td>
+              <td class="px-6 py-4 text-center text-gray-700">$25-300/user*</td>
+              <td class="px-6 py-4 text-center text-gray-700">$50-3200/month*</td>
+              <td class="px-6 py-4 text-center text-gray-700">$15-99/user*</td>
             </tr>
             <tr class="hover:bg-gray-50">
               <td class="px-6 py-4 font-medium text-gray-900">Open Source</td>
               <td class="px-6 py-4 text-center"><Check class="w-5 h-5 text-green-500 mx-auto" /></td>
-              <td class="px-6 py-4 text-center text-gray-500">No</td>
-              <td class="px-6 py-4 text-center text-gray-500">No</td>
-              <td class="px-6 py-4 text-center text-gray-500">No</td>
+              <td class="px-6 py-4 text-center text-gray-500">Proprietary</td>
+              <td class="px-6 py-4 text-center text-gray-500">Proprietary</td>
+              <td class="px-6 py-4 text-center text-gray-500">Proprietary</td>
             </tr>
           </tbody>
         </table>
@@ -887,7 +887,11 @@
     
     <div class="text-center mt-8">
       <p class="text-lg text-gray-600 mb-4">
-        <strong class="text-green-600">Annual Savings:</strong> $3,000 - $36,000 per year for a 10-person team
+        <strong class="text-green-600">Potential Annual Savings:</strong> $3,000 - $36,000 per year for a 10-person team*
+      </p>
+      <p class="text-sm text-gray-500 italic">
+        * Pricing estimates based on publicly available information and market research. Actual pricing may vary. 
+        Comparison is for illustrative purposes only and does not represent specific vendor quotes.
       </p>
     </div>
   </div>
