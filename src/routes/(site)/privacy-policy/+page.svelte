@@ -16,18 +16,50 @@
   } from '@lucide/svelte';
 
   let lastUpdated = "June 2025";
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Privacy Policy | BottleCRM",
+    "description": "Read the privacy policy for BottleCRM, the free and open-source CRM. Learn how your data is protected, your privacy rights, and how self-hosting ensures full control.",
+    "url": "https://bottlecrm.io/privacy-policy",
+    "dateModified": "2025-06-01",
+    "publisher": {
+      "@type": "Organization",
+      "name": "BottleCRM",
+      "url": "https://bottlecrm.io",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://bottlecrm.io/logo.png"
+      }
+    }
+  };
 </script>
 
 <svelte:head>
-  <title>Privacy Policy | BottleCRM - Protecting Your Data & Privacy Rights</title>
-  <meta name="description" content="BottleCRM Privacy Policy: Learn how we protect your data, respect your privacy rights, and maintain transparency. Self-hosting ensures complete data control." />
-  <meta name="keywords" content="privacy policy, data protection, GDPR compliance, self-hosted CRM privacy, open source privacy, data security" />
-  
+  <title>Privacy Policy | BottleCRM - Free Open Source CRM for Data Privacy</title>
+  <meta name="description" content="Read the privacy policy for BottleCRM, the free and open-source CRM. Learn how your data is protected, your privacy rights, and how self-hosting ensures full control." />
+  <meta name="keywords" content="privacy policy, free crm, open source crm, data privacy, GDPR, self-hosted CRM, data security, BottleCRM" />
+  <link rel="canonical" href="https://bottlecrm.io/privacy-policy" />
+  <meta name="robots" content="index, follow" />
+
   <!-- Open Graph -->
-  <meta property="og:title" content="Privacy Policy | BottleCRM - Your Data, Your Control" />
-  <meta property="og:description" content="Comprehensive privacy policy for BottleCRM. Self-hosting ensures complete data ownership and privacy control." />
+  <meta property="og:title" content="Privacy Policy | BottleCRM - Free Open Source CRM for Data Privacy" />
+  <meta property="og:description" content="Read how BottleCRM protects your data and privacy. Free, open-source, and self-hosted CRM for businesses." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://bottlecrm.com/privacy-policy" />
+  <meta property="og:url" content="https://bottlecrm.io/privacy-policy" />
+  <meta property="og:site_name" content="BottleCRM" />
+  <meta property="og:image" content="https://bottlecrm.io/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Privacy Policy | BottleCRM - Free Open Source CRM" />
+  <meta name="twitter:description" content="BottleCRM is a free, open-source CRM. Read our privacy policy to learn how your data is protected and your privacy rights are respected." />
+  <meta name="twitter:image" content="https://bottlecrm.io/og-image.png" />
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+    {JSON.stringify(schema)}
+  </script>
 </svelte:head>
 
 <!-- Breadcrumb Navigation -->
@@ -145,7 +177,7 @@
           </div>
         </div>
 
-        <h3 class="text-xl font-semibold text-gray-900 mb-4">Website Analytics (bottlecrm.com only)</h3>
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">Website Analytics (bottlecrm.io only)</h3>
         <ul class="space-y-2 text-gray-700 mb-6">
           <li class="flex items-start">
             <CheckCircle class="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
@@ -228,7 +260,7 @@
 
         <h4 class="font-semibold text-gray-900 mb-3">Website Security</h4>
         <p class="text-gray-700 mb-4">
-          Our website (bottlecrm.com) is protected with industry-standard security measures including SSL encryption, 
+          Our website (bottlecrm.io) is protected with industry-standard security measures including SSL encryption, 
           regular security audits, and secure hosting infrastructure.
         </p>
       </div>
@@ -315,7 +347,7 @@
           <ul class="space-y-2 text-blue-800">
             <li class="flex items-center">
               <Mail class="w-5 h-5 mr-2" />
-              <a href="mailto:privacy@bottlecrm.com" class="hover:underline">privacy@bottlecrm.com</a>
+              <a href="mailto:privacy@bottlecrm.io" class="hover:underline">privacy@bottlecrm.io</a>
             </li>
             <li class="flex items-center">
               <Globe class="w-5 h-5 mr-2" />

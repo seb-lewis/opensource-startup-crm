@@ -58,29 +58,48 @@
 </script>
 
 <svelte:head>
-  <title>Free Contact Management Software | BottleCRM - Unlimited Contacts, Zero Cost</title>
-  <meta name="description" content="Powerful contact management with unlimited contacts, advanced search, custom fields, and mobile access. Free forever. No per-contact pricing. Better than expensive CRM alternatives." />
-  <meta name="keywords" content="free contact management software, unlimited contacts crm, contact database, customer contact management, contact organization software, contact tracking, crm contact management, lead management, customer database software" />
-  
+  <title>Free Contact Management Software | Unlimited CRM - BottleCRM</title>
+  <meta name="description" content="Manage unlimited contacts for free with BottleCRM. Advanced search, custom fields, mobile access. No per-contact fees. 100% data ownership." />
+  <meta name="keywords" content="free crm, contact management, unlimited contacts, open source crm, customer database, contact manager, crm software, bottlecrm" />
+  <link rel="canonical" href="https://bottlecrm.io/features/contact-management" />
+
   <!-- Open Graph -->
-  <meta property="og:title" content="Free Contact Management Software | BottleCRM" />
-  <meta property="og:description" content="Manage unlimited contacts for free. Advanced search, custom fields, mobile access. No per-contact fees ever." />
-  
-  <!-- Structured Data -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "BottleCRM Contact Management",
-      "description": "Free contact management software with unlimited contacts and advanced features",
-      "applicationCategory": "BusinessApplication",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
+  <meta property="og:title" content="Free Contact Management Software | Unlimited CRM - BottleCRM" />
+  <meta property="og:description" content="Manage unlimited contacts for free with BottleCRM. Advanced search, custom fields, mobile access. No per-contact fees. 100% data ownership." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://bottlecrm.io/features/contact-management" />
+  <meta property="og:image" content="https://bottlecrm.io/og-image-contact-management.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Contact Management Software | Unlimited CRM - BottleCRM" />
+  <meta name="twitter:description" content="Manage unlimited contacts for free with BottleCRM. Advanced search, custom fields, mobile access. No per-contact fees. 100% data ownership." />
+  <meta name="twitter:image" content="https://bottlecrm.io/og-image-contact-management.png" />
+
+  <!-- Structured Data (JSON-LD) -->
+  {@html `
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "BottleCRM",
+        "url": "https://bottlecrm.io/features/contact-management",
+        "image": "https://bottlecrm.io/og-image-contact-management.png",
+        "description": "Free contact management software with unlimited contacts, advanced search, custom fields, and mobile access. No per-contact fees.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "All",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "BottleCRM"
+        }
       }
-    }
-  </script>
+    </script>
+  `}
 </svelte:head>
 
 <!-- Hero Section -->

@@ -61,18 +61,49 @@
       maximumFractionDigits: 0
     }).format(value);
   }
+
+  // JSON-LD schema for SaaS CRM SoftwareApplication
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "BottleCRM",
+    "image": "https://bottlecrm.io/logo.png",
+    "url": "https://bottlecrm.io/features/sales-pipeline",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Free open-source CRM with visual sales pipeline management, deal tracking, sales forecasting, and workflow automation.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "BottleCRM"
+    }
+  };
 </script>
 
 <svelte:head>
-  <title>Sales Pipeline Management | BottleCRM - Visual Deal Tracking & Sales Forecasting</title>
-  <meta name="description" content="Visualize your sales process with BottleCRM's intuitive pipeline management. Track deals, forecast revenue, automate workflows & boost conversion rates. Free sales pipeline software." />
-  <meta name="keywords" content="sales pipeline management, deal tracking software, sales forecasting, visual sales pipeline, crm pipeline, sales automation, deal management, sales process, conversion tracking, sales analytics" />
-  
+  <title>Free Sales Pipeline CRM | Visual Deal Tracking & Forecasting</title>
+  <meta name="description" content="Free CRM with visual sales pipeline, deal tracking, sales forecasting & automation. Boost conversions with BottleCRM's open-source pipeline management." />
+  <link rel="canonical" href="https://bottlecrm.io/features/sales-pipeline" />
+
   <!-- Open Graph -->
-  <meta property="og:title" content="Sales Pipeline Management | BottleCRM - Visual Deal Tracking" />
-  <meta property="og:description" content="Streamline your sales process with visual pipeline management, automated workflows, and accurate forecasting. Free CRM pipeline software." />
+  <meta property="og:title" content="Free Sales Pipeline CRM | Visual Deal Tracking" />
+  <meta property="og:description" content="Open-source CRM for sales pipeline management, deal tracking, and forecasting. Try BottleCRM free." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://bottlecrm.com/features/sales-pipeline" />
+  <meta property="og:url" content="https://bottlecrm.io/features/sales-pipeline" />
+  <meta property="og:image" content="https://bottlecrm.io/logo.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Sales Pipeline CRM | Visual Deal Tracking" />
+  <meta name="twitter:description" content="Open-source CRM for sales pipeline management, deal tracking, and forecasting. Try BottleCRM free." />
+  <meta name="twitter:image" content="https://bottlecrm.io/logo.png" />
+
+  <!-- Schema.org JSON-LD -->
+  {@html `<script type="application/ld+json">${JSON.stringify(schema)}</script>`}
 </svelte:head>
 
 <!-- Hero Section -->

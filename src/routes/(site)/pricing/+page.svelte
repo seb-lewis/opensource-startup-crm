@@ -45,28 +45,42 @@
 </script>
 
 <svelte:head>
-  <title>BottleCRM Pricing | 100% Free CRM Software with Optional Professional Support</title>
-  <meta name="description" content="BottleCRM is completely free forever. Optional professional support available. Save $1,800-50,000/year vs typical enterprise CRM solutions. No subscriptions, no user limits." />
-  <meta name="keywords" content="free crm pricing, crm cost comparison, affordable crm software, crm pricing calculator, enterprise crm alternative, crm pricing comparison, free vs paid crm, crm setup services" />
-  
+  <title>BottleCRM Pricing – Free Open Source CRM & Affordable Support</title>
+  <meta name="description" content="BottleCRM is a 100% free, open-source CRM with unlimited users and no monthly fees. Compare costs, calculate your savings, and discover optional professional support for easy setup and customization." />
+  <meta name="keywords" content="free crm, open source crm, crm pricing, crm cost, crm comparison, affordable crm, crm software, unlimited users crm, crm support, crm setup" />
+
   <!-- Open Graph -->
-  <meta property="og:title" content="BottleCRM Pricing | 100% Free CRM Software" />
-  <meta property="og:description" content="Complete CRM solution that's free forever. Optional professional support available. Calculate your savings vs expensive alternatives." />
-  
+  <meta property="og:title" content="BottleCRM Pricing – Free Open Source CRM & Affordable Support" />
+  <meta property="og:description" content="BottleCRM is a free, open-source CRM with unlimited users. Calculate your savings and see how it compares to paid CRM solutions." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://bottlecrm.io/pricing" />
+  <meta property="og:image" content="https://bottlecrm.io/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BottleCRM Pricing – Free Open Source CRM & Affordable Support" />
+  <meta name="twitter:description" content="BottleCRM is a free, open-source CRM with unlimited users. Calculate your savings and see how it compares to paid CRM solutions." />
+  <meta name="twitter:image" content="https://bottlecrm.io/og-image.png" />
+
   <!-- Structured Data -->
   <script type="application/ld+json">
-    {
+    {`{
       "@context": "https://schema.org",
       "@type": "Product",
       "name": "BottleCRM",
-      "description": "Free, open-source CRM software with optional professional support",
+      "description": "Free, open-source CRM software with unlimited users and optional professional support.",
+      "brand": {
+        "@type": "Brand",
+        "name": "BottleCRM"
+      },
       "offers": {
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD",
         "availability": "https://schema.org/InStock"
-      }
-    }
+      },
+      "url": "https://bottlecrm.io/pricing"
+    }`}
   </script>
 </svelte:head>
 

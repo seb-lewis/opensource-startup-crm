@@ -68,24 +68,52 @@
 </script>
 
 <svelte:head>
-  <title>Contact BottleCRM | Get Professional CRM Setup, Hosting & Custom Development Services</title>
-  <meta name="description" content="Get professional support for BottleCRM setup, hosting, customization, and training. Free community support available. Contact us for custom development and enterprise solutions." />
-  <meta name="keywords" content="bottlecrm support, crm setup service, crm hosting, custom crm development, crm consultation, crm training, free crm support, professional crm services" />
-  
+  <title>Contact BottleCRM | Free CRM & Professional Services</title>
+  <meta name="description" content="Contact BottleCRM for free CRM software, setup, hosting, customization, and expert support. Get started or request professional CRM services today." />
+  <meta name="keywords" content="free crm, open source crm, bottlecrm, crm setup, crm hosting, crm customization, crm support, crm development, crm training" />
+  <link rel="canonical" href="https://bottlecrm.io/contact" />
+
   <!-- Open Graph -->
-  <meta property="og:title" content="Contact BottleCRM | Professional CRM Services & Support" />
-  <meta property="og:description" content="Get expert help with BottleCRM setup, hosting, and customization. Free software, professional services available." />
-  
-  <!-- Structured Data -->
-  <script type="application/ld+json">
+  <meta property="og:title" content="Contact BottleCRM | Free CRM & Professional Services" />
+  <meta property="og:description" content="Contact BottleCRM for free CRM software, setup, hosting, customization, and expert support. Get started or request professional CRM services today." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://bottlecrm.io/contact" />
+  <meta property="og:image" content="https://bottlecrm.io/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Contact BottleCRM | Free CRM & Professional Services" />
+  <meta name="twitter:description" content="Contact BottleCRM for free CRM software, setup, hosting, customization, and expert support. Get started or request professional CRM services today." />
+  <meta name="twitter:image" content="https://bottlecrm.io/og-image.png" />
+
+  <!-- Organization & Contact Schema -->
+  {@html `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "BottleCRM",
+      "url": "https://bottlecrm.io",
+      "logo": "https://bottlecrm.io/logo.png",
+      "contactPoint": [{
+        "@type": "ContactPoint",
+        "email": "bottlecrm@micropyramid.com",
+        "contactType": "customer support",
+        "areaServed": "Global",
+        "availableLanguage": ["English"]
+      }]
+    }
+    </script>
+    <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "ContactPage",
-      "name": "BottleCRM Contact",
-      "description": "Contact BottleCRM for professional setup, hosting, and support services",
-      "url": "https://bottlecrm.com/contact"
+      "name": "Contact BottleCRM",
+      "description": "Contact BottleCRM for free CRM software, setup, hosting, customization, and expert support.",
+      "url": "https://bottlecrm.io/contact"
     }
-  </script>
+    </script>
+  `}
 </svelte:head>
 
 <!-- Hero Section -->
