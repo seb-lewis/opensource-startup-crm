@@ -1,8 +1,8 @@
 <script>
-    import '../../../app.css'
+    import '../../app.css'
     import { Menu, Bell, User, Search, FileText, Settings, ChartBar, Home, X, LogOut } from '@lucide/svelte';
     
-    /** @type {{ data: import('./$types').LayoutData, children: import('svelte').Snippet }} */
+    /** @type {{ data: import('./admin/$types').LayoutData, children: import('svelte').Snippet }} */
     let { data, children } = $props();
     
     let mobileMenuOpen = $state(false);
@@ -30,6 +30,10 @@
                         <a href="/admin/blogs" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors">
                             <FileText class="w-4 h-4 mr-2" />
                             Blog Posts
+                        </a>
+                        <a href="/admin/contacts" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors">
+                            <User class="w-4 h-4 mr-2" />
+                            Contact Submissions
                         </a>
                         <a href="/admin/newsletter" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors">
                             <ChartBar class="w-4 h-4 mr-2" />
@@ -75,6 +79,10 @@
                     <a href="/admin/blogs" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors" onclick={() => mobileMenuOpen = false}>
                         <FileText class="w-5 h-5 mr-3" />
                         Blog Posts
+                    </a>
+                    <a href="/admin/contacts" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors" onclick={() => mobileMenuOpen = false}>
+                        <User class="w-5 h-5 mr-3" />
+                        Contact Submissions
                     </a>
                     <a href="/admin/analytics" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-blue-600 transition-colors" onclick={() => mobileMenuOpen = false}>
                         <ChartBar class="w-5 h-5 mr-3" />

@@ -668,3 +668,20 @@ model NewsletterSubscriber {
   @@index([isActive])
   @@index([subscribedAt])
 }
+
+
+
+model ContactSubmission {
+  id          String                  @id @default(uuid())
+  name        String
+  email       String
+  message     String
+  reason      String                  
+  
+  // Tracking fields
+  ipAddress   String?
+  userAgent   String?
+  referrer    String?
+  
+  createdAt   DateTime  @default(now())
+}
