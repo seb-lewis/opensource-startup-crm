@@ -4,7 +4,6 @@
   import { Tabs, TabItem, Button, Badge, Textarea, Card, Modal } from 'flowbite-svelte';
   import { onMount } from 'svelte';
   import { invalidateAll } from '$app/navigation';
-  import TaskModal from '$lib/components/TaskModal.svelte';
 
   export let data;
   export let form;
@@ -19,109 +18,7 @@
   let closeError = '';
   let isClosing = false;
 
-  // Task modal state
-  let showTaskModal = false;
-  let selectedTask = null;
-
-  function openTaskModal(task) {
-    selectedTask = task;
-    showTaskModal = true;
-  }
-  function closeTaskModal() {
-    showTaskModal = false;
-    selectedTask = null;
-  }
-
-  // Add Task modal state
-  let showAddTaskModal = false;
-  let addTaskForm = {
-    subject: '',
-    description: '',
-    dueDate: '',
-    priority: 'Normal',
-    ownerId: ''
-  };
-  let addTaskError = '';
-  let isAddingTask = false;
-
-  function resetAddTaskForm() {
-    addTaskForm = {
-      subject: '',
-      description: '',
-      dueDate: '',
-      priority: 'Normal',
-      ownerId: ''
-    };
-    addTaskError = '';
-  }
-
-  async function submitAddTask() {
-    addTaskError = '';
-    if (!addTaskForm.subject.trim()) {
-      addTaskError = 'Subject is required.';
-      return;
-    }
-    isAddingTask = true;
-    try {
-      const formData = new FormData();
-      formData.append('subject', addTaskForm.subject);
-      formData.append('description', addTaskForm.description);
-      formData.append('dueDate', addTaskForm.dueDate);
-      formData.append('priority', addTaskForm.priority);
-      formData.append('ownerId', addTaskForm.ownerId);
-      const res = await fetch(`?/addTask`, {
-        method: 'POST',
-        body: formData
-      });
-      if (res.ok) {
-        showAddTaskModal = false;
-        resetAddTaskForm();
-        await invalidateAll();
-      } else {
-        const data = await res.json().catch(() => ({}));
-        addTaskError = data?.error || data?.message || 'Failed to add task.';
-      }
-    } catch (e) {
-      addTaskError = 'Failed to add task.';
-    } finally {
-      isAddingTask = false;
-    }
-  }
-
-  // Format date string
-  function formatDate(dateStr) {
-    if (!dateStr) return 'N/A';
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  }
-
-  // Format currency
-  function formatCurrency(value) {
-    if (!value) return '$0';
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0
-    }).format(value);
-  }
-
-  // Determine badge color based on opportunity stage
-  function getStageBadgeColor(stage) {
-    switch (stage?.toLowerCase()) {
-      case 'prospecting': return 'blue';
-      case 'qualification': return 'purple';
-      case 'proposal': return 'indigo';
-      case 'negotiation': return 'yellow';
-      case 'closed_won': return 'green';
-      case 'closed_lost': return 'red';
-      default: return 'gray';
-    }
-  }
-
-  // Handle comment submission
+  // Comment functionality
   let newComment = '';
   let isSubmittingComment = false;
   let commentError = '';
@@ -155,6 +52,39 @@
       commentError = 'Failed to add comment.';
     } finally {
       isSubmittingComment = false;
+    }
+  }
+
+  // Format date string
+  function formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+
+  // Format currency
+  function formatCurrency(value) {
+    if (!value) return '$0';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0
+    }).format(value);
+  }
+
+  // Determine badge color based on opportunity stage
+  function getStageBadgeColor(stage) {
+    switch (stage?.toLowerCase()) {
+      case 'prospecting': return 'blue';
+      case 'qualification': return 'purple';
+      case 'proposal': return 'indigo';
+      case 'negotiation': return 'yellow';
+      case 'closed_won': return 'green';
+      case 'closed_lost': return 'red';
+      default: return 'gray';
     }
   }
 
@@ -452,6 +382,12 @@
             </svg>
             Add Opportunity
           </Button>
+          <Button href="/app/tasks/new?accountId={account.id}" color="purple" class="w-full justify-center mt-3">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+            </svg>
+            Add Task
+          </Button>
           <Button href="/app/cases/new?accountId={account.id}" color="red" class="w-full justify-center mt-3">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
@@ -624,16 +560,13 @@
       
       <TabItem title="Tasks ({tasks.length})">
         <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
-          <div class="flex justify-between items-center p-4 pb-0">
-            <div></div>
-            <Button color="purple" onclick={() => showAddTaskModal = true}>+ Add Task</Button>
-          </div>
           {#if tasks.length === 0}
             <div class="p-8 text-center">
               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
               </svg>
               <p class="mt-2 text-gray-500 dark:text-gray-400">No tasks found for this account</p>
+              <Button href="/app/tasks/new?accountId={account.id}" color="purple" class="mt-3">Add Task</Button>
             </div>
           {:else}
             <div class="overflow-x-auto relative">
@@ -652,7 +585,7 @@
                   {#each tasks as task}
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                        <a href="." class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline" on:click|preventDefault={() => openTaskModal(task)}>
+                        <a href="/app/tasks/{task.id}" class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline">
                           {task.subject}
                         </a>
                       </td>
@@ -669,7 +602,7 @@
                       <td class="px-6 py-4 hidden md:table-cell">{formatDate(task.dueDate)}</td>
                       <td class="px-6 py-4 hidden lg:table-cell">{task.owner?.name || 'Unassigned'}</td>
                       <td class="px-6 py-4 text-right">
-                        <Button size="xs" color="blue" onclick={() => openTaskModal(task)}>View</Button>
+                        <a href="/app/tasks/{task.id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a>
                       </td>
                     </tr>
                   {/each}
@@ -735,55 +668,6 @@
         </div>
       </TabItem>
       
-        <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
-          {#if quotes.length === 0}
-            <div class="p-8 text-center">
-              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <p class="mt-2 text-gray-500 dark:text-gray-400">No quotes found for this account</p>
-              <Button href="/app/quotes/new?accountId={account.id}" color="purple" class="mt-3">Create Quote</Button>
-            </div>
-          {:else}
-            <div class="overflow-x-auto relative">
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
-                    <th scope="col" class="px-6 py-3">Quote Number</th>
-                    <th scope="col" class="px-6 py-3">Name</th>
-                    <th scope="col" class="px-6 py-3">Status</th>
-                    <th scope="col" class="px-6 py-3">Grand Total</th>
-                    <th scope="col" class="px-6 py-3 hidden md:table-cell">Expiration Date</th>
-                    <th scope="col" class="px-6 py-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {#each quotes as quote}
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                        <a href="/app/quotes/{quote.id}" class="hover:text-blue-600 dark:hover:text-blue-500 hover:underline">
-                          {quote.quoteNumber}
-                        </a>
-                      </td>
-                      <td class="px-6 py-4">{quote.name}</td>
-                      <td class="px-6 py-4">
-                        <Badge color={getQuoteStatusBadgeColor(quote.status)}>
-                          {quote.status.replace('_', ' ')}
-                        </Badge>
-                      </td>
-                      <td class="px-6 py-4">{formatCurrency(quote.grandTotal)}</td>
-                      <td class="px-6 py-4 hidden md:table-cell">{formatDate(quote.expirationDate)}</td>
-                      <td class="px-6 py-4 text-right">
-                        <a href="/app/quotes/{quote.id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View</a>
-                      </td>
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
-            </div>
-          {/if}
-        </div>
-      </TabItem> -->
     </Tabs>
   </div>
 
@@ -810,63 +694,4 @@
       </div>
     </form>
   </Modal>
-
-  <!-- Add Task Modal -->
-  <Modal bind:open={showAddTaskModal} size="md" autoclose={false} title="Add Task to Account">
-    <form on:submit={(e) => { e.preventDefault(); submitAddTask(); }}>
-      <div class="grid grid-cols-1 gap-4">
-        <div>
-          <label for="taskSubject" class="block text-sm font-medium mb-1">Subject <span class="text-red-500">*</span></label>
-          <input id="taskSubject" class="w-full border rounded px-3 py-2" bind:value={addTaskForm.subject} required />
-        </div>
-        <div>
-          <label for="taskDescription" class="block text-sm font-medium mb-1">Description</label>
-          <Textarea id="taskDescription" rows="2" bind:value={addTaskForm.description} />
-        </div>
-        <div>
-          <label for="taskDueDate" class="block text-sm font-medium mb-1">Due Date</label>
-          <input id="taskDueDate" class="w-full border rounded px-3 py-2" type="date" bind:value={addTaskForm.dueDate} />
-        </div>
-        <div>
-          <label for="taskPriority" class="block text-sm font-medium mb-1">Priority</label>
-          <select id="taskPriority" class="w-full border rounded px-3 py-2" bind:value={addTaskForm.priority}>
-            <option value="High">High</option>
-            <option value="Normal">Normal</option>
-            <option value="Low">Low</option>
-          </select>
-        </div>
-        <div>
-          <label for="taskOwner" class="block text-sm font-medium mb-1">Assigned To</label>
-          {#if users.length > 0}
-            <select id="taskOwner" class="w-full border rounded px-3 py-2" bind:value={addTaskForm.ownerId}>
-              <option value="">-- Select User --</option>
-              {#each users as u}
-                <option value={u.id}>{u.name} ({u.email})</option>
-              {/each}
-            </select>
-          {:else}
-            <div class="text-sm text-gray-500">No users available for assignment.</div>
-          {/if}
-        </div>
-      </div>
-      {#if addTaskError}
-        <p class="text-red-600 mt-2">{addTaskError}</p>
-      {/if}
-      <div class="flex justify-end gap-2 mt-6">
-        <Button type="button" color="alternative" onclick={() => { showAddTaskModal = false; resetAddTaskForm(); }}>Cancel</Button>
-        <Button type="submit" color="purple" disabled={isAddingTask}>
-          {#if isAddingTask}
-            Adding...
-          {:else}
-            Add Task
-          {/if}
-        </Button>
-      </div>
-    </form>
-  </Modal>
-
-  <!-- Task Modal for view/edit/close -->
-  {#if showTaskModal && selectedTask}
-    <TaskModal task={selectedTask} boardId={null} on:close={closeTaskModal} />
-  {/if}
 </div>
