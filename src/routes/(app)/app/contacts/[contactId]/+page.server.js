@@ -13,17 +13,50 @@ export async function load({ params, locals }) {
     };
   }
 
-  // Get related accounts via AccountContactRelationship
+  // Get all related accounts via AccountContactRelationship
   const accountRels = await prisma.accountContactRelationship.findMany({
     where: { contactId: params.contactId },
-    include: { account: true }
+    include: { account: true },
+    orderBy: [
+      { isPrimary: 'desc' }, // Primary relationships first
+      { startDate: 'desc' }  // Then by most recent
+    ]
   });
-  const account = accountRels.length > 0 ? accountRels[0].account : null;
-  const isPrimary = accountRels.length > 0 ? accountRels[0].isPrimary : false;
-  const role = accountRels.length > 0 ? accountRels[0].role : null;
 
-  // Optionally: fetch related tasks, events, etc. if you want to show them
-  // const tasks = await prisma.task.findMany({ where: { contactId: params.contactId } });
+  // Fetch related opportunities
+  const opportunities = await prisma.opportunity.findMany({
+    where: { 
+      contacts: { some: { id: params.contactId } },
+      organization: { id: org.id }
+    },
+    include: { account: true },
+    orderBy: { createdAt: 'desc' },
+    take: 5
+  });
 
-  return { contact, account, isPrimary, role };
+  // Fetch related tasks
+  const tasks = await prisma.task.findMany({
+    where: { contactId: params.contactId, organizationId: org.id },
+    include: { owner: true, createdBy: true },
+    orderBy: { createdAt: 'desc' },
+    take: 5
+  });
+
+  // Fetch related events
+  const events = await prisma.event.findMany({
+    where: { contactId: params.contactId, organizationId: org.id },
+    include: { owner: true, createdBy: true },
+    orderBy: { startDate: 'desc' },
+    take: 5
+  });
+
+  return { 
+    contact: {
+      ...contact,
+      accountRelationships: accountRels,
+      opportunities,
+      tasks,
+      events
+    }
+  };
 }

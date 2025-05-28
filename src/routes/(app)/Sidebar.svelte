@@ -76,14 +76,29 @@
 			]
 		},
 		{
-			key: 'accounts',
-			label: 'Accounts',
-			icon: Building,
+			key: 'contacts',
+			label: 'Contacts',
+			icon: Users,
 			type: 'dropdown',
 			children: [
-				{ href: '/app/accounts', label: 'All Accounts', icon: List },
-				{ href: '/app/accounts/new', label: 'New Account', icon: Plus },
-				{ href: '/app/accounts/opportunities', label: 'Opportunities', icon: Target }
+				{ href: '/app/contacts', label: 'All Contacts', icon: List },
+				{ href: '/app/contacts/new', label: 'New Contact', icon: UserPlus }
+			]
+		},
+		{
+			href: '/app/accounts',
+			label: 'Accounts',
+			icon: Building,
+			type: 'link'
+		},
+		{
+			key: 'opportunities',
+			label: 'Opportunities',
+			icon: Target,
+			type: 'dropdown',
+			children: [
+				{ href: '/app/opportunities', label: 'All Opportunities', icon: List },
+				{ href: '/app/opportunities/new', label: 'New Opportunity', icon: Plus }
 			]
 		},
 		{
