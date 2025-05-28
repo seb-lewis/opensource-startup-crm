@@ -52,7 +52,7 @@
   <meta property="og:description" content="Discover BottleCRM's comprehensive features: contact management, sales automation, analytics & more. Enterprise-grade, free, and open-source." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://bottlecrm.io/features" />
-  <meta property="og:image" content="https://bottlecrm.io/logo_social.png" /> {/* Add a relevant image URL */}
+  <meta property="og:image" content="https://bottlecrm.io/logo_social.png" />
 
   <script type="application/ld+json">
     {
