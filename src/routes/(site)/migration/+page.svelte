@@ -50,27 +50,43 @@
 </script>
 
 <svelte:head>
-  <title>Migrate to BottleCRM | Free CRM Migration Tools & Professional Migration Services</title>
-  <meta name="description" content="Migrate from popular CRM platforms to BottleCRM and save thousands annually. Free migration tools coming soon. Professional migration services available." />
-  <meta name="keywords" content="crm migration, migrate crm, crm data migration, free crm migration tools, open source crm, crm migration service" />
-  
+  <title>Migrate to BottleCRM – Free CRM Migration Tools & Service</title>
+  <meta name="description" content="Migrate from Salesforce, HubSpot, Pipedrive, and more to BottleCRM. Free CRM migration tools, expert support, and zero subscription fees. Own your CRM data." />
+  <meta name="keywords" content="crm migration, migrate crm, crm data migration, free crm migration, open source crm, salesforce migration, hubspot migration, pipedrive migration, crm import, crm export, crm migration service" />
+  <link rel="canonical" href="https://bottlecrm.io/migration" />
+
   <!-- Open Graph -->
-  <meta property="og:title" content="Migrate to BottleCRM | Save Thousands on CRM Costs" />
-  <meta property="og:description" content="Switch from expensive CRM platforms to BottleCRM. Free migration tools and professional migration services available." />
-  
-  <!-- Structured Data -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "name": "CRM Migration to BottleCRM",
-      "description": "Professional CRM migration services from Salesforce, HubSpot, Pipedrive and other platforms to BottleCRM",
-      "provider": {
-        "@type": "Organization",
-        "name": "BottleCRM"
+  <meta property="og:title" content="Migrate to BottleCRM – Free CRM Migration Tools & Service" />
+  <meta property="og:description" content="Switch from Salesforce, HubSpot, Pipedrive, and more to BottleCRM. Free migration tools, expert support, and zero subscription fees." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://bottlecrm.io/migration" />
+  <meta property="og:image" content="https://bottlecrm.io/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Migrate to BottleCRM – Free CRM Migration Tools & Service" />
+  <meta name="twitter:description" content="Migrate from Salesforce, HubSpot, Pipedrive, and more to BottleCRM. Free CRM migration tools, expert support, and zero subscription fees." />
+  <meta name="twitter:image" content="https://bottlecrm.io/og-image.png" />
+
+  <!-- Structured Data (JSON-LD) -->
+  {@html `
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "CRM Migration to BottleCRM",
+        "description": "Professional CRM migration services and free tools to move from Salesforce, HubSpot, Pipedrive, and other platforms to BottleCRM. Preserve your data and eliminate subscription costs.",
+        "provider": {
+          "@type": "Organization",
+          "name": "BottleCRM",
+          "url": "https://bottlecrm.io"
+        },
+        "areaServed": "Worldwide",
+        "serviceType": "CRM Data Migration",
+        "url": "https://bottlecrm.io/migration"
       }
-    }
-  </script>
+    </script>
+  `}
 </svelte:head>
 
 <!-- Hero Section -->

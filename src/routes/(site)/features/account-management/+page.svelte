@@ -46,15 +46,39 @@
 </script>
 
 <svelte:head>
-  <title>Account Management | BottleCRM - Free Contact & Customer Account Management Software</title>
-  <meta name="description" content="Master customer account management with BottleCRM's free, comprehensive contact management system. Centralize customer data, track interactions, and build stronger relationships." />
-  <meta name="keywords" content="account management software, contact management system, customer account management, crm contact management, free account management, customer database, contact organization, client management software" />
+  <title>Free Account Management CRM | Unlimited Contacts & Customer Database</title>
+  <meta name="description" content="Manage unlimited customer accounts and contacts with BottleCRM. Free, open-source CRM for businesses to centralize data, track interactions, and grow relationships." />
+  <meta name="keywords" content="free crm, account management, contact management, customer database, open source crm, unlimited contacts, client management software, business crm" />
   
   <!-- Open Graph -->
-  <meta property="og:title" content="Account Management | BottleCRM - Free Contact & Customer Management" />
-  <meta property="og:description" content="Comprehensive account management features in BottleCRM. Manage contacts, track interactions, and organize customer data - completely free." />
+  <meta property="og:title" content="Free Account Management CRM | Unlimited Contacts & Customer Database" />
+  <meta property="og:description" content="BottleCRM offers free, unlimited account and contact management. Centralize customer data, track interactions, and grow your business relationships." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://bottlecrm.com/features/account-management" />
+  <meta property="og:url" content="https://bottlecrm.io/features/account-management" />
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+    {`
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "BottleCRM",
+        "applicationCategory": "Customer Relationship Management",
+        "operatingSystem": "Web",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "BottleCRM is a free, open-source CRM application for unlimited account and contact management. Centralize customer data, track interactions, and manage your business relationships efficiently.",
+        "url": "https://bottlecrm.io/features/account-management",
+        "publisher": {
+          "@type": "Organization",
+          "name": "BottleCRM"
+        }
+      }
+    `}
+  </script>
 </svelte:head>
 
 <!-- Hero Section -->
@@ -327,27 +351,27 @@
         
         <ul class="space-y-3">
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">Personal & professional details</span>
           </li>
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">Multiple contact methods</span>
           </li>
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">Communication preferences</span>
           </li>
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">Custom field support</span>
           </li>
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">Photo & document storage</span>
           </li>
           <li class="flex items-center">
-            <Check class="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+            <Check class="w-4 h-4 text-green-500 mr-3" />
             <span class="text-gray-700">Social media integration</span>
           </li>
         </ul>
