@@ -2,6 +2,7 @@
 <script>
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
+  import { enhance } from '$app/forms';
   import { 
     MessageCircle, 
     Mail, 
@@ -26,7 +27,7 @@
     Download
   } from '@lucide/svelte';
 
-  // Contact form data - simplified
+  // Form data - now handled by server
   let formData = {
     name: '',
     email: '',
@@ -34,50 +35,31 @@
     message: ''
   };
 
-  // Form validation
-  let errors = {};
+  // Form state
   let isSubmitting = false;
-  let submitSuccess = false;
   let mounted = false;
 
-  function validateForm() {
-    errors = {};
-    
-    if (!formData.name.trim()) errors.name = 'Name is required';
-    if (!formData.email.trim()) errors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = 'Email is invalid';
-    if (!formData.serviceType) errors.serviceType = 'Please select a service type';
-    if (!formData.message.trim()) errors.message = 'Message is required';
-    
-    return Object.keys(errors).length === 0;
+  // Get form data from server response
+  export let form;
+
+  // Update formData if server returns validation errors
+  $: if (form && !form.success) {
+    formData = {
+      name: form.name || '',
+      email: form.email || '',
+      serviceType: form.serviceType || '',
+      message: form.message || ''
+    };
   }
 
-  async function handleSubmit() {
-    if (!validateForm()) return;
-    
-    isSubmitting = true;
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Here you would typically send the form data to your backend
-      
-      submitSuccess = true;
-      
-      // Reset form - simplified
-      formData = {
-        name: '',
-        email: '',
-        serviceType: '',
-        message: ''
-      };
-      
-    } catch (error) {
-      console.error('Submission error:', error);
-    } finally {
-      isSubmitting = false;
-    }
+  // Reset form on successful submission
+  $: if (form?.success) {
+    formData = {
+      name: '',
+      email: '',
+      serviceType: '',
+      message: ''
+    };
   }
 
   onMount(() => {
@@ -401,108 +383,143 @@
           Tell us about your project and we'll get back to you within 24 hours.
         </p>
         
-        {#if submitSuccess}
+        {#if form?.success}
           <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
             <div class="flex items-center">
               <Check class="w-6 h-6 text-green-500 mr-3" />
               <div>
                 <h3 class="text-lg font-semibold text-green-800">Message Sent Successfully!</h3>
-                <p class="text-green-700 mt-1">We'll get back to you within 24 hours during business days.</p>
+                <p class="text-green-700 mt-1">{form.message}</p>
               </div>
             </div>
           </div>
-        {:else}
-          <form on:submit|preventDefault={handleSubmit} class="space-y-6">
-            <!-- Basic Information -->
-            <div class="grid gap-6 md:grid-cols-2">
+        {:else if form?.error}
+          <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+            <div class="flex items-center">
+              <AlertCircle class="w-6 h-6 text-red-500 mr-3" />
               <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                  Name *
-                </label>
-                <input type="text" id="name" bind:value={formData.name}
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 {errors.name ? 'border-red-500' : ''}"
-                       placeholder="John Doe">
-                {#if errors.name}
-                  <p class="text-red-500 text-sm mt-1">{errors.name}</p>
-                {/if}
-              </div>
-              
-              <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                  Email *
-                </label>
-                <input type="email" id="email" bind:value={formData.email}
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 {errors.email ? 'border-red-500' : ''}"
-                       placeholder="john@company.com">
-                {#if errors.email}
-                  <p class="text-red-500 text-sm mt-1">{errors.email}</p>
-                {/if}
+                <h3 class="text-lg font-semibold text-red-800">Error</h3>
+                <p class="text-red-700 mt-1">{form.error}</p>
               </div>
             </div>
-            
-            <!-- Service Type -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                What can we help you with? *
-              </label>
-              <div class="grid gap-3 md:grid-cols-2">
-                <label class="flex items-start p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 {formData.serviceType === 'professional-setup' ? 'border-blue-500 bg-blue-50' : ''}">
-                  <input type="radio" bind:group={formData.serviceType} value="professional-setup" class="mt-1 mr-3">
-                  <div>
-                    <div class="font-medium text-gray-900 text-sm">Professional Setup ($197)</div>
-                    <div class="text-xs text-gray-600">Expert installation & setup</div>
-                  </div>
-                </label>
-                
-                <label class="flex items-start p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 {formData.serviceType === 'custom-development' ? 'border-blue-500 bg-blue-50' : ''}">
-                  <input type="radio" bind:group={formData.serviceType} value="custom-development" class="mt-1 mr-3">
-                  <div>
-                    <div class="font-medium text-gray-900 text-sm">Custom Development</div>
-                    <div class="text-xs text-gray-600">Bespoke features & integrations</div>
-                  </div>
-                </label>
-                
-                <label class="flex items-start p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 {formData.serviceType === 'other' ? 'border-blue-500 bg-blue-50' : ''}">
-                  <input type="radio" bind:group={formData.serviceType} value="other" class="mt-1 mr-3">
-                  <div>
-                    <div class="font-medium text-gray-900 text-sm">Other / Not Sure</div>
-                    <div class="text-xs text-gray-600">Let's discuss your needs</div>
-                  </div>
-                </label>
-              </div>
-              {#if errors.serviceType}
-                <p class="text-red-500 text-sm mt-1">{errors.serviceType}</p>
-              {/if}
-            </div>
-            
-            <div>
-              <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
-                Tell us about your project *
-              </label>
-              <textarea id="message" rows="5" bind:value={formData.message}
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 {errors.message ? 'border-red-500' : ''}"
-                        placeholder="Describe your project, requirements, timeline, team size, or any questions you have..."></textarea>
-              {#if errors.message}
-                <p class="text-red-500 text-sm mt-1">{errors.message}</p>
-              {/if}
-            </div>
-            
-            <button type="submit" disabled={isSubmitting}
-                    class="w-full inline-flex items-center justify-center px-6 py-4 text-lg font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
-              {#if isSubmitting}
-                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                Sending Message...
-              {:else}
-                <Send class="w-5 h-5 mr-2" />
-                Send Message
-              {/if}
-            </button>
-            
-            <p class="text-sm text-gray-500 text-center">
-              We typically respond within 24 hours during business days
-            </p>
-          </form>
+          </div>
         {/if}
+        
+        <form method="POST" 
+              use:enhance={() => {
+                isSubmitting = true;
+                return async ({ update }) => {
+                  await update();
+                  isSubmitting = false;
+                };
+              }}
+              class="space-y-6">
+          <!-- Basic Information -->
+          <div class="grid gap-6 md:grid-cols-2">
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                Name *
+              </label>
+              <input type="text" 
+                     id="name" 
+                     name="name"
+                     bind:value={formData.name}
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 {form?.errors?.name ? 'border-red-500' : ''}"
+                     placeholder="John Doe">
+              {#if form?.errors?.name}
+                <p class="text-red-500 text-sm mt-1">{form.errors.name}</p>
+              {/if}
+            </div>
+            
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                Email *
+              </label>
+              <input type="email" 
+                     id="email" 
+                     name="email"
+                     bind:value={formData.email}
+                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 {form?.errors?.email ? 'border-red-500' : ''}"
+                     placeholder="john@company.com">
+              {#if form?.errors?.email}
+                <p class="text-red-500 text-sm mt-1">{form.errors.email}</p>
+              {/if}
+            </div>
+          </div>
+          
+          <!-- Service Type -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              What can we help you with? *
+            </label>
+            <div class="grid gap-3 md:grid-cols-2">
+              <label class="flex items-start p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 {formData.serviceType === 'professional-setup' ? 'border-blue-500 bg-blue-50' : ''}">
+                <input type="radio" name="serviceType" bind:group={formData.serviceType} value="professional-setup" class="mt-1 mr-3">
+                <div>
+                  <div class="font-medium text-gray-900 text-sm">Professional Setup ($197)</div>
+                  <div class="text-xs text-gray-600">Expert installation & setup</div>
+                </div>
+              </label>
+              
+              <label class="flex items-start p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 {formData.serviceType === 'custom-development' ? 'border-blue-500 bg-blue-50' : ''}">
+                <input type="radio" name="serviceType" bind:group={formData.serviceType} value="custom-development" class="mt-1 mr-3">
+                <div>
+                  <div class="font-medium text-gray-900 text-sm">Custom Development</div>
+                  <div class="text-xs text-gray-600">Bespoke features & integrations</div>
+                </div>
+              </label>
+              
+              <label class="flex items-start p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 {formData.serviceType === 'hosting-management' ? 'border-blue-500 bg-blue-50' : ''}">
+                <input type="radio" name="serviceType" bind:group={formData.serviceType} value="hosting-management" class="mt-1 mr-3">
+                <div>
+                  <div class="font-medium text-gray-900 text-sm">Managed Hosting</div>
+                  <div class="text-xs text-gray-600">We handle hosting & maintenance</div>
+                </div>
+              </label>
+              
+              <label class="flex items-start p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 {formData.serviceType === 'other' ? 'border-blue-500 bg-blue-50' : ''}">
+                <input type="radio" name="serviceType" bind:group={formData.serviceType} value="other" class="mt-1 mr-3">
+                <div>
+                  <div class="font-medium text-gray-900 text-sm">Other / Not Sure</div>
+                  <div class="text-xs text-gray-600">Let's discuss your needs</div>
+                </div>
+              </label>
+            </div>
+            {#if form?.errors?.serviceType}
+              <p class="text-red-500 text-sm mt-1">{form.errors.serviceType}</p>
+            {/if}
+          </div>
+          
+          <div>
+            <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+              Tell us about your project *
+            </label>
+            <textarea id="message" 
+                      name="message"
+                      rows="5" 
+                      bind:value={formData.message}
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 {form?.errors?.message ? 'border-red-500' : ''}"
+                      placeholder="Describe your project, requirements, timeline, team size, or any questions you have..."></textarea>
+            {#if form?.errors?.message}
+              <p class="text-red-500 text-sm mt-1">{form.errors.message}</p>
+            {/if}
+          </div>
+          
+          <button type="submit" disabled={isSubmitting}
+                  class="w-full inline-flex items-center justify-center px-6 py-4 text-lg font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+            {#if isSubmitting}
+              <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+              Sending Message...
+            {:else}
+              <Send class="w-5 h-5 mr-2" />
+              Send Message
+            {/if}
+          </button>
+          
+          <p class="text-sm text-gray-500 text-center">
+            We typically respond within 24 hours during business days
+          </p>
+        </form>
       </div>
       
       <!-- Contact Information -->
