@@ -180,6 +180,7 @@ export const actions = {
         where: { id: accountId },
         data: {
           closedAt: new Date(),
+          isActive: false,
           closureReason
         }
       });
@@ -260,6 +261,7 @@ export const actions = {
         where: { id: accountId },
         data: {
           closedAt: null,
+          isActive: true,
           closureReason: null
         }
       });
