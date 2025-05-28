@@ -155,8 +155,8 @@ model Contact {
   updatedAt       DateTime                     @updatedAt
   owner           User                         @relation(fields: [ownerId], references: [id])
   ownerId         String
-  organization    Organization                 @relation(fields: [organizationId], references: [id])
-  organizationId  String
+  organization    Organization?                @relation(fields: [organizationId], references: [id])
+  organizationId  String?
   tasks           Task[]
   events          Event[]
   opportunities   Opportunity[]
@@ -164,7 +164,7 @@ model Contact {
   leads           Lead[] // Keep this relation for historical tracking only
   comments        Comment[]
   quotes          Quote[]                      @relation("ContactQuotes")
-  relatedAccounts   AccountContactRelationship[]
+  relatedAccounts AccountContactRelationship[]
 }
 
 enum LeadSource {
@@ -217,11 +217,17 @@ enum LeadStatus {
   UNQUALIFIED
   CONVERTED
 }
+enum OpportunityStatus {
+  SUCCESS
+  FAILED
+  IN_PROGRESS
+}
 
 model Opportunity {
   id                   String               @id @default(uuid())
   name                 String
   amount               Float?
+  status               OpportunityStatus?
   closeDate            DateTime?
   probability          Float? // Percentage chance to close (0-100)
   type                 String? // New Business, Existing Business, etc.
@@ -647,17 +653,17 @@ enum ContentBlockType {
 }
 
 model NewsletterSubscriber {
-  id              String    @id @default(uuid())
-  email           String    @unique
-  isActive        Boolean   @default(true)
-  subscribedAt    DateTime  @default(now())
-  unsubscribedAt  DateTime?
-  confirmationToken String? @unique
-  isConfirmed     Boolean   @default(false)
-  confirmedAt     DateTime?
-  ipAddress       String?
-  userAgent       String?
-  
+  id                String    @id @default(uuid())
+  email             String    @unique
+  isActive          Boolean   @default(true)
+  subscribedAt      DateTime  @default(now())
+  unsubscribedAt    DateTime?
+  confirmationToken String?   @unique
+  isConfirmed       Boolean   @default(false)
+  confirmedAt       DateTime?
+  ipAddress         String?
+  userAgent         String?
+
   @@index([email])
   @@index([isActive])
   @@index([subscribedAt])

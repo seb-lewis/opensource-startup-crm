@@ -1,8 +1,10 @@
 import prisma from '$lib/prisma';
 import { fail, redirect } from '@sveltejs/kit';
 
-export async function load({ locals }) {
+export async function load({ locals, url }) {
   const org = locals.org;
+  const preSelectedAccountId = url.searchParams.get('accountId');
+  
   const accounts = await prisma.account.findMany(
     {
       where: { organizationId: org.id },
@@ -21,7 +23,7 @@ export async function load({ locals }) {
     }
   });
   
-  return { accounts, users };
+  return { accounts, users, preSelectedAccountId };
 }
 
 export const actions = {
