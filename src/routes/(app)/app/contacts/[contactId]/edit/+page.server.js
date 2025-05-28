@@ -35,14 +35,17 @@ export const actions = {
     const email = formData.get('email')?.toString().trim() || null;
     const phone = formData.get('phone')?.toString().trim() || null;
     const title = formData.get('title')?.toString().trim() || null;
+    const department = formData.get('department')?.toString().trim() || null;
+    const street = formData.get('street')?.toString().trim() || null;
+    const city = formData.get('city')?.toString().trim() || null;
+    const state = formData.get('state')?.toString().trim() || null;
+    const postalCode = formData.get('postalCode')?.toString().trim() || null;
+    const country = formData.get('country')?.toString().trim() || null;
     const description = formData.get('description')?.toString().trim() || null;
-    const isPrimary = formData.get('isPrimary') === 'true';
-    const role = formData.get('role')?.toString().trim() || null;
 
     if (!firstName || !lastName) {
       return fail(400, { message: 'First and last name are required.' });
     }
-
 
     const contact = await prisma.contact.findUnique({
       where: { id: params.contactId, organizationId: org.id }
@@ -54,19 +57,21 @@ export const actions = {
     // Update contact
     await prisma.contact.update({
       where: { id: params.contactId },
-      data: { firstName, lastName, email, phone, title, description }
+      data: { 
+        firstName, 
+        lastName, 
+        email, 
+        phone, 
+        title, 
+        department,
+        street,
+        city,
+        state,
+        postalCode,
+        country,
+        description 
+      }
     });
-
-    // Update AccountContactRelationship if exists
-    const accountRel = await prisma.accountContactRelationship.findFirst({
-      where: { contactId: params.contactId }
-    });
-    if (accountRel) {
-      await prisma.accountContactRelationship.update({
-        where: { id: accountRel.id },
-        data: { isPrimary, role }
-      });
-    }
 
     return { success: true };
   }

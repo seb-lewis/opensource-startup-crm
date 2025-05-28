@@ -4,7 +4,7 @@
   export let data;
   let title = '';
   let description = '';
-  let accountId = '';
+  let accountId = data.preSelectedAccountId || '';
   let dueDate = '';
   let assignedId = '';
   let priority = 'Medium';

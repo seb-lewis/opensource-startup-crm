@@ -335,6 +335,11 @@
                        title="View Account">
                       <Eye class="w-4 h-4" />
                     </a>
+                    <a href="/app/opportunities/new?accountId={account.id}" 
+                       class="p-2 text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" 
+                       title="Add Opportunity">
+                      <Plus class="w-4 h-4" />
+                    </a>
                     <a href="/app/accounts/{account.id}/edit" 
                        class="p-2 text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" 
                        title="Edit Account">

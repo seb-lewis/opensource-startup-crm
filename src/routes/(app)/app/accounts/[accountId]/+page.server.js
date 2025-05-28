@@ -127,7 +127,7 @@ export async function load({ params, url, locals }) {
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-  closeAccount: async ({ params, request, locals }) => {
+  closeAccount: async ({ request, locals, params }) => {
     try {
       const user = locals.user;
       const org = locals.org;
@@ -206,7 +206,7 @@ export const actions = {
     }
   },
 
-  reopenAccount: async ({ params, request, locals }) => {
+  reopenAccount: async ({ locals, params }) => {
     try {
       const user = locals.user;
       const org = locals.org;
@@ -286,111 +286,7 @@ export const actions = {
     }
   },
 
-  addContact: async ({ params, request, locals }) => {
-    try {
-      const user = locals.user;
-      const org = locals.org;
-      
-      const { accountId } = params;
-      let data;
-      // Support both JSON and form submissions
-      const contentType = request.headers.get('content-type') || '';
-      if (contentType.includes('application/json')) {
-        data = await request.json();
-      } else {
-        const formData = await request.formData();
-        data = Object.fromEntries(formData.entries());
-      }
-      const firstName = data.firstName?.toString().trim();
-      const lastName = data.lastName?.toString().trim();
-      if (!firstName || !lastName) {
-        return fail(400, { success: false, message: 'First and last name are required.' });
-      }
-
-      // check if the account exists and belongs to the organization
-      const account = await prisma.account.findUnique({
-        where: { id: accountId, organizationId: org.id }
-      });
-      if (!account) {
-        return fail(404, { success: false, message: 'Account not found or does not belong to this organization.' });
-      }
-      // Create the contact
-      const contact = await prisma.contact.create({
-        data: {
-          firstName,
-          lastName,
-          email: data.email?.toString() || null,
-          phone: data.phone?.toString() || null,
-          title: data.title?.toString() || null,
-          ownerId: user.id,
-          organizationId: org.id,
-        }
-      });
-      // Link contact to account
-      await prisma.accountContactRelationship.create({
-        data: {
-          accountId,
-          contactId: contact.id,
-          isPrimary: !!data.isPrimary,
-          role: data.role?.toString() || null
-        }
-      });
-      return { success: true, message: 'Contact added successfully.' };
-    } catch (err) {
-      console.error('Error adding contact:', err);
-      return fail(500, { success: false, message: 'Failed to add contact.' });
-    }
-  },
-
-  addOpportunity: async ({ params, request, locals }) => {
-    try {
-      const user = locals.user;
-      const org = locals.org;
-     
-      const { accountId } = params;
-      const formData = await request.formData();
-      const name = formData.get('name')?.toString().trim();
-      const amountRaw = formData.get('amount');
-      const amount = amountRaw ? parseFloat(amountRaw.toString()) : null;
-      const stageRaw = formData.get('stage');
-      const stage = stageRaw ? stageRaw.toString() : 'PROSPECTING';
-      const closeDateRaw = formData.get('closeDate');
-      const closeDate = closeDateRaw ? new Date(closeDateRaw.toString()) : null;
-      const probabilityRaw = formData.get('probability');
-      const probability = probabilityRaw ? parseFloat(probabilityRaw.toString()) : null;
-      if (!name) {
-        return fail(400, { success: false, message: 'Opportunity name is required.' });
-      }
-
-      // chek if the account exists and belongs to the organization
-      const account = await prisma.account.findUnique({
-        where: { id: accountId, organizationId: org.id }
-      });
-      if (!account) {
-        return fail(404, { success: false, message: 'Account not found or does not belong to this organization.' });
-      }
-
-      // Create the opportunity
-      await prisma.opportunity.create({
-        data: {
-          name,
-          amount,
-          stage,
-          closeDate,
-          probability,
-          account: { connect: { id: accountId } },
-          owner: { connect: { id: user.id } },
-          organization: { connect: { id: org.id } }
-        }
-      });
-      return { success: true, message: 'Opportunity added successfully.' };
-    } catch (err) {
-      console.error('Error adding opportunity:', err);
-      return fail(500, { success: false, message: 'Failed to add opportunity.' });
-    }
-  },
-
-  comment: async ({ request, params, locals }) => {
+  comment: async ({ request, locals, params }) => {
     const user = locals.user;
     const org = locals.org;
     // Fallback: fetch account to get organizationId
@@ -418,7 +314,7 @@ export const actions = {
     return { success: true };
   },
 
-  addTask: async ({ params, request, locals }) => {
+  addTask: async ({ request, locals, params }) => {
     try {
       const user = locals.user;
       const org = locals.org;

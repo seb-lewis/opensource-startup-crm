@@ -19,125 +19,6 @@
   let closeError = '';
   let isClosing = false;
 
-  // Add Contact Modal state
-  let showAddContactModal = false;
-  let contactForm = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    title: '',
-    isPrimary: false,
-    role: ''
-  };
-  let addContactError = '';
-  let isAddingContact = false;
-
-  function resetContactForm() {
-    contactForm = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      title: '',
-      isPrimary: false,
-      role: ''
-    };
-    addContactError = '';
-  }
-
-  async function submitAddContact() {
-    addContactError = '';
-    if (!contactForm.firstName.trim() || !contactForm.lastName.trim()) {
-      addContactError = 'First and last name are required.';
-      return;
-    }
-    isAddingContact = true;
-    try {
-      // Use form-encoded data for SvelteKit form actions
-      const formData = new FormData();
-      formData.append('firstName', contactForm.firstName);
-      formData.append('lastName', contactForm.lastName);
-      formData.append('email', contactForm.email);
-      formData.append('phone', contactForm.phone);
-      formData.append('title', contactForm.title);
-      formData.append('isPrimary', contactForm.isPrimary ? 'true' : '');
-      formData.append('role', contactForm.role);
-      const res = await fetch(`/app/accounts/${account.id}?/addContact`, {
-        method: 'POST',
-        body: formData
-      });
-      if (res.ok) {
-        showAddContactModal = false;
-        resetContactForm();
-        await invalidateAll();
-      } else {
-        const data = await res.json();
-        addContactError = data?.message || 'Failed to add contact.';
-      }
-    } catch (e) {
-      addContactError = 'Failed to add contact.';
-    } finally {
-      isAddingContact = false;
-    }
-  }
-
-  // Add Opportunity Modal state
-  let showAddOpportunityModal = false;
-  let opportunityForm = {
-    name: '',
-    amount: '',
-    stage: 'PROSPECTING',
-    closeDate: '',
-    probability: ''
-  };
-  let addOpportunityError = '';
-  let isAddingOpportunity = false;
-
-  function resetOpportunityForm() {
-    opportunityForm = {
-      name: '',
-      amount: '',
-      stage: 'PROSPECTING',
-      closeDate: '',
-      probability: ''
-    };
-    addOpportunityError = '';
-  }
-
-  async function submitAddOpportunity() {
-    addOpportunityError = '';
-    if (!opportunityForm.name.trim()) {
-      addOpportunityError = 'Opportunity name is required.';
-      return;
-    }
-    isAddingOpportunity = true;
-    try {
-      const formData = new FormData();
-      formData.append('name', opportunityForm.name);
-      formData.append('amount', opportunityForm.amount);
-      formData.append('stage', opportunityForm.stage);
-      formData.append('closeDate', opportunityForm.closeDate);
-      formData.append('probability', opportunityForm.probability);
-      const res = await fetch(`/app/accounts/${account.id}?/addOpportunity`, {
-        method: 'POST',
-        body: formData
-      });
-      if (res.ok) {
-        showAddOpportunityModal = false;
-        resetOpportunityForm();
-        await invalidateAll();
-      } else {
-        const data = await res.json();
-        addOpportunityError = data?.message || 'Failed to add opportunity.';
-      }
-    } catch (e) {
-      addOpportunityError = 'Failed to add opportunity.';
-    } finally {
-      isAddingOpportunity = false;
-    }
-  }
-
   // Task modal state
   let showTaskModal = false;
   let selectedTask = null;
@@ -559,13 +440,13 @@
         </div>
         
         <div class="mt-6">
-          <Button onclick={() => showAddContactModal = true} color="blue" class="w-full justify-center">
+          <Button href="/app/contacts/new?accountId={account.id}" color="blue" class="w-full justify-center">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
             </svg>
             Add Contact
           </Button>
-          <Button onclick={() => showAddOpportunityModal = true} color="green" class="w-full justify-center mt-3">
+          <Button href="/app/opportunities/new?accountId={account.id}" color="green" class="w-full justify-center mt-3">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
@@ -854,7 +735,6 @@
         </div>
       </TabItem>
       
-      <!-- <TabItem title="Quotes ({quotes.length})">
         <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md">
           {#if quotes.length === 0}
             <div class="p-8 text-center">
@@ -927,103 +807,6 @@
       <div class="flex justify-end gap-2">
         <Button type="button" color="alternative" onclick={() => showCloseModal = false}>Cancel</Button>
         <Button type="submit" color="red">Close Account</Button>
-      </div>
-    </form>
-  </Modal>
-
-  <!-- Add Contact Modal -->
-  <Modal bind:open={showAddContactModal} size="md" autoclose={false} title="Add Contact to Account">
-    <form on:submit={(e) => { e.preventDefault(); submitAddContact(); }}>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label for="firstName" class="block text-sm font-medium mb-1">First Name <span class="text-red-500">*</span></label>
-          <input id="firstName" class="w-full border rounded px-3 py-2" bind:value={contactForm.firstName} required />
-        </div>
-        <div>
-          <label for="lastName" class="block text-sm font-medium mb-1">Last Name <span class="text-red-500">*</span></label>
-          <input id="lastName" class="w-full border rounded px-3 py-2" bind:value={contactForm.lastName} required />
-        </div>
-        <div class="md:col-span-2">
-          <label for="email" class="block text-sm font-medium mb-1">Email</label>
-          <input id="email" class="w-full border rounded px-3 py-2" type="email" bind:value={contactForm.email} />
-        </div>
-        <div class="md:col-span-2">
-          <label for="phone" class="block text-sm font-medium mb-1">Phone</label>
-          <input id="phone" class="w-full border rounded px-3 py-2" type="tel" bind:value={contactForm.phone} />
-        </div>
-        <div class="md:col-span-2">
-          <label for="title" class="block text-sm font-medium mb-1">Title</label>
-          <input id="title" class="w-full border rounded px-3 py-2" bind:value={contactForm.title} />
-        </div>
-        <div class="md:col-span-2 flex items-center gap-3">
-          <input id="isPrimary" type="checkbox" bind:checked={contactForm.isPrimary} />
-          <label for="isPrimary" class="text-sm">Primary Contact</label>
-        </div>
-        <div class="md:col-span-2">
-          <label for="role" class="block text-sm font-medium mb-1">Role</label>
-          <input id="role" class="w-full border rounded px-3 py-2" bind:value={contactForm.role} />
-        </div>
-      </div>
-      {#if addContactError}
-        <p class="text-red-600 mt-2">{addContactError}</p>
-      {/if}
-      <div class="flex justify-end gap-2 mt-6">
-        <Button type="button" color="alternative" onclick={() => { showAddContactModal = false; resetContactForm(); }}>Cancel</Button>
-        <Button type="submit" color="blue" disabled={isAddingContact}>
-          {#if isAddingContact}
-            Adding...
-          {:else}
-            Add Contact
-          {/if}
-        </Button>
-      </div>
-    </form>
-  </Modal>
-
-  <!-- Add Opportunity Modal -->
-  <Modal bind:open={showAddOpportunityModal} size="md" autoclose={false} title="Add Opportunity to Account">
-    <form on:submit={(e) => { e.preventDefault(); submitAddOpportunity(); }}>
-      <div class="grid grid-cols-1 gap-4">
-        <div>
-          <label for="oppName" class="block text-sm font-medium mb-1">Name <span class="text-red-500">*</span></label>
-          <input id="oppName" class="w-full border rounded px-3 py-2" bind:value={opportunityForm.name} required />
-        </div>
-        <div>
-          <label for="oppAmount" class="block text-sm font-medium mb-1">Amount</label>
-          <input id="oppAmount" class="w-full border rounded px-3 py-2" type="number" bind:value={opportunityForm.amount} min="0" />
-        </div>
-        <div>
-          <label for="oppStage" class="block text-sm font-medium mb-1">Stage</label>
-          <select id="oppStage" class="w-full border rounded px-3 py-2" bind:value={opportunityForm.stage}>
-            <option value="PROSPECTING">Prospecting</option>
-            <option value="QUALIFICATION">Qualification</option>
-            <option value="PROPOSAL">Proposal</option>
-            <option value="NEGOTIATION">Negotiation</option>
-            <option value="CLOSED_WON">Closed Won</option>
-            <option value="CLOSED_LOST">Closed Lost</option>
-          </select>
-        </div>
-        <div>
-          <label for="oppCloseDate" class="block text-sm font-medium mb-1">Close Date</label>
-          <input id="oppCloseDate" class="w-full border rounded px-3 py-2" type="date" bind:value={opportunityForm.closeDate} />
-        </div>
-        <div>
-          <label for="oppProbability" class="block text-sm font-medium mb-1">Probability (%)</label>
-          <input id="oppProbability" class="w-full border rounded px-3 py-2" type="number" min="0" max="100" bind:value={opportunityForm.probability} />
-        </div>
-      </div>
-      {#if addOpportunityError}
-        <p class="text-red-600 mt-2">{addOpportunityError}</p>
-      {/if}
-      <div class="flex justify-end gap-2 mt-6">
-        <Button type="button" color="alternative" onclick={() => { showAddOpportunityModal = false; resetOpportunityForm(); }}>Cancel</Button>
-        <Button type="submit" color="green" disabled={isAddingOpportunity}>
-          {#if isAddingOpportunity}
-            Adding...
-          {:else}
-            Add Opportunity
-          {/if}
-        </Button>
       </div>
     </form>
   </Modal>
