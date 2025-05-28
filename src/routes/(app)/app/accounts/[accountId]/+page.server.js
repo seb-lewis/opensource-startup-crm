@@ -312,51 +312,5 @@ export const actions = {
       }
     });
     return { success: true };
-  },
-
-  addTask: async ({ request, locals, params }) => {
-    try {
-      const user = locals.user;
-      const org = locals.org;
-      
-      const { accountId } = params;
-      const formData = await request.formData();
-      const subject = formData.get('subject')?.toString().trim();
-      const description = formData.get('description')?.toString() || '';
-      const dueDateRaw = formData.get('dueDate');
-      const dueDate = dueDateRaw ? new Date(dueDateRaw.toString()) : null;
-      const priority = formData.get('priority')?.toString() || 'Normal';
-      if (!subject) {
-        return fail(400, { success: false, message: 'Subject is required.' });
-      }
-
-      // Check if the account exists and belongs to the organization
-      const account = await prisma.account.findUnique({
-        where: { id: accountId, organizationId: org.id }
-      });
-      if (!account) {
-        return fail(404, { success: false, message: 'Account not found or does not belong to this organization.' });
-      }
-      // If no ownerId is provided, default to current user
-      // if (!ownerId) ownerId = user.id;
-      // console.log(user.id, org.id);
-      const task = await prisma.task.create({
-        data: {
-          subject,
-          description,
-          dueDate,
-          priority,
-          status: 'Open',
-           createdBy:  { connect: { id: user.id    } }, 
-          account: { connect: { id: accountId } },  
-          owner: { connect: { id: user.id } }, 
-          organization: { connect: { id: org.id } }, 
-        }
-      });
-      return { success: true, message: 'Task added successfully.', task };
-    } catch (err) {
-      console.error('Error adding task:', err);
-      return fail(500, { success: false, message: 'Failed to add task.' });
-    }
   }
 };
