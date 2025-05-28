@@ -6,7 +6,7 @@
  * @param {string} baseUrl - Base URL of the application
  * @returns {string} Unsubscribe URL
  */
-export function generateUnsubscribeLink(token, baseUrl = 'https://bottlecrm.com') {
+export function generateUnsubscribeLink(token, baseUrl = 'https://bottlecrm.io') {
   return `${baseUrl}/unsubscribe?token=${token}`;
 }
 
@@ -54,14 +54,14 @@ export function generateWelcomeEmail(email, unsubscribeLink) {
         </div>
         
         <div style="text-align: center; margin-bottom: 30px;">
-          <a href="https://bottlecrm.com/demo" style="background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">Try BottleCRM Free</a>
+          <a href="https://bottlecrm.io/demo" style="background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">Try BottleCRM Free</a>
         </div>
         
         <div style="text-align: center; color: #666; font-size: 14px; border-top: 1px solid #ddd; padding-top: 20px;">
           <p>You're receiving this email because you subscribed to BottleCRM newsletter.</p>
           <p>
             <a href="${unsubscribeLink}" style="color: #666; text-decoration: underline;">Unsubscribe</a> | 
-            <a href="https://bottlecrm.com" style="color: #666; text-decoration: underline;">Visit Website</a>
+            <a href="https://bottlecrm.io" style="color: #666; text-decoration: underline;">Visit Website</a>
           </p>
           <p style="margin-top: 20px;">
             <strong>BottleCRM</strong> by MicroPyramid<br>
@@ -81,14 +81,14 @@ export function generateWelcomeEmail(email, unsubscribeLink) {
       • Industry Insights: Stay ahead with the latest CRM trends and strategies
       • Exclusive Content: Guides and resources available only to subscribers
       
-      Try BottleCRM Free: https://bottlecrm.com/demo
+      Try BottleCRM Free: https://bottlecrm.io/demo
       
       You're receiving this email because you subscribed to BottleCRM newsletter.
       To unsubscribe, visit: ${unsubscribeLink}
       
       BottleCRM by MicroPyramid
       The free, open-source CRM for startups
-      https://bottlecrm.com
+      https://bottlecrm.io
     `
   };
 }
@@ -100,7 +100,7 @@ export function generateWelcomeEmail(email, unsubscribeLink) {
  * @returns {object} Newsletter template with subject and body
  */
 export function generateNewsletterTemplate(content, unsubscribeLink) {
-  const { subject, headline, articles = [], ctaText = 'Learn More', ctaLink = 'https://bottlecrm.com' } = content;
+  const { subject, headline, articles = [], ctaText = 'Learn More', ctaLink = 'https://bottlecrm.io' } = content;
   
   const articlesHtml = articles.map(article => `
     <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #667eea;">
@@ -137,7 +137,7 @@ export function generateNewsletterTemplate(content, unsubscribeLink) {
           <p>You're receiving this email because you subscribed to BottleCRM newsletter.</p>
           <p>
             <a href="${unsubscribeLink}" style="color: #666; text-decoration: underline;">Unsubscribe</a> | 
-            <a href="https://bottlecrm.com" style="color: #666; text-decoration: underline;">Visit Website</a>
+            <a href="https://bottlecrm.io" style="color: #666; text-decoration: underline;">Visit Website</a>
           </p>
           <p style="margin-top: 20px;">
             <strong>BottleCRM</strong> by MicroPyramid<br>
