@@ -59,7 +59,7 @@
 
 <svelte:head>
   <title>Free Contact Management Software | BottleCRM - Unlimited Contacts, Zero Cost</title>
-  <meta name="description" content="Powerful contact management with unlimited contacts, advanced search, custom fields, and mobile access. Free forever. No per-contact pricing. Better than Salesforce, HubSpot, Pipedrive." />
+  <meta name="description" content="Powerful contact management with unlimited contacts, advanced search, custom fields, and mobile access. Free forever. No per-contact pricing. Better than expensive CRM alternatives." />
   <meta name="keywords" content="free contact management software, unlimited contacts crm, contact database, customer contact management, contact organization software, contact tracking, crm contact management, lead management, customer database software" />
   
   <!-- Open Graph -->
@@ -134,21 +134,21 @@
       
       <div class="lg:w-1/2">
         <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
-          <h3 class="text-2xl font-bold mb-6 text-center">💰 Cost Comparison Calculator</h3>
+          <h3 class="text-2xl font-bold mb-6 text-center">💰 Industry Cost Comparison*</h3>
           
           <div class="space-y-4">
             <div class="bg-white/20 rounded-lg p-4">
               <div class="flex justify-between items-center mb-2">
-                <span class="font-semibold">1,000 contacts in Salesforce:</span>
-                <span class="text-2xl font-bold text-red-300">$25,000/year</span>
+                <span class="font-semibold">1,000 contacts in Enterprise CRM:</span>
+                <span class="text-2xl font-bold text-red-300">$25,000+/year</span>
               </div>
               <div class="flex justify-between items-center mb-2">
-                <span class="font-semibold">1,000 contacts in HubSpot:</span>
-                <span class="text-2xl font-bold text-red-300">$4,800/year</span>
+                <span class="font-semibold">1,000 contacts in Popular CRM:</span>
+                <span class="text-2xl font-bold text-red-300">$3,000-8,000/year</span>
               </div>
               <div class="flex justify-between items-center mb-4">
-                <span class="font-semibold">1,000 contacts in Pipedrive:</span>
-                <span class="text-2xl font-bold text-red-300">$1,800/year</span>
+                <span class="font-semibold">1,000 contacts in Standard CRM:</span>
+                <span class="text-2xl font-bold text-red-300">$1,500-3,000/year</span>
               </div>
               <div class="border-t border-white/30 pt-4">
                 <div class="flex justify-between items-center">
@@ -159,7 +159,11 @@
             </div>
             
             <div class="text-center text-green-300 font-bold text-xl">
-              Save $1,800 - $25,000 per year!
+              Save $1,500 - $25,000+ per year!
+            </div>
+            
+            <div class="text-center text-xs text-blue-200 mt-4">
+              *Based on industry-standard per-contact pricing models as of 2024
             </div>
           </div>
         </div>
@@ -848,7 +852,7 @@
         Contact Management Feature Comparison
       </h2>
       <p class="text-xl text-gray-600">
-        See how BottleCRM's contact management compares to expensive alternatives.
+        See how BottleCRM's contact management compares to typical CRM pricing models.
       </p>
     </div>
 
@@ -856,9 +860,9 @@
       <table class="w-full bg-white rounded-xl shadow-lg overflow-hidden">
         <thead class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
           <tr>
-            <th class="px-6 py-4 text-left text-sm font-semibold">Platform</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold">Platform Type</th>
             <th class="px-6 py-4 text-center text-sm font-semibold">Contact Limit</th>
-            <th class="px-6 py-4 text-center text-sm font-semibold">Pricing</th>
+            <th class="px-6 py-4 text-center text-sm font-semibold">Typical Pricing</th>
             <th class="px-6 py-4 text-center text-sm font-semibold">Custom Fields</th>
             <th class="px-6 py-4 text-center text-sm font-semibold">Data Export</th>
             <th class="px-6 py-4 text-center text-sm font-semibold">Mobile App</th>
@@ -871,7 +875,7 @@
             <td class="px-6 py-4 font-semibold text-green-700">
               <div class="flex items-center">
                 BottleCRM
-                <span class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Recommended</span>
+                <span class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Free & Open Source</span>
               </div>
             </td>
             <td class="px-6 py-4 text-center font-bold text-green-600">Unlimited</td>
@@ -893,20 +897,20 @@
           <tr class="border-b border-gray-200 hover:bg-gray-50">
             <td class="px-6 py-4 font-semibold text-gray-900">
               <div class="flex items-center">
-                Salesforce
+                Enterprise CRM Platforms
               </div>
             </td>
-            <td class="px-6 py-4 text-center text-gray-700">Depends on plan</td>
-            <td class="px-6 py-4 text-center text-gray-700">$25-300/user</td>
-            <td class="px-6 py-4 text-center text-gray-700">Limited by plan</td>
+            <td class="px-6 py-4 text-center text-gray-700">Plan-dependent</td>
+            <td class="px-6 py-4 text-center text-gray-700">$25-300+/user</td>
+            <td class="px-6 py-4 text-center text-gray-700">Limited by tier</td>
             <td class="px-6 py-4 text-center">
-              <span class="text-gray-700 text-sm">Restricted</span>
+              <span class="text-gray-700 text-sm">Often restricted</span>
             </td>
             <td class="px-6 py-4 text-center">
               <Check class="w-5 h-5 text-green-500 mx-auto" />
             </td>
             <td class="px-6 py-4 text-center">
-              <span class="text-gray-700 text-sm">Paid tiers</span>
+              <span class="text-gray-700 text-sm">Premium tiers</span>
             </td>
             <td class="px-6 py-4 text-center">
               <X class="w-5 h-5 text-red-500 mx-auto" />
@@ -915,20 +919,20 @@
           <tr class="border-b border-gray-200 hover:bg-gray-50">
             <td class="px-6 py-4 font-semibold text-gray-900">
               <div class="flex items-center">
-                HubSpot
+                Popular Cloud CRMs
               </div>
             </td>
-            <td class="px-6 py-4 text-center text-gray-700">1,000 free</td>
-            <td class="px-6 py-4 text-center text-gray-700">$50+/month</td>
-            <td class="px-6 py-4 text-center text-gray-700">Limited</td>
+            <td class="px-6 py-4 text-center text-gray-700">Limited on free plans</td>
+            <td class="px-6 py-4 text-center text-gray-700">$15-100+/month</td>
+            <td class="px-6 py-4 text-center text-gray-700">Tier-restricted</td>
             <td class="px-6 py-4 text-center">
-              <span class="text-gray-700 text-sm">Basic only</span>
+              <span class="text-gray-700 text-sm">Basic exports</span>
             </td>
             <td class="px-6 py-4 text-center">
               <Check class="w-5 h-5 text-green-500 mx-auto" />
             </td>
             <td class="px-6 py-4 text-center">
-              <span class="text-gray-700 text-sm">Paid only</span>
+              <span class="text-gray-700 text-sm">Paid features</span>
             </td>
             <td class="px-6 py-4 text-center">
               <X class="w-5 h-5 text-red-500 mx-auto" />
@@ -937,10 +941,10 @@
           <tr class="border-b border-gray-200 hover:bg-gray-50">
             <td class="px-6 py-4 font-semibold text-gray-900">
               <div class="flex items-center">
-                Pipedrive
+                Mid-Market CRM Solutions
               </div>
             </td>
-            <td class="px-6 py-4 text-center text-gray-700">Per user limit</td>
+            <td class="px-6 py-4 text-center text-gray-700">Per-user limitations</td>
             <td class="px-6 py-4 text-center text-gray-700">$15-99/user</td>
             <td class="px-6 py-4 text-center text-gray-700">Limited</td>
             <td class="px-6 py-4 text-center">
@@ -950,7 +954,7 @@
               <Check class="w-5 h-5 text-green-500 mx-auto" />
             </td>
             <td class="px-6 py-4 text-center">
-              <span class="text-gray-700 text-sm">Paid tiers</span>
+              <span class="text-gray-700 text-sm">Higher tiers</span>
             </td>
             <td class="px-6 py-4 text-center">
               <X class="w-5 h-5 text-red-500 mx-auto" />
@@ -958,6 +962,12 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    
+    <div class="mt-8 text-center">
+      <p class="text-sm text-gray-600">
+        *Pricing and features based on publicly available information as of 2024. Individual platform offerings may vary.
+      </p>
     </div>
   </div>
 </section>
@@ -1084,7 +1094,7 @@
         
         {#if activeFaq === 5}
           <div transition:fade="{{ duration: 200 }}" class="px-6 pb-5">
-            <p class="text-gray-700 leading-relaxed">BottleCRM provides enterprise-grade contact management features for free, including unlimited contacts, custom fields, advanced search, and data export. Most paid CRM systems charge $25-100+ per user per month for similar functionality.</p>
+            <p class="text-gray-700 leading-relaxed">BottleCRM provides enterprise-grade contact management features for free, including unlimited contacts, custom fields, advanced search, and data export. Most commercial CRM systems charge $25-100+ per user per month for similar functionality, often with contact limits and feature restrictions.</p>
           </div>
         {/if}
       </div>

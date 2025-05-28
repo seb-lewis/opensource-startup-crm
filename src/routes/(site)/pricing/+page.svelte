@@ -24,7 +24,7 @@
 
   let activeFaq = null;
   let teamSize = 5;
-  let selectedCompetitor = "Salesforce Starter";
+  let selectedCompetitor = "Enterprise CRM A";
   let calculatedSavings = 1500;
 
   function toggleFaq(index) {
@@ -32,11 +32,11 @@
   }
 
   function updateSavings() {
-    if (selectedCompetitor === "Salesforce Starter") {
+    if (selectedCompetitor === "Enterprise CRM A") {
       calculatedSavings = 25 * 12 * teamSize;
-    } else if (selectedCompetitor === "HubSpot Starter") {
+    } else if (selectedCompetitor === "Popular CRM B") {
       calculatedSavings = 50 * 12 * teamSize;
-    } else if (selectedCompetitor === "Pipedrive Essential") {
+    } else if (selectedCompetitor === "Business CRM C") {
       calculatedSavings = 15 * 12 * teamSize;
     }
   }
@@ -46,8 +46,8 @@
 
 <svelte:head>
   <title>BottleCRM Pricing | 100% Free CRM Software with Optional Professional Support</title>
-  <meta name="description" content="BottleCRM is completely free forever. Optional professional support available. Save $1,800-50,000/year vs Salesforce, HubSpot, Pipedrive. No subscriptions, no user limits." />
-  <meta name="keywords" content="free crm pricing, crm cost comparison, affordable crm software, crm pricing calculator, salesforce alternative pricing, hubspot pricing comparison, free vs paid crm, crm setup services" />
+  <meta name="description" content="BottleCRM is completely free forever. Optional professional support available. Save $1,800-50,000/year vs typical enterprise CRM solutions. No subscriptions, no user limits." />
+  <meta name="keywords" content="free crm pricing, crm cost comparison, affordable crm software, crm pricing calculator, enterprise crm alternative, crm pricing comparison, free vs paid crm, crm setup services" />
   
   <!-- Open Graph -->
   <meta property="og:title" content="BottleCRM Pricing | 100% Free CRM Software" />
@@ -363,7 +363,7 @@
         Calculate Your Annual Savings
       </h2>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-        See how much money your business can save by switching to BottleCRM from expensive subscription-based alternatives.
+        See how much money your business can save by switching to BottleCRM from typical subscription-based CRM solutions.
       </p>
     </div>
 
@@ -390,13 +390,14 @@
             
             <div>
               <label for="competitor" class="block text-sm font-medium text-gray-700 mb-2">
-                Compare Against
+                Compare Against Typical Market Pricing
               </label>
               <select id="competitor" bind:value={selectedCompetitor} class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="Salesforce Starter">Salesforce Starter ($25/user/month)</option>
-                <option value="HubSpot Starter">HubSpot Starter ($50/user/month)</option>
-                <option value="Pipedrive Essential">Pipedrive Essential ($15/user/month)</option>
+                <option value="Enterprise CRM A">Enterprise CRM A (~$25/user/month)</option>
+                <option value="Popular CRM B">Popular CRM B (~$50/user/month)</option>
+                <option value="Business CRM C">Business CRM C (~$15/user/month)</option>
               </select>
+              <p class="text-xs text-gray-500 mt-1">*Pricing based on publicly available market research</p>
             </div>
           </div>
         </div>
@@ -426,6 +427,14 @@
           </div>
         </div>
       </div>
+      
+      <!-- Add disclaimer -->
+      <div class="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <p class="text-sm text-yellow-800">
+          <AlertCircle class="w-4 h-4 inline mr-2" />
+          <strong>Disclaimer:</strong> Pricing comparisons are based on publicly available information and market research as of 2024. Actual costs may vary. We recommend checking current pricing with individual vendors for exact comparisons.
+        </p>
+      </div>
     </div>
   </div>
 </section>
@@ -435,10 +444,10 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
       <h2 class="text-4xl font-extrabold text-gray-900 mb-6">
-        Detailed Feature & Cost Comparison
+        Feature & Cost Comparison vs Market Leaders
       </h2>
       <p class="text-xl text-gray-600">
-        See how BottleCRM compares to popular CRM solutions across all key factors.
+        See how BottleCRM compares to typical enterprise CRM solutions across key factors.
       </p>
     </div>
 
@@ -448,46 +457,46 @@
           <tr>
             <th class="px-6 py-4 text-left text-sm font-semibold">Feature</th>
             <th class="px-6 py-4 text-center text-sm font-semibold bg-green-600">BottleCRM</th>
-            <th class="px-6 py-4 text-center text-sm font-semibold">Salesforce Starter</th>
-            <th class="px-6 py-4 text-center text-sm font-semibold">HubSpot Starter</th>
-            <th class="px-6 py-4 text-center text-sm font-semibold">Pipedrive Essential</th>
+            <th class="px-6 py-4 text-center text-sm font-semibold">Enterprise CRM A</th>
+            <th class="px-6 py-4 text-center text-sm font-semibold">Popular CRM B</th>
+            <th class="px-6 py-4 text-center text-sm font-semibold">Business CRM C</th>
           </tr>
         </thead>
         <tbody>
           <tr class="border-b border-gray-200 hover:bg-gray-50">
             <td class="px-6 py-4 font-medium text-gray-900">Monthly Cost (per user)</td>
             <td class="px-6 py-4 text-center bg-green-50 font-bold text-green-600">$0</td>
-            <td class="px-6 py-4 text-center text-gray-700">$25/user</td>
-            <td class="px-6 py-4 text-center text-gray-700">$50/user</td>
-            <td class="px-6 py-4 text-center text-gray-700">$15/user</td>
+            <td class="px-6 py-4 text-center text-gray-700">~$25/user</td>
+            <td class="px-6 py-4 text-center text-gray-700">~$50/user</td>
+            <td class="px-6 py-4 text-center text-gray-700">~$15/user</td>
           </tr>
           <tr class="border-b border-gray-200 hover:bg-gray-50">
             <td class="px-6 py-4 font-medium text-gray-900">Annual Cost (10 users)</td>
             <td class="px-6 py-4 text-center bg-green-50 font-bold text-green-600">$0</td>
-            <td class="px-6 py-4 text-center text-gray-700">$3,000</td>
-            <td class="px-6 py-4 text-center text-gray-700">$6,000</td>
-            <td class="px-6 py-4 text-center text-gray-700">$1,800</td>
+            <td class="px-6 py-4 text-center text-gray-700">~$3,000</td>
+            <td class="px-6 py-4 text-center text-gray-700">~$6,000</td>
+            <td class="px-6 py-4 text-center text-gray-700">~$1,800</td>
           </tr>
           <tr class="border-b border-gray-200 hover:bg-gray-50">
             <td class="px-6 py-4 font-medium text-gray-900">Setup/Onboarding</td>
             <td class="px-6 py-4 text-center text-gray-700 text-sm">Optional ($197-497)</td>
-            <td class="px-6 py-4 text-center text-gray-700 text-sm">$0-2000</td>
-            <td class="px-6 py-4 text-center text-gray-700 text-sm">$0-5000</td>
-            <td class="px-6 py-4 text-center text-gray-700 text-sm">$0-1000</td>
+            <td class="px-6 py-4 text-center text-gray-700 text-sm">Varies*</td>
+            <td class="px-6 py-4 text-center text-gray-700 text-sm">Varies*</td>
+            <td class="px-6 py-4 text-center text-gray-700 text-sm">Varies*</td>
           </tr>
           <tr class="border-b border-gray-200 hover:bg-gray-50">
             <td class="px-6 py-4 font-medium text-gray-900">User Limits</td>
             <td class="px-6 py-4 text-center text-gray-700 text-sm">Unlimited</td>
-            <td class="px-6 py-4 text-center text-gray-700 text-sm">Per seat</td>
-            <td class="px-6 py-4 text-center text-gray-700 text-sm">2 users</td>
-            <td class="px-6 py-4 text-center text-gray-700 text-sm">Per seat</td>
+            <td class="px-6 py-4 text-center text-gray-700 text-sm">Per seat**</td>
+            <td class="px-6 py-4 text-center text-gray-700 text-sm">Limited**</td>
+            <td class="px-6 py-4 text-center text-gray-700 text-sm">Per seat**</td>
           </tr>
           <tr class="border-b border-gray-200 hover:bg-gray-50">
             <td class="px-6 py-4 font-medium text-gray-900">Storage Limits</td>
             <td class="px-6 py-4 text-center text-gray-700 text-sm">Unlimited</td>
-            <td class="px-6 py-4 text-center text-gray-700 text-sm">10GB</td>
-            <td class="px-6 py-4 text-center text-gray-700 text-sm">1000 contacts</td>
-            <td class="px-6 py-4 text-center text-gray-700 text-sm">3GB</td>
+            <td class="px-6 py-4 text-center text-gray-700 text-sm">Limited**</td>
+            <td class="px-6 py-4 text-center text-gray-700 text-sm">Limited**</td>
+            <td class="px-6 py-4 text-center text-gray-700 text-sm">Limited**</td>
           </tr>
           <tr class="border-b border-gray-200 hover:bg-gray-50">
             <td class="px-6 py-4 font-medium text-gray-900">Self-Hosted Option</td>
@@ -528,6 +537,15 @@
           </tr>
         </tbody>
       </table>
+      
+      <!-- Add table disclaimer -->
+      <div class="mt-6 p-4 bg-gray-100 rounded-lg">
+        <p class="text-sm text-gray-600">
+          <strong>**</strong> Features and limitations vary by plan tier. 
+          <strong>*</strong> Pricing varies by vendor and implementation requirements. 
+          Information based on publicly available market research as of 2024. Please verify current pricing and features with individual vendors.
+        </p>
+      </div>
     </div>
   </div>
 </section>
@@ -640,7 +658,7 @@
         
         {#if activeFaq === 4}
           <div class="px-6 pb-5">
-            <p class="text-gray-700 leading-relaxed">For a 10-person team, you can save $1,800-6,000 per year compared to Salesforce, HubSpot, or Pipedrive. Enterprise teams often save $10,000-50,000 annually.</p>
+            <p class="text-gray-700 leading-relaxed">For a 10-person team, you can save $1,800-6,000 per year compared to typical enterprise CRM solutions. Enterprise teams often save $10,000-50,000 annually. Actual savings depend on your current CRM vendor and plan.</p>
           </div>
         {/if}
       </div>

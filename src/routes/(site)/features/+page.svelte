@@ -63,15 +63,15 @@
     <div class="text-center max-w-4xl mx-auto">
       <div class="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
         <Zap class="w-4 h-4 mr-2" />
-        <span class="text-sm font-medium">Enterprise Features • Startup-Friendly Pricing (Free)</span>
+        <span class="text-sm font-medium">Enterprise Features • Zero Cost • Open Source</span>
       </div>
       
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
-        Every Feature Your Business Needs in a <span class="text-yellow-300">Free CRM</span>
+        Enterprise CRM Features at <span class="text-yellow-300">Zero Cost</span>
       </h1>
       
       <p class="text-xl md:text-2xl mb-8 text-blue-100 leading-relaxed">
-        Discover all the powerful features that make BottleCRM the perfect alternative to expensive CRM solutions. From contact management to advanced analytics, everything you need is included.
+        Discover powerful features that rival premium CRM solutions. From contact management to advanced analytics, everything you need without subscription fees or vendor lock-in.
       </p>
       
       <div class="flex flex-col sm:flex-row sm:justify-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -92,10 +92,10 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
       <h2 class="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-6">
-        Complete CRM Feature Set
+        Professional CRM Feature Set
       </h2>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-        BottleCRM provides everything you need to manage customer relationships, automate sales processes, and grow your business. All features are included in the free, open-source version.
+        BottleCRM provides enterprise-grade functionality typically found in premium CRM solutions. All features are included in our free, open-source platform with no hidden costs or limitations.
       </p>
     </div>
 
@@ -1132,14 +1132,105 @@
   </div>
 </section>
 
+<!-- Value Proposition Section -->
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-6">
+        Why Choose BottleCRM?
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Unlike traditional CRM solutions, BottleCRM offers enterprise-grade features without the enterprise price tag.
+      </p>
+    </div>
+
+    <div class="grid gap-8 lg:grid-cols-3">
+      <!-- Cost-Effective -->
+      <div class="text-center p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl">
+        <div class="rounded-xl bg-green-100 p-4 inline-block mb-6">
+          <DollarSign class="h-8 w-8 text-green-600" />
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Cost-Effective Solution</h3>
+        <p class="text-gray-600 mb-6">
+          Save thousands on CRM costs while getting professional features. No per-user fees, no monthly subscriptions, no surprise charges.
+        </p>
+        <ul class="text-left space-y-2">
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+            <span>$0 monthly fees</span>
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+            <span>Unlimited users</span>
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+            <span>No feature restrictions</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Data Ownership -->
+      <div class="text-center p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl">
+        <div class="rounded-xl bg-blue-100 p-4 inline-block mb-6">
+          <Lock class="h-8 w-8 text-blue-600" />
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Complete Data Control</h3>
+        <p class="text-gray-600 mb-6">
+          Your data stays yours. Self-host on your infrastructure with full control over security, privacy, and compliance.
+        </p>
+        <ul class="text-left space-y-2">
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+            <span>Self-hosted deployment</span>
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+            <span>No vendor lock-in</span>
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+            <span>GDPR compliance ready</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Customization Freedom -->
+      <div class="text-center p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl">
+        <div class="rounded-xl bg-purple-100 p-4 inline-block mb-6">
+          <Code class="h-8 w-8 text-purple-600" />
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Unlimited Customization</h3>
+        <p class="text-gray-600 mb-6">
+          Modify and extend BottleCRM to fit your exact needs. Open-source means no limitations on customization.
+        </p>
+        <ul class="text-left space-y-2">
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+            <span>Full source code access</span>
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+            <span>Custom integrations</span>
+          </li>
+          <li class="flex items-center text-sm text-gray-700">
+            <Check class="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+            <span>Community support</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CTA Section -->
 <section class="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 text-white py-20">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <h2 class="text-4xl md:text-5xl font-extrabold mb-6">
-      Ready to Experience All These Features?
+      Ready to Experience Professional CRM Features?
     </h2>
     <p class="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-      Start using BottleCRM today and discover how a free, open-source CRM can transform your business operations.
+      Join businesses that have chosen BottleCRM for enterprise-grade features without enterprise costs.
     </p>
     
     <div class="flex flex-col sm:flex-row sm:justify-center space-y-4 sm:space-y-0 sm:space-x-6">
@@ -1154,7 +1245,7 @@
     </div>
     
     <p class="mt-8 text-blue-200 text-lg">
-      🚀 No credit card required • All features included • Self-host anywhere
+      🚀 No subscription fees • Enterprise features included • Deploy anywhere
     </p>
   </div>
 </section>

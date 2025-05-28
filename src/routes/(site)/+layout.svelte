@@ -111,7 +111,7 @@
         <div class="hidden xl:flex items-center space-x-1">
           <a href="/features" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">Features</a>
           <a href="/pricing" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">Pricing</a>
-          <a href="/demo" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">Live Demo</a>
+          <a href="https://www.youtube.com/@bottlecrm" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">Live Demo</a>
           <a href="/blog" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">Blog</a>
           <a href="/contact" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">Support</a>
           
@@ -133,7 +133,7 @@
         
         <!-- Tablet Navigation - Shows limited items -->
         <div class="hidden lg:flex xl:hidden items-center space-x-2">
-          <a href="/demo" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">Demo</a>
+          <a href="https://www.youtube.com/@bottlecrm" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">Demo</a>
           <a href="/login" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">Login</a>
           <a href="/signup" class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200">Sign Up</a>
           
@@ -188,7 +188,7 @@
               <span class="flex-1">Pricing</span>
               <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">Free</span>
             </a>
-            <a href="/demo" class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 active:bg-blue-100 transition-all duration-200">
+            <a href="https://www.youtube.com/@bottlecrm" class="flex items-center px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 active:bg-blue-100 transition-all duration-200">
               <Video class="w-5 h-5 mr-3 text-purple-500" />
               Live Demo
             </a>
@@ -383,8 +383,8 @@
           <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6">
             <p class="text-sm text-gray-400">© {new Date().getFullYear()} BottleCRM by <a href="https://micropyramid.com" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">MicroPyramid</a>. Open Source & Free Forever.</p>
             <div class="flex space-x-4 text-sm">
-              <a href="/legal/privacy-policy" class="text-gray-400 hover:text-white transition-colors duration-200">Privacy</a>
-              <a href="/legal/terms-of-service" class="text-gray-400 hover:text-white transition-colors duration-200">Terms</a>
+              <a href="/privacy-policy" class="text-gray-400 hover:text-white transition-colors duration-200">Privacy</a>
+              <a href="/terms-of-service" class="text-gray-400 hover:text-white transition-colors duration-200">Terms</a>
               <a href="/sitemap.xml" class="text-gray-400 hover:text-white transition-colors duration-200">Sitemap</a>
             </div>
           </div>

@@ -16,7 +16,7 @@ export async function GET() {
     // Fetch all published blog posts
     const blogPosts = await prisma.blogPost.findMany({
       where: {
-        published: true
+        draft: false
       },
       select: {
         slug: true,
