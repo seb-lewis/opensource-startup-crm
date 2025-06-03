@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '$lib/prisma';
 import { error } from '@sveltejs/kit';
 
-const prisma = new PrismaClient();
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ url, locals }) {
     try {
+
         const page = parseInt(url.searchParams.get('page') || '1');
         const limit = parseInt(url.searchParams.get('limit') || '20');
         const search = url.searchParams.get('search') || '';
@@ -15,7 +15,7 @@ export async function load({ url, locals }) {
         
         // Build where clause
         const where = {
-            organizationId: locals.user?.organizationId, // Assuming user context
+            organizationId: locals.org.id,
             ...(search && {
                 OR: [
                     { firstName: { contains: search, mode: 'insensitive' } },
@@ -66,7 +66,13 @@ export async function load({ url, locals }) {
             }),
             prisma.contact.count({ where }),
             prisma.user.findMany({
-                where: { organizationId: locals.user?.organizationId },
+                where: { 
+                    organizations: {
+                        some: {
+                            organizationId: locals.org.id
+                        }
+                    }
+                },
                 select: {
                     id: true,
                     name: true,
@@ -96,6 +102,7 @@ export async function load({ url, locals }) {
 export const actions = {
     delete: async ({ request, locals }) => {
         try {
+
             const data = await request.formData();
             const contactId = data.get('contactId');
 
@@ -106,7 +113,7 @@ export const actions = {
             await prisma.contact.delete({
                 where: {
                     id: contactId,
-                    organizationId: locals.user?.organizationId
+                    organizationId: locals.org.id
                 }
             });
 
