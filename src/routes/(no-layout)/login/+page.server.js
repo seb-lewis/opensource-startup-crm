@@ -3,7 +3,6 @@ import prisma from '$lib/prisma'
 
 import { redirect } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { auth } from '$lib/stores/auth';
 
 // import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from 'uuid';
@@ -26,13 +25,13 @@ async function fetchUserData(params) {
 }
 
 /** @type {import('@sveltejs/kit').ServerLoad} */
-export async function load({ params, url, cookies }) {
+export async function load({ url, cookies }) {
   const code = url.searchParams.get('code')
   const redirect_uri = env.GOOGLE_LOGIN_DOMAIN + '/login'
 
     // Check if the user is already authenticated
   if (code != null) {
-    params = {
+    const tokenParams = {
       grant_type: 'authorization_code',
       code,
       redirect_uri,
@@ -42,7 +41,7 @@ export async function load({ params, url, cookies }) {
     let info
 
     try {
-      const response = await axios.post('https://accounts.google.com/o/oauth2/token', params)
+      const response = await axios.post('https://accounts.google.com/o/oauth2/token', tokenParams)
       info = response.data
     } catch (error) {
       console.error('Error:', error)
@@ -52,7 +51,7 @@ export async function load({ params, url, cookies }) {
 
     const session_id = uuidv4()
     
-    const user = await prisma.user.upsert({
+    await prisma.user.upsert({
       where: { email: user_info.email },
       update: { 
         session_id: session_id,
