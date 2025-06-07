@@ -268,7 +268,9 @@
               </div>
             {/if}
             <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+              <label for="newsletter-email" class="sr-only">Enter your email address</label>
               <input 
+                id="newsletter-email"
                 type="email" 
                 name="email"
                 placeholder="Enter your email" 

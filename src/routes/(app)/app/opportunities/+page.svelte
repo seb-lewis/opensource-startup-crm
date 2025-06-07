@@ -203,11 +203,13 @@
                     <!-- Search -->
                     <div class="flex-1">
                         <div class="relative">
+                            <label for="opportunities-search" class="sr-only">Search opportunities</label>
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Search class="h-5 w-5 text-gray-400" />
                             </div>
                             <input
                                 type="text"
+                                id="opportunities-search"
                                 bind:value={searchTerm}
                                 placeholder="Search opportunities, accounts, or owners..."
                                 class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
@@ -217,7 +219,9 @@
 
                     <!-- Stage Filter -->
                     <div class="sm:w-48">
+                        <label for="opportunities-stage-filter" class="sr-only">Filter opportunities by stage</label>
                         <select
+                            id="opportunities-stage-filter"
                             bind:value={selectedStage}
                             class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                         >
