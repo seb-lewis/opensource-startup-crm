@@ -17,7 +17,8 @@
     {/if}
     <form class="board-card board-create" method="POST" action="?/create">
       <div class="plus-icon">+</div>
-      <input name="name" placeholder="New board name" required />
+      <label for="board-name" class="sr-only">Board name</label>
+      <input id="board-name" name="name" placeholder="New board name" required />
       <button type="submit">Create Board</button>
     </form>
   </div>

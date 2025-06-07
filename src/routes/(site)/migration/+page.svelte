@@ -637,7 +637,9 @@
     {#if !subscribed}
       <div class="max-w-md mx-auto">
         <div class="flex flex-col sm:flex-row gap-4">
+          <label for="email-updates" class="sr-only">Email address for updates</label>
           <input 
+            id="email-updates"
             type="email" 
             bind:value={emailForUpdates}
             placeholder="Enter your email address"
