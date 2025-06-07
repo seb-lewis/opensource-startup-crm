@@ -101,8 +101,10 @@
                     <!-- Mobile search -->
                     <div class="pt-2">
                         <div class="relative">
+                            <label for="admin-search" class="sr-only">Search</label>
                             <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <input 
+                                id="admin-search"
                                 type="text" 
                                 placeholder="Search..." 
                                 class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"

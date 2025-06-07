@@ -469,7 +469,8 @@
         <div class="flex items-center space-x-4">
           <div class="relative">
             <Search class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-            <input type="text" placeholder="Search contacts..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64" />
+            <label for="contact-search-demo" class="sr-only">Search contacts</label>
+            <input id="contact-search-demo" type="text" placeholder="Search contacts..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64" />
           </div>
           <button class="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
             <Filter class="w-4 h-4 mr-2" />

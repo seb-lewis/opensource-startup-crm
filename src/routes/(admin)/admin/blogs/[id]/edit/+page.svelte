@@ -92,55 +92,60 @@
     <input type="hidden" name="title" value={editable_title} />
     <input type="hidden" name="slug" value={slug} />
     <div>
-      <label class="block font-medium mb-1">
+      <label for="blog-title" class="block font-medium mb-1">
         Title:
-        <input
-          bind:value={editable_title}
-          required
-          class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
       </label>
+      <input
+        id="blog-title"
+        bind:value={editable_title}
+        required
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+      />
     </div>
     <div>
-      <label class="block font-medium mb-1">
+      <label for="blog-seo-title" class="block font-medium mb-1">
         SEO Title:
-        <input
-          name="seoTitle"
-          bind:value={blog.seoTitle}
-          class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
       </label>
+      <input
+        id="blog-seo-title"
+        name="seoTitle"
+        bind:value={blog.seoTitle}
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+      />
     </div>
     <div>
-      <label class="block font-medium mb-1">
+      <label for="blog-seo-description" class="block font-medium mb-1">
         SEO Description:
-        <textarea
-          name="seoDescription"
-          bind:value={blog.seoDescription}
-          class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        ></textarea>
       </label>
+      <textarea
+        id="blog-seo-description"
+        name="seoDescription"
+        bind:value={blog.seoDescription}
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+      ></textarea>
     </div>
     <div>
-      <label class="block font-medium mb-1">
+      <label for="blog-excerpt" class="block font-medium mb-1">
         Excerpt:
-        <textarea
-          name="excerpt"
-          bind:value={blog.excerpt}
-          class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        ></textarea>
       </label>
+      <textarea
+        id="blog-excerpt"
+        name="excerpt"
+        bind:value={blog.excerpt}
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+      ></textarea>
     </div>
     <div>
-      <label class="block font-medium mb-1">
+      <label for="blog-slug" class="block font-medium mb-1">
         Slug:
-        <input
-          bind:value={slug}
-          required
-          class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          disabled={!blog.draft}
-        />
       </label>
+      <input
+        id="blog-slug"
+        bind:value={slug}
+        required
+        class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+        disabled={!blog.draft}
+      />
       {#if !blog.draft}
         <p class="text-xs text-gray-500 mt-1">
           Slug can only be edited in draft mode.
