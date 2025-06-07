@@ -9,12 +9,14 @@
       <!-- Search -->
       <div class="flex-1 flex items-center bg-white/80 backdrop-blur-md rounded-xl shadow px-4 py-2 border border-blue-200">
         <svg class="w-5 h-5 text-blue-400 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="Search invoices..." class="bg-transparent outline-none flex-1 text-blue-900 placeholder-blue-400" />
+        <label for="invoice-search" class="sr-only">Search invoices</label>
+        <input id="invoice-search" type="text" placeholder="Search invoices..." class="bg-transparent outline-none flex-1 text-blue-900 placeholder-blue-400" />
       </div>
       <!-- Status Filter -->
       <div class="flex items-center bg-white/80 backdrop-blur-md rounded-xl shadow px-4 py-2 border border-blue-200">
         <svg class="w-5 h-5 text-purple-400 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 3v4M8 3v4"/></svg>
-        <select class="bg-transparent outline-none text-blue-900 font-semibold">
+        <label for="invoice-status-filter" class="sr-only">Filter by status</label>
+        <select id="invoice-status-filter" class="bg-transparent outline-none text-blue-900 font-semibold">
           <option>All Statuses</option>
           <option>Paid</option>
           <option>Unpaid</option>
@@ -24,7 +26,8 @@
       <!-- Date Range -->
       <div class="flex items-center bg-white/80 backdrop-blur-md rounded-xl shadow px-4 py-2 border border-blue-200">
         <svg class="w-5 h-5 text-blue-400 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-        <input type="text" placeholder="Date range" class="bg-transparent outline-none text-blue-900 placeholder-blue-400 w-28" />
+        <label for="invoice-date-range" class="sr-only">Date range filter</label>
+        <input id="invoice-date-range" type="text" placeholder="Date range" class="bg-transparent outline-none text-blue-900 placeholder-blue-400 w-28" />
       </div>
     </div>
     <div class="flex flex-col gap-5">

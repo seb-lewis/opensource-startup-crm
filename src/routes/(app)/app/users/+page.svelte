@@ -309,7 +309,9 @@
 												{#if user.editingRole}
 													<form method="POST" action="?/edit_role" class="flex items-center gap-2">
 														<input type="hidden" name="user_id" value={user.id} />
+														<label for="role-select-{user.id}" class="sr-only">User Role</label>
 														<select 
+															id="role-select-{user.id}"
 															name="role" 
 															class="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-xs focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
 														>
