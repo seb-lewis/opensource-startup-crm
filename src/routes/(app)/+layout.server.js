@@ -7,3 +7,5 @@ export async function load({locals}) {
         org_name: locals.org_name || 'BottleCRM'
     };
 }
+
+export const ssr = false;
