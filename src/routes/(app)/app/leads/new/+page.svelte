@@ -581,7 +581,7 @@
                 type="tel"
                 bind:value={formData.phone}
                 oninput={handleChange}
-                on:blur={validatePhone}
+                onblur={validatePhone}
                 placeholder="+1 (555) 123-4567"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.phone || phoneError ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.phone}

@@ -1,7 +1,7 @@
 <script>
   import { fly } from 'svelte/transition';
   import { enhance } from '$app/forms';
-  import { invalidateAll } from '$app/navigation';
+  import { invalidateAll, goto } from '$app/navigation';
   import { 
     UserCircle, 
     Edit3, 
@@ -131,6 +131,9 @@
     isConverting = true;
     return async ({ update }) => {
       await update({ reset: false });
+      // Note: If conversion is successful, the server will redirect automatically
+      // This will only execute if there's an error
+      isConverting = false;
     };
   };
 
@@ -138,6 +141,8 @@
     isSubmittingComment = true;
     return async ({ update }) => {
       await update({ reset: false });
+      // Reset the loading state after update
+      isSubmittingComment = false;
     };
   };
 
@@ -155,10 +160,20 @@
     if (form.commentAdded) {
       newComment = '';
     }
+    // Handle redirect for lead conversion
+    if (form.redirectTo) {
+      setTimeout(() => {
+        goto(form.redirectTo);
+      }, 1500); // Wait 1.5 seconds to show the success message before redirecting
+    }
   } else if (form?.status === 'error') {
     toastMessage = form.message || 'An error occurred.';
     toastType = 'error';
     showToast = true;
+    isConverting = false;
+    isSubmittingComment = false;
+  } else {
+    // Reset loading states if no form response
     isConverting = false;
     isSubmittingComment = false;
   }
