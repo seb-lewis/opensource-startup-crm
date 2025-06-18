@@ -31,6 +31,9 @@
       default: return AlertCircle;
     }
   }
+  
+  // Reactive declarations for components
+  $: StatusIcon = getStatusIcon(data.caseItem.status);
 </script>
 
 <section class="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -185,7 +188,7 @@
             <div>
               <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</p>
               <div class="flex items-center gap-2">
-                <svelte:component this={getStatusIcon(data.caseItem.status)} class="w-4 h-4" />
+                <StatusIcon class="w-4 h-4" />
                 <span class="px-3 py-1 rounded-full text-sm font-medium border {getStatusColor(data.caseItem.status)}">
                   {data.caseItem.status.replace('_', ' ')}
                 </span>

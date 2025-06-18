@@ -306,7 +306,11 @@
 										<td class="px-6 py-4 whitespace-nowrap">
 											{#if user.isSelf}
 												<span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium {roleColors[user.role]}">
-													<svelte:component this={roleIcons[user.role] || User} class="h-3.5 w-3.5" />
+													{#snippet roleIcon(role)}
+														{@const RoleIcon = roleIcons[role] || User}
+														<RoleIcon class="h-3.5 w-3.5" />
+													{/snippet}
+													{@render roleIcon(user.role)}
 													{user.role}
 												</span>
 											{:else}
@@ -348,7 +352,11 @@
 														onclick={() => { users[i].editingRole = true }}
 														title="Click to edit role"
 													>
-														<svelte:component this={roleIcons[user.role] || User} class="h-3.5 w-3.5" />
+														{#snippet roleIcon(role)}
+															{@const RoleIcon = roleIcons[role] || User}
+															<RoleIcon class="h-3.5 w-3.5" />
+														{/snippet}
+														{@render roleIcon(user.role)}
 														{user.role}
 														<Edit class="h-3 w-3" />
 													</button>
@@ -366,7 +374,7 @@
 													method="POST" 
 													action="?/remove_user" 
 													class="inline"
-													on:submit={(e) => {
+													onsubmit={(e) => {
 														if (!confirm('Remove this user from the organization?')) {
 															e.preventDefault();
 														}

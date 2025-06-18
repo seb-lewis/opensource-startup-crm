@@ -106,7 +106,11 @@
                                     <div class="flex items-center p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20"
                                          in:fly="{{ y: 30, duration: 600, delay: 600 + (i * 100) }}">
                                         <div class="rounded-lg bg-white/20 p-2 mr-3">
-                                            <svelte:component this={feature.icon} class="w-5 h-5" />
+                                            {#snippet featureIcon(icon)}
+                                                {@const FeatureIcon = icon}
+                                                <FeatureIcon class="w-5 h-5" />
+                                            {/snippet}
+                                            {@render featureIcon(feature.icon)}
                                         </div>
                                         <span class="text-sm font-medium">{feature.text}</span>
                                     </div>

@@ -70,7 +70,7 @@
 
     <!-- Form Card -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-      <form on:submit={handleSubmit} class="p-6 sm:p-8">
+      <form onsubmit={handleSubmit} class="p-6 sm:p-8">
         <!-- Basic Information Section -->
         <div class="mb-8">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
