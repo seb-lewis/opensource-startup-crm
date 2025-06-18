@@ -86,10 +86,14 @@
 			]
 		},
 		{
-			href: '/app/accounts',
+			key: 'accounts',
 			label: 'Accounts',
 			icon: Building,
-			type: 'link'
+			type: 'dropdown',
+			children: [
+				{ href: '/app/accounts', label: 'All Accounts', icon: List },
+				{ href: '/app/accounts/new', label: 'New Account', icon: Plus }
+			]
 		},
 		{
 			key: 'opportunities',
