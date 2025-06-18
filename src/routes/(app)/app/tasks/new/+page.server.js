@@ -97,7 +97,7 @@ export const actions = {
                 });
             }
         } else {
-            accountId = null;
+            accountId = undefined;
         }
 
         const dueDate = dueDateStr ? new Date(dueDateStr) : null;
@@ -112,13 +112,9 @@ export const actions = {
                 description: description || null,
                 ownerId: ownerId,
                 createdById: user.id,
-                organizationId: org.id
+                organizationId: org.id,
+                ...(accountId && { accountId })
             };
-
-            // Add accountId if it exists
-            if (accountId) {
-                taskData.accountId = accountId;
-            }
 
             console.log('Creating task with data:', taskData);
 
@@ -128,14 +124,18 @@ export const actions = {
 
             console.log('Task created successfully:', task);
 
-            // Redirect back to account page if task was created from an account
+            // Redirect based on where the task was created from
             if (accountId) {
-                return { 'success': "task created successfully" };
+                // If task was created from an account page, redirect back to that account
+                throw redirect(303, `/app/accounts/${accountId}`);
+            } else {
+                // Otherwise, redirect to the tasks list
+                throw redirect(303, '/app/tasks/list');
             }
 
         } catch (e) {
             // If it's a redirect, let it pass through
-            if (e.status === 303) {
+            if (e && typeof e === 'object' && 'status' in e && e.status === 303) {
                 throw e;
             }
             

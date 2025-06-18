@@ -20,6 +20,9 @@
 	let accountId = $state(form?.accountId ?? urlAccountId ?? '');
 	let description = $state(form?.description ?? '');
 
+	// Form submission state
+	let isSubmitting = $state(false);
+
 	// Update local state if 'form' prop changes (e.g., after a failed form submission)
 	$effect(() => {
 		if (form) {
@@ -99,7 +102,17 @@
 				</div>
 			{/if}
 
-			<form method="POST" use:enhance class="p-6">
+			<form 
+				method="POST" 
+				use:enhance={() => {
+					isSubmitting = true;
+					return async ({ update }) => {
+						await update();
+						isSubmitting = false;
+					};
+				}}
+				class="p-6"
+			>
 				<!-- Hidden field for pre-selected account -->
 				{#if urlAccountId}
 					<input type="hidden" name="accountId" value={urlAccountId} />
@@ -140,7 +153,7 @@
 								<div>
 									<label
 										for="status"
-										class="mb-1 block flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
+										class="mb-1 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
 									>
 										<Clock size={14} class="mr-1 text-gray-500 dark:text-gray-400" />
 										Status
@@ -162,7 +175,7 @@
 								<div>
 									<label
 										for="priority"
-										class="mb-1 block flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
+										class="mb-1 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
 									>
 										<Flag size={14} class="mr-1 text-gray-500 dark:text-gray-400" />
 										Priority
@@ -182,7 +195,7 @@
 								<div>
 									<label
 										for="dueDate"
-										class="mb-1 block flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
+										class="mb-1 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
 									>
 										<Calendar size={14} class="mr-1 text-gray-500 dark:text-gray-400" />
 										Due Date
@@ -235,7 +248,7 @@
 							<div>
 								<label
 									for="accountId"
-									class="mb-1 block flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
+									class="mb-1 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
 								>
 									<Building size={14} class="mr-1 text-gray-500 dark:text-gray-400" />
 									Related Account
@@ -299,16 +312,26 @@
 				>
 					<button
 						type="button"
-						class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-800"
+						disabled={isSubmitting}
+						class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-800"
 						onclick={handleCancel}
 					>
 						Cancel
 					</button>
 					<button
 						type="submit"
-						class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-800"
+						disabled={isSubmitting}
+						class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-800"
 					>
-						Create Task
+						{#if isSubmitting}
+							<svg class="inline-block w-4 h-4 mr-2 animate-spin" viewBox="0 0 24 24" fill="none">
+								<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"/>
+								<path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+							</svg>
+							Creating Task...
+						{:else}
+							Create Task
+						{/if}
 					</button>
 				</div>
 			</form>
