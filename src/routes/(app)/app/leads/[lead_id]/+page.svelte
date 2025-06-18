@@ -47,6 +47,9 @@
   let toastMessage = '';
   let toastType = 'success';
 
+  // Confirmation modal state
+  let showConfirmModal = false;
+
   // Function to get the full name of a lead
   function getFullName(lead) {
     return `${lead.firstName} ${lead.lastName}`.trim();
@@ -126,6 +129,23 @@
       showToast = true;
     }
   }
+
+  // Function to show confirmation modal
+  function showConvertConfirmation() {
+    showConfirmModal = true;
+  }
+
+  // Function to hide confirmation modal
+  function hideConvertConfirmation() {
+    showConfirmModal = false;
+  }
+
+  // Function to handle confirmed conversion
+  function confirmConversion() {
+    showConfirmModal = false;
+    // Submit the form programmatically
+    document.getElementById('convertForm').requestSubmit();
+  }
   
   const enhanceConvertForm = () => {
     isConverting = true;
@@ -178,6 +198,44 @@
     isSubmittingComment = false;
   }
 </script>
+
+<!-- Confirmation Modal -->
+{#if showConfirmModal}
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50" transition:fly={{ duration: 200 }}>
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-xl max-w-md w-full p-6" transition:fly={{ y: 20, duration: 300 }}>
+      <div class="flex items-center gap-4 mb-4">
+        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center">
+          <CheckCircle class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Convert Lead</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">This action cannot be undone</p>
+        </div>
+      </div>
+      
+      <p class="text-sm text-gray-700 dark:text-gray-300 mb-6">
+        Are you sure you want to convert <strong>{getFullName(lead)}</strong> into an account and contact? 
+        This will create new records and mark the lead as converted.
+      </p>
+      
+      <div class="flex gap-3 justify-end">
+        <button 
+          onclick={hideConvertConfirmation}
+          class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+        >
+          Cancel
+        </button>
+        <button 
+          onclick={confirmConversion}
+          class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors"
+        >
+          <CheckCircle class="w-4 h-4" />
+          Yes, Convert Lead
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <!-- Toast -->
 {#if showToast}
@@ -311,21 +369,23 @@
               <!-- Action Buttons -->
               <div class="flex flex-col gap-3">
                 {#if lead.status !== 'CONVERTED'}
-                  <form method="POST" action="?/convert" use:enhance={enhanceConvertForm}>
-                    <button 
-                      type="submit" 
-                      disabled={isConverting}
-                      class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 text-white text-sm font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
-                    >
-                      {#if isConverting}
-                        <Loader2 class="w-4 h-4 animate-spin" />
-                        Converting...
-                      {:else}
-                        <CheckCircle class="w-4 h-4" />
-                        Convert Lead
-                      {/if}
-                    </button>
+                  <form id="convertForm" method="POST" action="?/convert" use:enhance={enhanceConvertForm}>
+                    <!-- Hidden form - will be submitted via JavaScript -->
                   </form>
+                  <button 
+                    type="button"
+                    onclick={showConvertConfirmation} 
+                    disabled={isConverting}
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 text-white text-sm font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
+                  >
+                    {#if isConverting}
+                      <Loader2 class="w-4 h-4 animate-spin" />
+                      Converting...
+                    {:else}
+                      <CheckCircle class="w-4 h-4" />
+                      Convert Lead
+                    {/if}
+                  </button>
                 {/if}
                 <a 
                   href="/app/leads/{lead.id}/edit"
