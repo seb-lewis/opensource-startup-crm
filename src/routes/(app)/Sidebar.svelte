@@ -32,6 +32,7 @@
 
 	let isDark = $state(false);
 	let userDropdownOpen = $state(false);
+	let dropdownRef = $state();
 
 	const closeDrawer = () => {
 		drawerHidden = true;
@@ -45,6 +46,38 @@
 	const toggleUserDropdown = () => {
 		userDropdownOpen = !userDropdownOpen;
 	};
+
+	const handleSettingsLinkClick = (event, href) => {
+		event.preventDefault();
+		event.stopPropagation();
+		
+		// Close the dropdown
+		userDropdownOpen = false;
+		
+		// Navigate to the intended URL
+		window.location.href = href;
+	};
+
+	const handleDropdownClick = (event) => {
+		// Prevent clicks inside dropdown from bubbling up
+		event.stopPropagation();
+	};
+
+	const handleClickOutside = (event) => {
+		if (userDropdownOpen && dropdownRef && !dropdownRef.contains(event.target)) {
+			userDropdownOpen = false;
+		}
+	};
+
+	// Add click outside listener
+	$effect(() => {
+		if (typeof document !== 'undefined') {
+			document.addEventListener('click', handleClickOutside);
+			return () => {
+				document.removeEventListener('click', handleClickOutside);
+			};
+		}
+	});
 
 	let mainSidebarUrl = $derived($page.url.pathname);
 	let openDropdowns = $state({});
@@ -86,10 +119,14 @@
 			]
 		},
 		{
-			href: '/app/accounts',
+			key: 'accounts',
 			label: 'Accounts',
 			icon: Building,
-			type: 'link'
+			type: 'dropdown',
+			children: [
+				{ href: '/app/accounts', label: 'All Accounts', icon: List },
+				{ href: '/app/accounts/new', label: 'New Account', icon: Plus }
+			]
 		},
 		{
 			key: 'opportunities',
@@ -205,8 +242,8 @@
 			</nav>
 		</div>
 
-		<!-- User profile section - moved to bottom -->
-		<div class="p-4 border-t border-gray-200 dark:border-gray-700">
+		<!-- settings section -->
+		<div class="p-4 border-t border-gray-200 dark:border-gray-700" bind:this={dropdownRef}>
 			<div class="flex items-center gap-3 mb-3">
 				<img class="w-10 h-10 rounded-lg object-cover" src={user.profilePhoto} alt="User avatar" />
 				<div class="flex-1 min-w-0">
@@ -238,38 +275,48 @@
 				</button>
 			</div>
 
-			<!-- User dropdown menu -->
+			<!-- settings dropdown menu -->
 			{#if userDropdownOpen}
-				<div class="mt-3 p-1 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-					<a
-						href="/app/profile"
-						class="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-white dark:text-gray-300 dark:hover:bg-gray-700 rounded transition-colors"
+				<div 
+					class="mt-3 p-1 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+					onclick={handleDropdownClick}
+					onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDropdownClick(e); }}
+					tabindex="0"
+					role="menu"
+				>
+					<button
+						type="button"
+						onclick={(e) => handleSettingsLinkClick(e, '/app/profile')}
+						class="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-white dark:text-gray-300 dark:hover:bg-gray-700 rounded transition-colors w-full text-left"
 					>
 						<User class="w-4 h-4" />
 						Profile
-					</a>
-					<a
-						href="/app/users"
-						class="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-white dark:text-gray-300 dark:hover:bg-gray-700 rounded transition-colors"
+					</button>
+					<button
+						type="button"
+						onclick={(e) => handleSettingsLinkClick(e, '/app/users')}
+						class="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-white dark:text-gray-300 dark:hover:bg-gray-700 rounded transition-colors w-full text-left"
 					>
 						<Users class="w-4 h-4" />
 						Users
-					</a>
-					<a
-						href="/org"
-						class="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-white dark:text-gray-300 dark:hover:bg-gray-700 rounded transition-colors"
+					</button>
+					<button
+						type="button"
+						onclick={(e) => handleSettingsLinkClick(e, '/org')}
+						class="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-white dark:text-gray-300 dark:hover:bg-gray-700 rounded transition-colors w-full text-left"
 					>
 						<Building class="w-4 h-4" />
 						Organizations
-					</a>
+					</button>
 					<hr class="my-1 border-gray-200 dark:border-gray-600" />
-					<a
-						href="/logout"
-						class="flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 rounded transition-colors"
+					<button
+						type="button"
+						onclick={(e) => handleSettingsLinkClick(e, '/logout')}
+						class="flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 rounded transition-colors w-full text-left"
 					>
 						<LogOut class="w-4 h-4" />
 						Sign out
-					</a>
+					</button>
 				</div>
 			{/if}
 		</div>

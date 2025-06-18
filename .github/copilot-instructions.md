@@ -17,8 +17,9 @@ BottleCRM is a modern CRM application built with:
 - **Framework**: SvelteKit 2.21.x, Svelte 5.x, Prisma
 - **Styling**: tailwind 4.1.x css
 - **Database**: postgresql
-- **Icons**: fontawesome, we are migrating to lucide icons
+- **Icons**: lucide icons
 
 ## Important Notes
-- We need to ensure access control is strictly enforced based on user roles. No record is accessible unless the user or the org has the appropriate permissions.
+- We need to ensure access control is strictly enforced based on user roles.
+- No record should be accessible unless the user or the org has the appropriate permissions.
 - When implementing forms in sveltekit A form label must be associated with a control
