@@ -2,6 +2,12 @@ import { env } from '$env/dynamic/private';
 import { redirect } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 import { fail } from '@sveltejs/kit';
+import { 
+  industries, 
+  leadSources, 
+  leadStatuses, 
+  countries 
+} from '$lib/data/index.js';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals }) {
@@ -11,51 +17,10 @@ export async function load({ locals }) {
   // Get data for dropdowns
   return {
     data: {
-      industries: [
-        ['', 'Select Industry'],
-        ['TECHNOLOGY', 'Technology'],
-        ['HEALTHCARE', 'Healthcare'],
-        ['FINANCE', 'Finance'],
-        ['EDUCATION', 'Education'],
-        ['RETAIL', 'Retail'],
-        ['MANUFACTURING', 'Manufacturing'],
-        ['ENERGY', 'Energy'],
-        ['REAL_ESTATE', 'Real Estate'],
-        ['CONSTRUCTION', 'Construction'],
-        ['TRANSPORTATION', 'Transportation'],
-        ['HOSPITALITY', 'Hospitality'],
-        ['AGRICULTURE', 'Agriculture'],
-        ['OTHER', 'Other']
-      ],
-      status: Object.entries({
-        'NEW': 'New',
-        'PENDING': 'Pending',
-        'CONTACTED': 'Contacted',
-        'QUALIFIED': 'Qualified',
-        'UNQUALIFIED': 'Unqualified'
-      }),
-      source: Object.entries({
-        'WEB': 'Website',
-        'PHONE_INQUIRY': 'Phone Inquiry',
-        'PARTNER_REFERRAL': 'Partner Referral',
-        'COLD_CALL': 'Cold Call',
-        'TRADE_SHOW': 'Trade Show',
-        'EMPLOYEE_REFERRAL': 'Employee Referral',
-        'ADVERTISEMENT': 'Advertisement',
-        'OTHER': 'Other'
-      }),
-      countries: [
-        ['', 'Select Country'],
-        ['US', 'United States'],
-        ['UK', 'United Kingdom'],
-        ['CA', 'Canada'],
-        ['AU', 'Australia'],
-        ['IN', 'India'],
-        ['DE', 'Germany'],
-        ['FR', 'France'],
-        ['JP', 'Japan'],
-        ['OTHER', 'Other']
-      ]
+      industries,
+      status: leadStatuses,
+      source: leadSources,
+      countries
     }
   };
 }
@@ -97,18 +62,18 @@ export const actions = {
       email: email || null,
       phone: formData.get('phone')?.toString() || null,
       company: formData.get('company')?.toString() || null,
-      status: formData.get('status')?.toString() || 'PENDING',
+      status: (formData.get('status')?.toString() || 'PENDING'),
       leadSource: formData.get('source')?.toString() || null,
       industry: formData.get('industry')?.toString() || null,
       description: formData.get('description')?.toString() || null,
       
       // Store opportunity amount in description since it's not in the Lead schema
       opportunityAmount: formData.get('opportunity_amount') ? 
-        parseFloat(formData.get('opportunity_amount')) : null,
+        parseFloat(formData.get('opportunity_amount')?.toString() || '0') : null,
       
       // Store probability in description since it's not in the Lead schema
       probability: formData.get('probability') ? 
-        parseFloat(formData.get('probability')) : null,
+        parseFloat(formData.get('probability')?.toString() || '0') : null,
       
       // Address fields
       street: formData.get('street')?.toString() || null,
@@ -124,7 +89,7 @@ export const actions = {
     
     try {
       // Prepare basic lead data that matches the Prisma schema
-      let leadCreateData = {
+      const leadCreateData = {
         firstName: leadData.firstName,
         lastName: leadData.lastName,
         email: leadData.email,
@@ -132,7 +97,7 @@ export const actions = {
         company: leadData.company,
         title: leadData.title,
         status: leadData.status,
-        ...(leadData.leadSource ? { leadSource: leadData.leadSource } : {}),
+        leadSource: leadData.leadSource || null,
         industry: leadData.industry,
         description: leadData.description || '',
         rating: null, // This is in the schema
@@ -153,6 +118,7 @@ export const actions = {
 
       // Create new lead in the database
       const lead = await prisma.lead.create({
+        // @ts-ignore - status is a valid LeadStatus enum value
         data: leadCreateData
       });
       
@@ -169,7 +135,7 @@ export const actions = {
     } catch (err) {
       console.error('Error creating lead:', err);
       return fail(500, { 
-        error: 'Failed to create lead: ' + err.message,
+        error: 'Failed to create lead: ' + (err instanceof Error ? err.message : 'Unknown error'),
         values: leadData // Return entered values so the form can be repopulated
       });
     }
