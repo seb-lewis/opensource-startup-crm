@@ -1,5 +1,6 @@
 import prisma from '$lib/prisma';
 import { fail, redirect } from '@sveltejs/kit';
+import { validatePhoneNumber, formatPhoneForStorage } from '$lib/utils/phone.js';
 
 export async function load({ params, locals }) {
   const org = locals.org;
@@ -47,6 +48,16 @@ export const actions = {
       return fail(400, { message: 'First and last name are required.' });
     }
 
+    // Validate phone number if provided
+    let formattedPhone = null;
+    if (phone && phone.length > 0) {
+      const phoneValidation = validatePhoneNumber(phone);
+      if (!phoneValidation.isValid) {
+        return fail(400, { message: phoneValidation.error || 'Please enter a valid phone number' });
+      }
+      formattedPhone = formatPhoneForStorage(phone);
+    }
+
     const contact = await prisma.contact.findUnique({
       where: { id: params.contactId, organizationId: org.id }
     });
@@ -61,7 +72,7 @@ export const actions = {
         firstName, 
         lastName, 
         email, 
-        phone, 
+        phone: formattedPhone, 
         title, 
         department,
         street,

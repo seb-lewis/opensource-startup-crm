@@ -1,12 +1,14 @@
 <script>
     import { enhance } from '$app/forms';
     import { User, Mail, Phone, Building, Calendar, Settings, Edit, Save, X } from '@lucide/svelte';
+    import { validatePhoneNumber, formatPhoneNumber } from '$lib/utils/phone.js';
     
     /** @type {{ data: import('./$types').PageData, form: import('./$types').ActionData }} */
     let { data, form } = $props();
     
     let isEditing = $state(false);
     let isSubmitting = $state(false);
+    let phoneError = $state('');
     
     // Form data state
     let formData = $state({
@@ -21,8 +23,24 @@
                 name: data.user.name || '',
                 phone: data.user.phone || ''
             };
+            phoneError = '';
         }
     });
+    
+    // Validate phone number on input
+    function validatePhone() {
+        if (!formData.phone.trim()) {
+            phoneError = '';
+            return;
+        }
+        
+        const validation = validatePhoneNumber(formData.phone);
+        if (!validation.isValid) {
+            phoneError = validation.error || 'Invalid phone number';
+        } else {
+            phoneError = '';
+        }
+    }
     
     function toggleEdit() {
         isEditing = !isEditing;
@@ -32,6 +50,7 @@
                 name: data.user.name || '',
                 phone: data.user.phone || ''
             };
+            phoneError = '';
         }
     }
     
@@ -207,9 +226,15 @@
                                         id="phone"
                                         name="phone"
                                         bind:value={formData.phone}
+                                        oninput={validatePhone}
                                         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                                         placeholder="Enter your phone number"
                                     />
+                                    {#if phoneError}
+                                        <p class="mt-2 text-sm text-red-600 dark:text-red-400">
+                                            {phoneError}
+                                        </p>
+                                    {/if}
                                 </div>
                             </div>
                         </div>
@@ -226,7 +251,7 @@
                                 </button>
                                 <button
                                     type="submit"
-                                    disabled={isSubmitting}
+                                    disabled={isSubmitting || phoneError}
                                     class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors disabled:opacity-50"
                                 >
                                     {#if isSubmitting}
@@ -265,7 +290,7 @@
                                     Phone Number
                                 </dt>
                                 <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-                                    {data.user.phone || 'Not provided'}
+                                    {data.user.phone ? formatPhoneNumber(data.user.phone) : 'Not provided'}
                                 </dd>
                             </div>
                             
