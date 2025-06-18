@@ -280,6 +280,9 @@
 				<div 
 					class="mt-3 p-1 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
 					onclick={handleDropdownClick}
+					onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDropdownClick(e); }}
+					tabindex="0"
+					role="menu"
 				>
 					<button
 						type="button"
