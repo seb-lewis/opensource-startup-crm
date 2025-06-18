@@ -17,18 +17,25 @@
         CheckCircle,
         XCircle,
         Clock,
-        Target
+        Target,
+        X,
+        AlertTriangle
     } from '@lucide/svelte';
     import { goto } from '$app/navigation';
+    import { enhance } from '$app/forms';
+    import { page } from '$app/stores';
 
-    /** @type {{ data: import('./$types').PageData }} */
-    let { data } = $props();
+    /** @type {{ data: import('./$types').PageData, form?: any }} */
+    let { data, form } = $props();
 
     let searchTerm = $state('');
     let selectedStage = $state('all');
     let sortField = $state('createdAt');
     let sortDirection = $state('desc');
     let showFilters = $state(false);
+    let showDeleteModal = $state(false);
+    let opportunityToDelete = $state(null);
+    let deleteLoading = $state(false);
 
     // Stage configurations
     const stageConfig = {
@@ -101,6 +108,17 @@
             sortDirection = 'asc';
         }
     }
+
+    function openDeleteModal(opportunity) {
+        opportunityToDelete = opportunity;
+        showDeleteModal = true;
+    }
+
+    function closeDeleteModal() {
+        showDeleteModal = false;
+        opportunityToDelete = null;
+        deleteLoading = false;
+    }
 </script>
 
 <svelte:head>
@@ -108,6 +126,25 @@
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Success/Error Messages -->
+    {#if form?.success}
+        <div class="fixed top-4 right-4 z-50 max-w-md">
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Success!</strong>
+                <span class="block sm:inline">{form.message || 'Opportunity deleted successfully.'}</span>
+            </div>
+        </div>
+    {/if}
+    
+    {#if form?.message && !form?.success}
+        <div class="fixed top-4 right-4 z-50 max-w-md">
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block sm:inline">{form.message}</span>
+            </div>
+        </div>
+    {/if}
+    
     <!-- Header -->
     <div class="bg-white dark:bg-gray-800 shadow">
         <div class="px-4 sm:px-6 lg:px-8">
@@ -342,7 +379,10 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {config.color}">
-                                        <svelte:component this={config.icon} class="mr-1 h-3 w-3" />
+                                        {#if config.icon}
+                                            {@const IconComponent = config.icon}
+                                            <IconComponent class="mr-1 h-3 w-3" />
+                                        {/if}
                                         {config.label}
                                     </span>
                                 </td>
@@ -386,13 +426,13 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex items-center justify-end space-x-2">
-                                        <button
-                                            type="button"
+                                        <a
+                                            href="/app/opportunities/{opportunity.id}"
                                             class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                                             title="View"
                                         >
                                             <Eye class="h-4 w-4" />
-                                        </button>
+                                        </a>
                                         <a
                                             href="/app/opportunities/{opportunity.id}/edit"
                                             class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
@@ -402,6 +442,7 @@
                                         </a>
                                         <button
                                             type="button"
+                                            onclick={() => openDeleteModal(opportunity)}
                                             class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                                             title="Delete"
                                         >
@@ -440,3 +481,94 @@
 
     
 </div>
+
+<!-- Delete Confirmation Modal -->
+{#if showDeleteModal && opportunityToDelete}
+    <div 
+        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        tabindex="-1"
+        onclick={closeDeleteModal}
+        onkeydown={(e) => e.key === 'Escape' && closeDeleteModal()}
+    >
+        <div 
+            class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800" 
+            role="button" 
+            tabindex="0" 
+            onkeydown={(e) => e.key === 'Escape' && closeDeleteModal()} 
+            onclick={(e) => e.stopPropagation()}
+        >
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
+                            <AlertTriangle class="h-6 w-6 text-red-600 dark:text-red-400" />
+                        </div>
+                        <div class="ml-4">
+                            <h3 id="modal-title" class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Delete Opportunity</h3>
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        onclick={closeDeleteModal}
+                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    >
+                        <X class="h-5 w-5" />
+                    </button>
+                </div>
+                
+                <div class="mt-2">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Are you sure you want to delete the opportunity <strong>"{opportunityToDelete?.name || 'Unknown'}"</strong>? 
+                        This action cannot be undone and will also delete all associated tasks, events, and comments.
+                    </p>
+                </div>
+
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button
+                        type="button"
+                        onclick={closeDeleteModal}
+                        disabled={deleteLoading}
+                        class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                    >
+                        Cancel
+                    </button>
+                    
+                    <form method="POST" action="?/delete" use:enhance={({ formElement, formData }) => {
+                        deleteLoading = true;
+                        
+                        return async ({ result }) => {
+                            deleteLoading = false;
+                            
+                            if (result.type === 'success') {
+                                closeDeleteModal();
+                                // Use goto with replaceState and invalidateAll for a clean refresh
+                                await goto($page.url.pathname, { 
+                                    replaceState: true, 
+                                    invalidateAll: true 
+                                });
+                            } else if (result.type === 'failure') {
+                                console.error('Delete failed:', result.data?.message);
+                                alert('Failed to delete opportunity: ' + (result.data?.message || 'Unknown error'));
+                            } else if (result.type === 'error') {
+                                console.error('Delete error:', result.error);
+                                alert('An error occurred while deleting the opportunity.');
+                            }
+                        };
+                    }}>
+                        <input type="hidden" name="opportunityId" value={opportunityToDelete?.id || ''} />
+                        <button
+                            type="submit"
+                            disabled={deleteLoading}
+                            class="px-4 py-2 bg-red-600 border border-transparent rounded-md text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {deleteLoading ? 'Deleting...' : 'Delete'}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{/if}

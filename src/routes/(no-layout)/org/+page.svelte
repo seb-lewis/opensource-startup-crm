@@ -45,7 +45,7 @@
                 {#each orgs as org}
                     <button 
                         class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all duration-200 cursor-pointer group w-full text-left"
-                        on:click={() => selectOrg(org)}
+                        onclick={() => selectOrg(org)}
                         type="button"
                         aria-label="Select {org.name} organization"
                     >

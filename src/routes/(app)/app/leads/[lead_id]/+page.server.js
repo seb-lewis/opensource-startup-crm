@@ -49,6 +49,8 @@ export const actions = {
     const org = locals.org;
 
     try {
+      console.log('Starting lead conversion for lead:', lead_id);
+      
       const lead = await prisma.lead.findUnique({
         where: { id: lead_id, organizationId: org.id },
         include: {
@@ -65,6 +67,7 @@ export const actions = {
         return { status: 'success', message: 'Lead already converted' };
       }
 
+      console.log('Creating contact...');
       const contact = await prisma.contact.create({
         data: {
           firstName: lead.firstName,
@@ -77,10 +80,12 @@ export const actions = {
           organization: { connect: { id: lead.organizationId } }
         }
       });
+      console.log('Contact created with ID:', contact.id);
 
       let accountId = null;
       let account = null;
       if (lead.company) {
+        console.log('Creating account for company:', lead.company);
         account = await prisma.account.create({
           data: {
             name: lead.company,
@@ -90,7 +95,9 @@ export const actions = {
           }
         });
         accountId = account.id;
+        console.log('Account created with ID:', accountId);
 
+        console.log('Creating account-contact relationship...');
         await prisma.accountContactRelationship.create({
           data: {
             account: { connect: { id: account.id } },
@@ -99,46 +106,48 @@ export const actions = {
             role: 'Primary Contact'
           }
         });
-      }
-
-      const opportunityData = {
-        name: `${lead.company || lead.firstName + ' ' + lead.lastName} Opportunity`,
-        stage: 'PROSPECTING',
-        amount: 0,
-        closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        contacts: { connect: { id: contact.id } },
-        owner: { connect: { id: lead.ownerId } },
-        organization: { connect: { id: lead.organizationId } }
-      };
-
-      if (!accountId) {
-        const placeholderAccount = await prisma.account.create({
+        console.log('Account-contact relationship created');
+      } else {
+        console.log('Creating placeholder account...');
+        // Create a placeholder account if no company
+        account = await prisma.account.create({
           data: {
             name: `${lead.firstName} ${lead.lastName} Account`,
             owner: { connect: { id: lead.ownerId } },
             organization: { connect: { id: lead.organizationId } }
           }
         });
+        accountId = account.id;
+        console.log('Placeholder account created with ID:', accountId);
 
-        accountId = placeholderAccount.id;
-        account = placeholderAccount;
-
+        console.log('Creating account-contact relationship...');
         await prisma.accountContactRelationship.create({
           data: {
-            account: { connect: { id: placeholderAccount.id } },
+            account: { connect: { id: account.id } },
             contact: { connect: { id: contact.id } },
             isPrimary: true,
             role: 'Primary Contact'
           }
         });
+        console.log('Account-contact relationship created');
       }
 
-      opportunityData.account = { connect: { id: accountId } };
-
+      console.log('Creating opportunity...');
       const opportunity = await prisma.opportunity.create({
-        data: opportunityData
+        data: {
+          name: `${lead.company || lead.firstName + ' ' + lead.lastName} Opportunity`,
+          stage: 'PROSPECTING',
+          amount: 0,
+          closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          contacts: { connect: { id: contact.id } },
+          owner: { connect: { id: lead.ownerId } },
+          organization: { connect: { id: lead.organizationId } },
+          account: { connect: { id: accountId } }
+        }
       });
+      console.log('Opportunity created with ID:', opportunity.id);
 
+      console.log('Updating lead status...');
       await prisma.lead.update({
         where: { id: lead_id },
         data: {
@@ -151,17 +160,35 @@ export const actions = {
           contact: { connect: { id: contact.id } }
         }
       });
+      console.log('Lead status updated successfully');
 
+      console.log('Lead conversion completed, account created:', accountId);
+      
       return {
         status: 'success',
         message: 'Lead successfully converted',
+        redirectTo: `/app/accounts/${accountId}`,
         contact,
         account,
         opportunity
       };
     } catch (err) {
-      console.error('Error converting lead:', err.message);
-      return fail(500, { status: 'error', message: 'Failed to convert lead' });
+      console.error('Error converting lead:', err);
+      
+      // Extract meaningful error message
+      let errorMessage = 'Failed to convert lead';
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      } else if (err && typeof err === 'object' && 'message' in err && typeof err.message === 'string') {
+        errorMessage = err.message;
+      }
+      
+      return fail(500, { 
+        status: 'error', 
+        message: `Error converting lead: ${errorMessage}` 
+      });
     }
   },
 
@@ -206,10 +233,11 @@ export const actions = {
       return {
         status: 'success',
         message: 'Comment added successfully',
+        commentAdded: true,
         comments: updatedLead?.comments || []
       };
     } catch (err) {
-      console.error('Error adding comment:', err.message);
+      console.error('Error adding comment:', err instanceof Error ? err.message : String(err));
       if (err instanceof z.ZodError) {
         return fail(400, { status: 'error', message: err.errors[0].message });
       }

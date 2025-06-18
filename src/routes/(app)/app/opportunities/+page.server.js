@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { fail } from '@sveltejs/kit';
 
 const prisma = new PrismaClient();
 
@@ -118,5 +119,45 @@ export async function load({ locals }) {
                 pipeline: 0
             }
         };
+    }
+};
+
+/** @type {import('./$types').Actions} */
+export const actions = {
+    delete: async ({ request, locals }) => {
+        try {
+            const formData = await request.formData();
+            const opportunityId = formData.get('opportunityId')?.toString();
+            const userId = locals.user?.id;
+            const organizationId = locals.org?.id;
+
+            if (!opportunityId || !userId || !organizationId) {
+                return fail(400, { message: 'Missing required data' });
+            }
+
+            // Check if the opportunity exists and belongs to the user's organization
+            const opportunity = await prisma.opportunity.findFirst({
+                where: {
+                    id: opportunityId,
+                    organizationId: organizationId
+                }
+            });
+
+            if (!opportunity) {
+                return fail(404, { message: 'Opportunity not found' });
+            }
+
+            // Delete the opportunity
+            await prisma.opportunity.delete({
+                where: {
+                    id: opportunityId
+                }
+            });
+
+            return { success: true, message: 'Opportunity deleted successfully' };
+        } catch (error) {
+            console.error('Error deleting opportunity:', error);
+            return fail(500, { message: 'Failed to delete opportunity' });
+        }
     }
 };

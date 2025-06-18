@@ -118,17 +118,20 @@
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
-                      <svelte:component 
-                        this={getStatusIcon(task.status)} 
-                        size={16} 
-                        class={
-                          task.status === 'Completed' ? 'text-green-500 dark:text-green-400' :
-                          task.status === 'In Progress' ? 'text-yellow-500 dark:text-yellow-400' :
-                          task.status === 'Not Started' ? 'text-gray-400 dark:text-gray-500' :
-                          task.status === 'Waiting on someone else' ? 'text-purple-500 dark:text-purple-400' :
-                          task.status === 'Deferred' ? 'text-pink-500 dark:text-pink-400' : 'text-gray-400 dark:text-gray-500'
-                        }
-                      />
+                      {#snippet statusIcon(status)}
+                        {@const StatusIcon = getStatusIcon(status)}
+                        <StatusIcon 
+                          size={16} 
+                          class={
+                            status === 'Completed' ? 'text-green-500 dark:text-green-400' :
+                            status === 'In Progress' ? 'text-yellow-500 dark:text-yellow-400' :
+                            status === 'Not Started' ? 'text-gray-400 dark:text-gray-500' :
+                            status === 'Waiting on someone else' ? 'text-purple-500 dark:text-purple-400' :
+                            status === 'Deferred' ? 'text-pink-500 dark:text-pink-400' : 'text-gray-400 dark:text-gray-500'
+                          }
+                        />
+                      {/snippet}
+                      {@render statusIcon(task.status)}
                       <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                         {task.status === 'Completed' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : ''}
                         {task.status === 'In Progress' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' : ''}
@@ -142,15 +145,18 @@
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
-                      <svelte:component 
-                        this={getPriorityIcon(task.priority)} 
-                        size={16} 
-                        class={
-                          task.priority === 'High' ? 'text-red-500 dark:text-red-400' :
-                          task.priority === 'Normal' ? 'text-blue-500 dark:text-blue-400' :
-                          task.priority === 'Low' ? 'text-gray-400 dark:text-gray-500' : 'text-gray-400 dark:text-gray-500'
-                        }
-                      />
+                      {#snippet priorityIcon(priority)}
+                        {@const PriorityIcon = getPriorityIcon(priority)}
+                        <PriorityIcon 
+                          size={16} 
+                          class={
+                            priority === 'High' ? 'text-red-500 dark:text-red-400' :
+                            priority === 'Normal' ? 'text-blue-500 dark:text-blue-400' :
+                            priority === 'Low' ? 'text-gray-400 dark:text-gray-500' : 'text-gray-400 dark:text-gray-500'
+                          }
+                        />
+                      {/snippet}
+                      {@render priorityIcon(task.priority)}
                       <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                         {task.priority === 'High' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' : ''}
                         {task.priority === 'Normal' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' : ''}
@@ -235,17 +241,20 @@
               
               <div class="flex flex-wrap gap-2 mb-3">
                 <div class="flex items-center gap-1">
-                  <svelte:component 
-                    this={getStatusIcon(task.status)} 
-                    size={14} 
-                    class={
-                      task.status === 'Completed' ? 'text-green-500 dark:text-green-400' :
-                      task.status === 'In Progress' ? 'text-yellow-500 dark:text-yellow-400' :
-                      task.status === 'Not Started' ? 'text-gray-400 dark:text-gray-500' :
-                      task.status === 'Waiting on someone else' ? 'text-purple-500 dark:text-purple-400' :
-                      task.status === 'Deferred' ? 'text-pink-500 dark:text-pink-400' : 'text-gray-400 dark:text-gray-500'
-                    }
-                  />
+                  {#snippet statusIconCard(status)}
+                    {@const StatusIcon = getStatusIcon(status)}
+                    <StatusIcon 
+                      size={14} 
+                      class={
+                        status === 'Completed' ? 'text-green-500 dark:text-green-400' :
+                        status === 'In Progress' ? 'text-yellow-500 dark:text-yellow-400' :
+                        status === 'Not Started' ? 'text-gray-400 dark:text-gray-500' :
+                        status === 'Waiting on someone else' ? 'text-purple-500 dark:text-purple-400' :
+                        status === 'Deferred' ? 'text-pink-500 dark:text-pink-400' : 'text-gray-400 dark:text-gray-500'
+                      }
+                    />
+                  {/snippet}
+                  {@render statusIconCard(task.status)}
                   <span class="text-xs px-2 py-1 rounded-full font-medium
                     {task.status === 'Completed' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : ''}
                     {task.status === 'In Progress' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300' : ''}
@@ -258,15 +267,18 @@
                 </div>
                 
                 <div class="flex items-center gap-1">
-                  <svelte:component 
-                    this={getPriorityIcon(task.priority)} 
-                    size={14} 
-                    class={
-                      task.priority === 'High' ? 'text-red-500 dark:text-red-400' :
-                      task.priority === 'Normal' ? 'text-blue-500 dark:text-blue-400' :
-                      task.priority === 'Low' ? 'text-gray-400 dark:text-gray-500' : 'text-gray-400 dark:text-gray-500'
-                    }
-                  />
+                  {#snippet priorityIconCard(priority)}
+                    {@const PriorityIcon = getPriorityIcon(priority)}
+                    <PriorityIcon 
+                      size={14} 
+                      class={
+                        priority === 'High' ? 'text-red-500 dark:text-red-400' :
+                        priority === 'Normal' ? 'text-blue-500 dark:text-blue-400' :
+                        priority === 'Low' ? 'text-gray-400 dark:text-gray-500' : 'text-gray-400 dark:text-gray-500'
+                      }
+                    />
+                  {/snippet}
+                  {@render priorityIconCard(task.priority)}
                   <span class="text-xs px-2 py-1 rounded-full font-medium
                     {task.priority === 'High' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' : ''}
                     {task.priority === 'Normal' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : ''}

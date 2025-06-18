@@ -112,7 +112,7 @@
 						<button
 							type="button"
 							class="rounded-lg p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300"
-							on:click={startEdit}
+							onclick={startEdit}
 							aria-label="Edit organization"
 						>
 							<Edit class="h-5 w-5" />
@@ -128,66 +128,67 @@
 					<form method="POST" action="?/update" class="mt-6 space-y-6">
 						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 							<div>
-								<label for="org-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-									Organization Name
+								<label for="org-name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+									Organization Name <span class="text-red-500">*</span>
 								</label>
-								<div class="mt-1 relative">
+								<div class="relative">
 									<input
 										id="org-name"
 										name="name"
 										type="text"
 										bind:value={formOrg.name}
 										required
-										class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white pl-10 shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm"
+										class="block w-full rounded-xl border-0 bg-white dark:bg-gray-700 py-3 pl-11 pr-4 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-600 dark:focus:ring-blue-500 hover:ring-gray-400 dark:hover:ring-gray-500 transition-all duration-200 sm:text-sm sm:leading-6"
+										placeholder="Enter organization name"
 									/>
-									<Building2 class="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
+									<Building2 class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
 								</div>
 							</div>
 
 							<div>
-								<label for="org-domain" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label for="org-domain" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
 									Domain
 								</label>
-								<div class="mt-1 relative">
+								<div class="relative">
 									<input
 										id="org-domain"
 										name="domain"
 										type="text"
 										bind:value={formOrg.domain}
 										placeholder="yourcompany.com"
-										class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white pl-10 shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm placeholder-gray-400 dark:placeholder-gray-500"
+										class="block w-full rounded-xl border-0 bg-white dark:bg-gray-700 py-3 pl-11 pr-4 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-600 dark:focus:ring-blue-500 hover:ring-gray-400 dark:hover:ring-gray-500 transition-all duration-200 sm:text-sm sm:leading-6"
 									/>
-									<Globe class="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
+									<Globe class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
 								</div>
 							</div>
 						</div>
 
 						<div>
-							<label for="org-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+							<label for="org-description" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
 								Description
 							</label>
 							<textarea
 								id="org-description"
 								name="description"
-								rows="3"
+								rows="4"
 								bind:value={formOrg.description}
-								class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 sm:text-sm placeholder-gray-400 dark:placeholder-gray-500"
-								placeholder="Describe your organization"
+								class="block w-full rounded-xl border-0 bg-white dark:bg-gray-700 py-3 px-4 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-600 dark:focus:ring-blue-500 hover:ring-gray-400 dark:hover:ring-gray-500 transition-all duration-200 sm:text-sm sm:leading-6 resize-none"
+								placeholder="Describe your organization..."
 							></textarea>
 						</div>
 
-						<div class="flex justify-end gap-3">
+						<div class="flex justify-end gap-3 pt-2">
 							<button
 								type="button"
-								class="inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600"
-								on:click={cancelEdit}
+								class="inline-flex items-center gap-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-6 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200"
+								onclick={cancelEdit}
 							>
 								<X class="h-4 w-4" />
 								Cancel
 							</button>
 							<button 
 								type="submit" 
-								class="inline-flex items-center gap-2 rounded-lg bg-blue-600 dark:bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 dark:hover:bg-blue-700"
+								class="inline-flex items-center gap-2 rounded-xl bg-blue-600 dark:bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 dark:hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-500 transition-all duration-200"
 							>
 								<Check class="h-4 w-4" />
 								Save Changes
@@ -211,30 +212,33 @@
 				</div>
 
 				<!-- Add User Form -->
-				<div class="mt-6 rounded-lg bg-gray-50 dark:bg-gray-700/50 p-4">
-					<h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Add New Member</h4>
-					<form method="POST" action="?/add_user" class="flex flex-col gap-3 sm:flex-row sm:items-end">
+				<div class="mt-6 rounded-xl bg-gray-50 dark:bg-gray-700/50 p-6 border border-gray-100 dark:border-gray-600/50">
+					<h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+						<Plus class="h-4 w-4" />
+						Add New Member
+					</h4>
+					<form method="POST" action="?/add_user" class="flex flex-col gap-4 sm:flex-row sm:items-end">
 						<div class="flex-1">
-							<label for="add-user-email" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-								Email Address
+							<label for="add-user-email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+								Email Address <span class="text-red-500">*</span>
 							</label>
 							<input 
 								id="add-user-email" 
 								name="email" 
 								type="email" 
 								required 
-								class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 placeholder-gray-400 dark:placeholder-gray-500" 
+								class="block w-full rounded-xl border-0 bg-white dark:bg-gray-800 py-3 px-4 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-blue-600 dark:focus:ring-blue-500 hover:ring-gray-400 dark:hover:ring-gray-500 transition-all duration-200 sm:text-sm sm:leading-6" 
 								placeholder="user@example.com" 
 							/>
 						</div>
-						<div class="sm:w-32">
-							<label for="add-user-role" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+						<div class="sm:w-40">
+							<label for="add-user-role" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
 								Role
 							</label>
 							<select 
 								id="add-user-role" 
 								name="role" 
-								class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
+								class="block w-full rounded-xl border-0 bg-white dark:bg-gray-800 py-3 px-4 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-blue-600 dark:focus:ring-blue-500 hover:ring-gray-400 dark:hover:ring-gray-500 transition-all duration-200 sm:text-sm sm:leading-6"
 							>
 								<option value="USER">User</option>
 								<option value="ADMIN">Admin</option>
@@ -242,7 +246,7 @@
 						</div>
 						<button 
 							type="submit" 
-							class="inline-flex items-center gap-2 rounded-lg bg-blue-600 dark:bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 dark:hover:bg-blue-700"
+							class="inline-flex items-center gap-2 rounded-xl bg-blue-600 dark:bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 dark:hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-500 transition-all duration-200"
 						>
 							<Plus class="h-4 w-4" />
 							Add Member
@@ -251,7 +255,7 @@
 				</div>
 
 				<!-- Users Table -->
-				<div class="mt-6 overflow-hidden">
+				<div class="mt-8 overflow-hidden">
 					<div class="overflow-x-auto">
 						<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 							<thead class="bg-gray-50 dark:bg-gray-700/50">
@@ -302,7 +306,11 @@
 										<td class="px-6 py-4 whitespace-nowrap">
 											{#if user.isSelf}
 												<span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium {roleColors[user.role]}">
-													<svelte:component this={roleIcons[user.role] || User} class="h-3.5 w-3.5" />
+													{#snippet roleIcon(role)}
+														{@const RoleIcon = roleIcons[role] || User}
+														<RoleIcon class="h-3.5 w-3.5" />
+													{/snippet}
+													{@render roleIcon(user.role)}
 													{user.role}
 												</span>
 											{:else}
@@ -313,7 +321,7 @@
 														<select 
 															id="role-select-{user.id}"
 															name="role" 
-															class="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-xs focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
+															class="rounded-lg border-0 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-blue-600 dark:focus:ring-blue-500 hover:ring-gray-400 dark:hover:ring-gray-500 transition-all duration-200 text-xs"
 														>
 															<option value="USER" selected={user.role === 'USER'}>User</option>
 															<option value="ADMIN" selected={user.role === 'ADMIN'}>Admin</option>
@@ -323,15 +331,15 @@
 														</select>
 														<button 
 															type="submit" 
-															class="rounded-lg bg-green-600 dark:bg-green-600 p-1.5 text-white hover:bg-green-700 dark:hover:bg-green-700"
+															class="rounded-lg bg-green-600 dark:bg-green-600 p-2 text-white hover:bg-green-700 dark:hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 dark:focus-visible:outline-green-500 transition-all duration-200 shadow-sm"
 															title="Save"
 														>
 															<Check class="h-3.5 w-3.5" />
 														</button>
 														<button 
 															type="button" 
-															class="rounded-lg bg-gray-600 dark:bg-gray-600 p-1.5 text-white hover:bg-gray-700 dark:hover:bg-gray-700" 
-															on:click={() => { users[i].editingRole = false }}
+															class="rounded-lg bg-gray-600 dark:bg-gray-600 p-2 text-white hover:bg-gray-700 dark:hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 dark:focus-visible:outline-gray-500 transition-all duration-200 shadow-sm" 
+															onclick={() => { users[i].editingRole = false }}
 															title="Cancel"
 														>
 															<X class="h-3.5 w-3.5" />
@@ -340,11 +348,15 @@
 												{:else}
 													<button
 														type="button"
-														class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors {roleColors[user.role]} hover:bg-opacity-80 dark:hover:bg-opacity-80"
-														on:click={() => { users[i].editingRole = true }}
+														class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all duration-200 {roleColors[user.role]} hover:bg-opacity-80 dark:hover:bg-opacity-80 hover:shadow-sm"
+														onclick={() => { users[i].editingRole = true }}
 														title="Click to edit role"
 													>
-														<svelte:component this={roleIcons[user.role] || User} class="h-3.5 w-3.5" />
+														{#snippet roleIcon(role)}
+															{@const RoleIcon = roleIcons[role] || User}
+															<RoleIcon class="h-3.5 w-3.5" />
+														{/snippet}
+														{@render roleIcon(user.role)}
 														{user.role}
 														<Edit class="h-3 w-3" />
 													</button>
@@ -362,7 +374,7 @@
 													method="POST" 
 													action="?/remove_user" 
 													class="inline"
-													on:submit={(e) => {
+													onsubmit={(e) => {
 														if (!confirm('Remove this user from the organization?')) {
 															e.preventDefault();
 														}

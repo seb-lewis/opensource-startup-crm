@@ -164,7 +164,7 @@
           <p class="text-sm font-medium {toastType === 'success' ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'}">{toastMessage}</p>
         </div>
         <button 
-          on:click={() => showToast = false}
+          onclick={() => showToast = false}
           class="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 {toastType === 'success' ? 'text-green-500 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800/30' : 'text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-800/30'}">
           <X class="w-4 h-4" />
         </button>
@@ -241,7 +241,7 @@
                 name="name"
                 type="text"
                 bind:value={formData.name}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="Enter account name"
                 required
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.name ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
@@ -259,7 +259,7 @@
                 id="type" 
                 name="type" 
                 bind:value={formData.type} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 {#each data.data.accountTypes as [value, label]}
                   <option value={value}>{label}</option>
@@ -276,7 +276,7 @@
                 id="industry" 
                 name="industry" 
                 bind:value={formData.industry} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 {#each data.data.industries as [value, label]}
                   <option value={value}>{label}</option>
@@ -293,7 +293,7 @@
                 id="rating" 
                 name="rating" 
                 bind:value={formData.rating} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 {#each data.data.ratings as [value, label]}
                   <option value={value}>{label}</option>
@@ -310,7 +310,7 @@
                 id="accountOwnership" 
                 name="accountOwnership" 
                 bind:value={formData.accountOwnership} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 {#each data.data.accountOwnership as [value, label]}
                   <option value={value}>{label}</option>
@@ -342,7 +342,7 @@
                 name="website"
                 type="url"
                 bind:value={formData.website}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="https://company.com"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.website ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.website}
@@ -361,7 +361,7 @@
                 name="phone"
                 type="tel"
                 bind:value={formData.phone}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="+1 (555) 123-4567"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.phone ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.phone}
@@ -392,7 +392,7 @@
                 name="street"
                 type="text"
                 bind:value={formData.street}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="Street address"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -404,7 +404,7 @@
                 name="city"
                 type="text"
                 bind:value={formData.city}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="City"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -416,7 +416,7 @@
                 name="state"
                 type="text"
                 bind:value={formData.state}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="State"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -428,7 +428,7 @@
                 name="postalCode"
                 type="text"
                 bind:value={formData.postalCode}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="Postal code"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -439,7 +439,7 @@
                 id="country" 
                 name="country" 
                 bind:value={formData.country} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 {#each data.data.countries as [value, label]}
                   <option value={value}>{label}</option>
@@ -472,7 +472,7 @@
                 type="number"
                 min="0"
                 bind:value={formData.numberOfEmployees}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="100"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.numberOfEmployees ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.numberOfEmployees}
@@ -493,7 +493,7 @@
                 min="0"
                 step="0.01"
                 bind:value={formData.annualRevenue}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="1000000"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.annualRevenue ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.annualRevenue}
@@ -512,7 +512,7 @@
                 name="tickerSymbol"
                 type="text"
                 bind:value={formData.tickerSymbol}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="AAPL"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -527,7 +527,7 @@
                 name="sicCode"
                 type="text"
                 bind:value={formData.sicCode}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="7372"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -550,7 +550,7 @@
               id="description"
               name="description"
               bind:value={formData.description}
-              on:input={handleChange}
+              oninput={handleChange}
               placeholder="Additional notes about this account..."
               rows="4"
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors resize-vertical"></textarea>
@@ -564,7 +564,7 @@
           <div class="flex justify-end gap-4">
             <button
               type="button"
-              on:click={() => goto('/app/accounts')}
+              onclick={() => goto('/app/accounts')}
               disabled={isSubmitting}
               class="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
               <X class="w-4 h-4" />

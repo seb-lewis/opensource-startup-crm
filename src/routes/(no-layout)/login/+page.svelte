@@ -106,7 +106,11 @@
                                     <div class="flex items-center p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20"
                                          in:fly="{{ y: 30, duration: 600, delay: 600 + (i * 100) }}">
                                         <div class="rounded-lg bg-white/20 p-2 mr-3">
-                                            <svelte:component this={feature.icon} class="w-5 h-5" />
+                                            {#snippet featureIcon(icon)}
+                                                {@const FeatureIcon = icon}
+                                                <FeatureIcon class="w-5 h-5" />
+                                            {/snippet}
+                                            {@render featureIcon(feature.icon)}
                                         </div>
                                         <span class="text-sm font-medium">{feature.text}</span>
                                     </div>
@@ -187,7 +191,7 @@
                                     <!-- Google Sign In Button -->
                                     <div in:fade="{{ duration: 600, delay: 600 }}">
                                         <a href="{data['google_url']}"
-                                           on:click={handleGoogleLogin}
+                                           onclick={handleGoogleLogin}
                                            class="group w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-800 font-semibold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-200 relative overflow-hidden">
                                             
                                             <!-- Button Background Effect -->

@@ -212,10 +212,13 @@
                   >
                     <div class="flex items-start justify-between mb-2">
                       <h4 class="font-medium text-gray-900 dark:text-white overflow-hidden text-ellipsis" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{task.title}</h4>
-                      <svelte:component 
-                        this={getStatusIcon(task.status)} 
-                        class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 ml-2"
-                      />
+                      {#snippet statusIcon(status)}
+                        {@const StatusIcon = getStatusIcon(status)}
+                        <StatusIcon 
+                          class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 ml-2"
+                        />
+                      {/snippet}
+                      {@render statusIcon(task.status)}
                     </div>
                     
                     {#if task.description}
@@ -231,7 +234,11 @@
                                {task.priority === 'High' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' : 
                                  task.priority === 'Medium' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' : 
                                  'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300'}">
-                          <svelte:component this={getPriorityIcon(task.priority)} class="w-3 h-3" />
+                          {#snippet priorityIcon(priority)}
+                            {@const PriorityIcon = getPriorityIcon(priority)}
+                            <PriorityIcon class="w-3 h-3" />
+                          {/snippet}
+                          {@render priorityIcon(task.priority)}
                           {task.priority}
                         </span>
                       </div>

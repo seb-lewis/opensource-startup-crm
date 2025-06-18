@@ -22,7 +22,6 @@ model User {
   updatedAt         DateTime            @updatedAt
   profilePhoto      String?
   phone             String?
-  department        String?
   isActive          Boolean             @default(true)
   lastLogin         DateTime?
   accounts          Account[]

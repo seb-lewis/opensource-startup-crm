@@ -214,7 +214,7 @@
       <div class="max-w-4xl mx-auto space-y-4">
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('general-0')}
+            onclick={() => toggleFaq('general-0')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'general-0'}
           >
@@ -235,7 +235,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('general-1')}
+            onclick={() => toggleFaq('general-1')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'general-1'}
           >
@@ -256,7 +256,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('general-2')}
+            onclick={() => toggleFaq('general-2')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'general-2'}
           >
@@ -277,7 +277,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('general-3')}
+            onclick={() => toggleFaq('general-3')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'general-3'}
           >
@@ -298,7 +298,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('general-4')}
+            onclick={() => toggleFaq('general-4')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'general-4'}
           >
@@ -332,7 +332,7 @@
       <div class="max-w-4xl mx-auto space-y-4">
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('pricing-0')}
+            onclick={() => toggleFaq('pricing-0')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'pricing-0'}
           >
@@ -353,7 +353,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('pricing-1')}
+            onclick={() => toggleFaq('pricing-1')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'pricing-1'}
           >
@@ -374,7 +374,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('pricing-2')}
+            onclick={() => toggleFaq('pricing-2')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'pricing-2'}
           >
@@ -395,7 +395,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('pricing-3')}
+            onclick={() => toggleFaq('pricing-3')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'pricing-3'}
           >
@@ -416,7 +416,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('pricing-4')}
+            onclick={() => toggleFaq('pricing-4')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'pricing-4'}
           >
@@ -437,7 +437,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('pricing-5')}
+            onclick={() => toggleFaq('pricing-5')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'pricing-5'}
           >
@@ -471,7 +471,7 @@
       <div class="max-w-4xl mx-auto space-y-4">
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('technical-0')}
+            onclick={() => toggleFaq('technical-0')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'technical-0'}
           >
@@ -492,7 +492,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('technical-1')}
+            onclick={() => toggleFaq('technical-1')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'technical-1'}
           >
@@ -513,7 +513,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('technical-2')}
+            onclick={() => toggleFaq('technical-2')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'technical-2'}
           >
@@ -534,7 +534,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('technical-3')}
+            onclick={() => toggleFaq('technical-3')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'technical-3'}
           >
@@ -555,7 +555,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('technical-4')}
+            onclick={() => toggleFaq('technical-4')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'technical-4'}
           >
@@ -576,7 +576,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('technical-5')}
+            onclick={() => toggleFaq('technical-5')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'technical-5'}
           >
@@ -597,7 +597,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('technical-6')}
+            onclick={() => toggleFaq('technical-6')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'technical-6'}
           >
@@ -631,7 +631,7 @@
       <div class="max-w-4xl mx-auto space-y-4">
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('support-0')}
+            onclick={() => toggleFaq('support-0')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'support-0'}
           >
@@ -652,7 +652,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('support-1')}
+            onclick={() => toggleFaq('support-1')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'support-1'}
           >
@@ -673,7 +673,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('support-2')}
+            onclick={() => toggleFaq('support-2')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'support-2'}
           >
@@ -694,7 +694,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('support-3')}
+            onclick={() => toggleFaq('support-3')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'support-3'}
           >
@@ -715,7 +715,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('support-4')}
+            onclick={() => toggleFaq('support-4')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'support-4'}
           >
@@ -736,7 +736,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('support-5')}
+            onclick={() => toggleFaq('support-5')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'support-5'}
           >
@@ -770,7 +770,7 @@
       <div class="max-w-4xl mx-auto space-y-4">
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('business-0')}
+            onclick={() => toggleFaq('business-0')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'business-0'}
           >
@@ -791,7 +791,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('business-1')}
+            onclick={() => toggleFaq('business-1')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'business-1'}
           >
@@ -812,7 +812,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('business-2')}
+            onclick={() => toggleFaq('business-2')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'business-2'}
           >
@@ -833,7 +833,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('business-3')}
+            onclick={() => toggleFaq('business-3')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'business-3'}
           >
@@ -854,7 +854,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('business-4')}
+            onclick={() => toggleFaq('business-4')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'business-4'}
           >
@@ -875,7 +875,7 @@
 
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <button 
-            on:click={() => toggleFaq('business-5')}
+            onclick={() => toggleFaq('business-5')}
             class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 hover:bg-gray-50 transition-colors duration-200"
             aria-expanded={activeFaq === 'business-5'}
           >
