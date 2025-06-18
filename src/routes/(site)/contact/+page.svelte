@@ -195,7 +195,7 @@
           </ul>
           
           <button 
-            on:click={() => formData.serviceType = 'free-support'}
+            onclick={() => formData.serviceType = 'free-support'}
             class="w-full py-2 px-4 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium transition-colors duration-200">
             Select This Service
           </button>
@@ -240,7 +240,7 @@
           </ul>
           
           <button 
-            on:click={() => formData.serviceType = 'professional-setup'}
+            onclick={() => formData.serviceType = 'professional-setup'}
             class="w-full py-2 px-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-medium transition-colors duration-200">
             Select This Service
           </button>
@@ -277,7 +277,7 @@
           </ul>
           
           <button 
-            on:click={() => formData.serviceType = 'enterprise-setup'}
+            onclick={() => formData.serviceType = 'enterprise-setup'}
             class="w-full py-2 px-4 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium transition-colors duration-200">
             Select This Service
           </button>
@@ -314,7 +314,7 @@
           </ul>
           
           <button 
-            on:click={() => formData.serviceType = 'custom-development'}
+            onclick={() => formData.serviceType = 'custom-development'}
             class="w-full py-2 px-4 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium transition-colors duration-200">
             Select This Service
           </button>
@@ -351,7 +351,7 @@
           </ul>
           
           <button 
-            on:click={() => formData.serviceType = 'hosting-management'}
+            onclick={() => formData.serviceType = 'hosting-management'}
             class="w-full py-2 px-4 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium transition-colors duration-200">
             Select This Service
           </button>
@@ -388,7 +388,7 @@
           </ul>
           
           <button 
-            on:click={() => formData.serviceType = 'training-consultation'}
+            onclick={() => formData.serviceType = 'training-consultation'}
             class="w-full py-2 px-4 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium transition-colors duration-200">
             Select This Service
           </button>
@@ -678,7 +678,7 @@
         <Download class="w-6 h-6 mr-3" />
         Try BottleCRM Free
       </a>
-      <button on:click={() => document.querySelector('form').scrollIntoView({behavior: 'smooth'})} class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold rounded-xl text-white border-2 border-white hover:bg-white/10 transition-all duration-200">
+      <button onclick={() => document.querySelector('form').scrollIntoView({behavior: 'smooth'})} class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold rounded-xl text-white border-2 border-white hover:bg-white/10 transition-all duration-200">
         <Send class="w-6 h-6 mr-3" />
         Get Professional Help
       </button>

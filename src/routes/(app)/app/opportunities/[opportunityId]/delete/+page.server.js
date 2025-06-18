@@ -1,4 +1,4 @@
-import { error, redirect } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import { fail } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 
@@ -71,12 +71,9 @@ export const actions = {
                 }
             });
 
-            // Redirect to opportunities list
-            throw redirect(303, '/app/opportunities');
+            // Return success response - let client handle redirect
+            return { success: true, message: 'Opportunity deleted successfully' };
         } catch (err) {
-            if (err instanceof Response && err.status === 303) {
-                throw err; // Re-throw redirect
-            }
             console.error('Error deleting opportunity:', err);
             return fail(500, { message: 'Failed to delete opportunity' });
         }

@@ -90,7 +90,7 @@
             id="status" 
             class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
             bind:value={statusFilter} 
-            on:change={onFilterChange}
+            onchange={onFilterChange}
           >
             <option value="">All Statuses</option>
             {#each statusOptions as s}
@@ -105,7 +105,7 @@
             id="assigned" 
             class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
             bind:value={assignedFilter} 
-            on:change={onFilterChange}
+            onchange={onFilterChange}
           >
             <option value="">All Users</option>
             {#each assignedOptions as a}
@@ -120,7 +120,7 @@
             id="account" 
             class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
             bind:value={accountFilter} 
-            on:change={onFilterChange}
+            onchange={onFilterChange}
           >
             <option value="">All Accounts</option>
             {#each accountOptions as acc}
@@ -133,7 +133,7 @@
           <div class="flex items-end">
             <button 
               class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors duration-200"
-              on:click={clearFilters}
+              onclick={clearFilters}
             >
               <X class="w-4 h-4" />
               Clear
@@ -278,7 +278,7 @@
           {#if hasActiveFilters}
             <button 
               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors duration-200"
-              on:click={clearFilters}
+              onclick={clearFilters}
             >
               <X class="w-4 h-4" />
               Clear Filters
