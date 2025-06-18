@@ -1,5 +1,6 @@
 import prisma from '$lib/prisma';
 import { fail, redirect } from '@sveltejs/kit';
+import { validatePhoneNumber, formatPhoneForStorage } from '$lib/utils/phone.js';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals }) {
@@ -68,14 +69,16 @@ export const actions = {
         }
 
         // Validate phone if provided
+        let formattedPhone = null;
         if (phone && phone.trim().length > 0) {
-            const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-            if (!phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''))) {
+            const phoneValidation = validatePhoneNumber(phone.trim());
+            if (!phoneValidation.isValid) {
                 return fail(400, {
-                    error: 'Please enter a valid phone number',
+                    error: phoneValidation.error || 'Please enter a valid phone number',
                     data: { name, phone }
                 });
             }
+            formattedPhone = formatPhoneForStorage(phone.trim());
         }
 
         try {
@@ -85,7 +88,7 @@ export const actions = {
                 },
                 data: {
                     name: name.trim(),
-                    phone: phone?.trim() || null,
+                    phone: formattedPhone,
                     updatedAt: new Date()
                 }
             });

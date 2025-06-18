@@ -2,6 +2,7 @@ import { env } from '$env/dynamic/private';
 import { redirect } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 import { fail } from '@sveltejs/kit';
+import { validatePhoneNumber, formatPhoneForStorage } from '$lib/utils/phone.js';
 import { 
   industries, 
   accountTypes, 
@@ -44,13 +45,24 @@ export const actions = {
       return fail(400, { error: 'Account name is required' });
     }
 
+    // Validate phone number if provided
+    let formattedPhone = null;
+    const phone = formData.get('phone')?.toString();
+    if (phone && phone.trim().length > 0) {
+      const phoneValidation = validatePhoneNumber(phone.trim());
+      if (!phoneValidation.isValid) {
+        return fail(400, { error: phoneValidation.error || 'Please enter a valid phone number' });
+      }
+      formattedPhone = formatPhoneForStorage(phone.trim());
+    }
+
     // Extract all form fields
     const accountData = {
       name,
       type: formData.get('type')?.toString() || null,
       industry: formData.get('industry')?.toString() || null,
       website: formData.get('website')?.toString() || null,
-      phone: formData.get('phone')?.toString() || null,
+      phone: formattedPhone,
       street: formData.get('street')?.toString() || null,
       city: formData.get('city')?.toString() || null,
       state: formData.get('state')?.toString() || null,

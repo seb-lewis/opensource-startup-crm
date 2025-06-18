@@ -2,6 +2,7 @@ import { env } from '$env/dynamic/private';
 import { redirect } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 import { fail } from '@sveltejs/kit';
+import { validatePhoneNumber, formatPhoneForStorage } from '$lib/utils/phone.js';
 import { 
   industries, 
   leadSources, 
@@ -54,13 +55,24 @@ export const actions = {
       return fail(400, { error: 'Lead title is required' });
     }
 
+    // Validate phone number if provided
+    let formattedPhone = null;
+    const phone = formData.get('phone')?.toString();
+    if (phone && phone.trim().length > 0) {
+      const phoneValidation = validatePhoneNumber(phone.trim());
+      if (!phoneValidation.isValid) {
+        return fail(400, { error: phoneValidation.error || 'Please enter a valid phone number' });
+      }
+      formattedPhone = formatPhoneForStorage(phone.trim());
+    }
+
     // Extract all form fields
     const leadData = {
       firstName,
       lastName,
       title: leadTitle,
       email: email || null,
-      phone: formData.get('phone')?.toString() || null,
+      phone: formattedPhone,
       company: formData.get('company')?.toString() || null,
       status: (formData.get('status')?.toString() || 'PENDING'),
       leadSource: formData.get('source')?.toString() || null,
