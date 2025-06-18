@@ -14,10 +14,11 @@ user types we have
 ## Project Context
 
 BottleCRM is a modern CRM application built with:
-- **Framework**: SvelteKit 2.21.x, Svelte 5.x, Prisma
+- **Framework**: SvelteKit 2.21.x, Svelte 5.1, Prisma
 - **Styling**: tailwind 4.1.x css
 - **Database**: postgresql
 - **Icons**: lucide icons
+- **Form Validation**: zod
 
 ## Important Notes
 - We need to ensure access control is strictly enforced based on user roles.

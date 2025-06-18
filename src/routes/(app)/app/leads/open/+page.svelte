@@ -392,7 +392,11 @@
                     </td>
                     <td class="px-4 py-4">
                       <div class="flex items-center gap-2">
-                        <svelte:component this={statusConfig.icon} class="w-4 h-4 {statusConfig.color.split(' ')[1]} flex-shrink-0" />
+                        {#snippet statusIcon(config)}
+                          {@const StatusIcon = config.icon}
+                          <StatusIcon class="w-4 h-4 {config.color.split(' ')[1]} flex-shrink-0" />
+                        {/snippet}
+                        {@render statusIcon(statusConfig)}
                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border {statusConfig.color} whitespace-nowrap">
                           {lead.status}
                         </span>
@@ -457,7 +461,11 @@
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <svelte:component this={statusConfig.icon} class="w-4 h-4 {statusConfig.color.split(' ')[1]}" />
+                  {#snippet statusIcon(config)}
+                    {@const StatusIcon = config.icon}
+                    <StatusIcon class="w-4 h-4 {config.color.split(' ')[1]}" />
+                  {/snippet}
+                  {@render statusIcon(statusConfig)}
                   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {statusConfig.color}">
                     {lead.status}
                   </span>

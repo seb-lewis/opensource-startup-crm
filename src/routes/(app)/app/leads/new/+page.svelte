@@ -2,6 +2,7 @@
     import { enhance } from '$app/forms';
     import { goto } from '$app/navigation';
     import { fade } from 'svelte/transition';
+    import { validatePhoneNumber } from '$lib/utils/phone.js';
     
     // Lucide icons
     import { 
@@ -30,7 +31,8 @@
     let showToast = false;
     let toastMessage = '';
     let toastType = 'success'; // 'success' | 'error'
-    
+    let phoneError = '';
+
     /**
      * Object holding the form fields.
      */
@@ -116,9 +118,12 @@
       }
       
       // Validate phone format if provided
-      if (formData.phone && !/^[\d\s\-+()]*$/.test(formData.phone)) {
-        errors.phone = 'Please enter a valid phone number';
-        isValid = false;
+      if (formData.phone && formData.phone.trim().length > 0) {
+        const phoneValidation = validatePhoneNumber(formData.phone);
+        if (!phoneValidation.isValid) {
+          errors.phone = phoneValidation.error || 'Please enter a valid phone number';
+          isValid = false;
+        }
       }
       
       // Validate website URL if provided
@@ -191,6 +196,23 @@
       showToast = true;
       setTimeout(() => showToast = false, 5000);
     }
+
+    /**
+     * Validates phone number on input
+     */
+    function validatePhone() {
+        if (!formData.phone.trim()) {
+            phoneError = '';
+            return;
+        }
+        
+        const validation = validatePhoneNumber(formData.phone);
+        if (!validation.isValid) {
+            phoneError = validation.error || 'Invalid phone number';
+        } else {
+            phoneError = '';
+        }
+    }
 </script>
 
 <!-- Main container -->
@@ -210,7 +232,7 @@
           <p class="text-sm font-medium {toastType === 'success' ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'}">{toastMessage}</p>
         </div>
         <button 
-          on:click={() => showToast = false}
+          onclick={() => showToast = false}
           class="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 {toastType === 'success' ? 'text-green-500 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800/30' : 'text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-800/30'}">
           <X class="w-4 h-4" />
         </button>
@@ -287,7 +309,7 @@
                 name="lead_title"
                 type="text"
                 bind:value={formData.lead_title}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="Enter lead title"
                 required
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.lead_title ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
@@ -307,7 +329,7 @@
                 name="company"
                 type="text"
                 bind:value={formData.company}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="Company name"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -321,7 +343,7 @@
                 id="source" 
                 name="source" 
                 bind:value={formData.source} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 <option value="">Select source</option>
                 {#each data.data.source as [value, label]}
@@ -339,7 +361,7 @@
                 id="industry" 
                 name="industry" 
                 bind:value={formData.industry} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 <option value="">Select industry</option>
                 {#each data.data.industries as [value, label]}
@@ -357,7 +379,7 @@
                 id="status" 
                 name="status" 
                 bind:value={formData.status} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 {#each data.data.status as [value, label]}
                   <option value={value}>{label}</option>
@@ -374,7 +396,7 @@
                 id="rating" 
                 name="rating" 
                 bind:value={formData.rating} 
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 <option value="">Select rating</option>
                 <option value="HOT">🔥 Hot</option>
@@ -394,7 +416,7 @@
                 name="website"
                 type="url"
                 bind:value={formData.website}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="https://company.com"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.website ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.website}
@@ -413,7 +435,7 @@
                 id="opportunity_amount"
                 name="opportunity_amount"
                 bind:value={formData.opportunity_amount}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="0"
                 min="0"
                 step="0.01"
@@ -433,7 +455,7 @@
                 min="0"
                 max="100"
                 bind:value={formData.probability}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="50"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.probability ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.probability}
@@ -450,7 +472,7 @@
                 id="budget_range"
                 name="budget_range"
                 bind:value={formData.budget_range}
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 <option value="">Select budget range</option>
                 <option value="under_10k">Under $10K</option>
@@ -471,7 +493,7 @@
                 id="decision_timeframe"
                 name="decision_timeframe"
                 bind:value={formData.decision_timeframe}
-                on:change={handleChange}
+                onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
                 <option value="">Select timeframe</option>
                 <option value="immediate">Immediate (&lt; 1 month)</option>
@@ -504,7 +526,7 @@
                 name="first_name"
                 type="text"
                 bind:value={formData.first_name}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="First name"
                 required
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.first_name ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
@@ -523,7 +545,7 @@
                 name="last_name"
                 type="text"
                 bind:value={formData.last_name}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="Last name"
                 required
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.last_name ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
@@ -542,7 +564,7 @@
                 name="title"
                 type="text"
                 bind:value={formData.title}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="Job title"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -558,11 +580,15 @@
                 name="phone"
                 type="tel"
                 bind:value={formData.phone}
-                on:input={handleChange}
+                oninput={handleChange}
+                onblur={validatePhone}
                 placeholder="+1 (555) 123-4567"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.phone ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.phone || phoneError ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.phone}
                 <p class="text-red-500 dark:text-red-400 text-sm mt-1">{errors.phone}</p>
+              {/if}
+              {#if phoneError}
+                <p class="text-red-500 dark:text-red-400 text-sm mt-1">{phoneError}</p>
               {/if}
             </div>
             
@@ -577,7 +603,7 @@
                 type="email"
                 name="email"
                 bind:value={formData.email}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="email@company.com"
                 required
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.email ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
@@ -596,7 +622,7 @@
                 name="linkedin_url"
                 type="url"
                 bind:value={formData.linkedin_url}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="https://linkedin.com/in/username"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors {errors.linkedin_url ? 'border-red-500 dark:border-red-400 ring-1 ring-red-500 dark:ring-red-400' : ''}" />
               {#if errors.linkedin_url}
@@ -627,7 +653,7 @@
                 name="address_line"
                 type="text"
                 bind:value={formData.address_line}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="Street address"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -639,7 +665,7 @@
                 name="city"
                 type="text"
                 bind:value={formData.city}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="City"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -651,7 +677,7 @@
                 name="state"
                 type="text"
                 bind:value={formData.state}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="State"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -663,7 +689,7 @@
                 name="postcode"
                 type="text"
                 bind:value={formData.postcode}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="Postal code"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -675,7 +701,7 @@
                 name="country"
                 type="text"
                 bind:value={formData.country}
-                on:input={handleChange}
+                oninput={handleChange}
                 placeholder="Country"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
@@ -698,7 +724,7 @@
               id="description"
               name="description"
               bind:value={formData.description}
-              on:input={handleChange}
+              oninput={handleChange}
               placeholder="Additional notes about this lead..."
               rows="3"
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors resize-vertical"></textarea>
@@ -713,7 +739,7 @@
               id="pain_points"
               name="pain_points"
               bind:value={formData.pain_points}
-              on:input={handleChange}
+              oninput={handleChange}
               placeholder="What challenges is the lead facing?"
               rows="3"
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors resize-vertical"></textarea>
@@ -730,7 +756,7 @@
                 name="last_contacted"
                 type="date"
                 bind:value={formData.last_contacted}
-                on:input={handleChange}
+                oninput={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
             
@@ -743,7 +769,7 @@
                 name="next_follow_up"
                 type="date"
                 bind:value={formData.next_follow_up}
-                on:input={handleChange}
+                oninput={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors" />
             </div>
           </div>
@@ -756,7 +782,7 @@
           <div class="flex justify-end gap-4">
             <button
               type="button"
-              on:click={() => goto('/app/leads/')}
+              onclick={() => goto('/app/leads/')}
               disabled={isSubmitting}
               class="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
               <X class="w-4 h-4" />

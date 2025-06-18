@@ -89,10 +89,6 @@
           </div>
         </div>
         <div class="flex gap-3 mt-4 sm:mt-0">
-          <button class="px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors flex items-center gap-2">
-            <Plus class="w-4 h-4" />
-            Add Task
-          </button>
           <a href="/app/contacts/{contact.id}/edit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
             <Edit class="w-4 h-4" />
             Edit

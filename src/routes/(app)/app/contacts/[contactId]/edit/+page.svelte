@@ -4,6 +4,8 @@
   import { onMount } from 'svelte';
   import { invalidateAll } from '$app/navigation';
   import { User, Mail, Phone, Building, MapPin, FileText, Star, Save, X, ArrowLeft } from '@lucide/svelte';
+  import { validatePhoneNumber } from '$lib/utils/phone.js';
+  
   export let data;
 
   let contact = data.contact;
@@ -25,6 +27,22 @@
   let description = contact.description || '';
   let submitting = false;
   let errorMsg = '';
+  let phoneError = '';
+
+  // Validate phone number on input
+  function validatePhone() {
+    if (!phone.trim()) {
+      phoneError = '';
+      return;
+    }
+    
+    const validation = validatePhoneNumber(phone);
+    if (!validation.isValid) {
+      phoneError = validation.error || 'Invalid phone number';
+    } else {
+      phoneError = '';
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -185,8 +203,12 @@
                   class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400" 
                   bind:value={phone} 
                   placeholder="+1 (555) 123-4567"
+                  oninput={validatePhone}
                 />
               </div>
+              {#if phoneError}
+                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{phoneError}</p>
+              {/if}
             </div>
           </div>
         </div>

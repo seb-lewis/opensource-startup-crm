@@ -1,5 +1,6 @@
 import { redirect, fail } from '@sveltejs/kit';
 import  prisma  from '$lib/prisma';
+import { validatePhoneNumber, formatPhoneForStorage } from '$lib/utils/phone.js';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals, url }) {
@@ -92,6 +93,17 @@ export const actions = {
         
         if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             errors.email = 'Please enter a valid email address';
+        }
+
+        // Validate phone number if provided
+        let formattedPhone = null;
+        if (phone && phone.length > 0) {
+            const phoneValidation = validatePhoneNumber(phone);
+            if (!phoneValidation.isValid) {
+                errors.phone = phoneValidation.error || 'Please enter a valid phone number';
+            } else {
+                formattedPhone = formatPhoneForStorage(phone);
+            }
         }
 
         if (Object.keys(errors).length > 0) {
@@ -199,7 +211,7 @@ export const actions = {
                     firstName,
                     lastName,
                     email: email || null,
-                    phone: phone || null,
+                    phone: formattedPhone,
                     title: title || null,
                     department: department || null,
                     street: street || null,

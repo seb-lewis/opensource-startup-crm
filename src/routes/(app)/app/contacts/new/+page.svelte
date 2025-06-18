@@ -2,11 +2,13 @@
     import { enhance } from '$app/forms';
     import { page } from '$app/stores';
     import { ArrowLeft, User, Mail, Phone, Building, MapPin, FileText, Save } from '@lucide/svelte';
+    import { validatePhoneNumber } from '$lib/utils/phone.js';
     
     /** @type {{ data: import('./$types').PageData, form: import('./$types').ActionData }} */
     let { data, form } = $props();
     
     let isSubmitting = $state(false);
+    let phoneError = $state('');
     
     // Get accountId from URL parameters
     const accountId = $page.url.searchParams.get('accountId');
@@ -44,6 +46,21 @@
             await update();
             isSubmitting = false;
         };
+    }
+    
+    // Validate phone number on input
+    function validatePhone() {
+        if (!formValues.phone.trim()) {
+            phoneError = '';
+            return;
+        }
+        
+        const validation = validatePhoneNumber(formValues.phone);
+        if (!validation.isValid) {
+            phoneError = validation.error || 'Invalid phone number';
+        } else {
+            phoneError = '';
+        }
     }
 </script>
 
@@ -222,9 +239,16 @@
                                 id="phone" 
                                 name="phone" 
                                 bind:value={formValues.phone}
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                oninput={validatePhone}
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 {errors.phone ? 'border-red-300 dark:border-red-600' : ''}"
                                 placeholder="+1 (555) 123-4567"
                             />
+                            {#if errors.phone}
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{errors.phone}</p>
+                            {/if}
+                            {#if phoneError}
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{phoneError}</p>
+                            {/if}
                         </div>
                     </div>
                 </div>

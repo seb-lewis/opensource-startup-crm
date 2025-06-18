@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
   import { fly } from 'svelte/transition';
-  import { ArrowLeft, Save, X, User, Building, Mail, Phone, Calendar, Star, Target, DollarSign, AlertCircle } from '@lucide/svelte';
+  import { ArrowLeft, Save, X, User, Building, Mail, Phone, Calendar, Star, Target, AlertCircle } from '@lucide/svelte';
 
   export let data;
   
@@ -12,20 +12,20 @@
   let errorMessage = '';
 
   // Form validation
-  let errors = {};
+  let errors: Record<string, string> = {};
   
-  function validateForm(formData) {
+  function validateForm(formData: FormData) {
     errors = {};
     
-    if (!formData.get('firstName')?.trim()) {
+    if (!formData.get('firstName')?.toString()?.trim()) {
       errors.firstName = 'First name is required';
     }
     
-    if (!formData.get('lastName')?.trim()) {
+    if (!formData.get('lastName')?.toString()?.trim()) {
       errors.lastName = 'Last name is required';
     }
     
-    const email = formData.get('email')?.trim();
+    const email = formData.get('email')?.toString()?.trim();
     if (email && !isValidEmail(email)) {
       errors.email = 'Please enter a valid email address';
     }
@@ -33,7 +33,7 @@
     return Object.keys(errors).length === 0;
   }
   
-  function isValidEmail(email) {
+  function isValidEmail(email: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
   
@@ -98,7 +98,7 @@
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center space-x-4">
           <button 
-            on:click={() => goto(`/app/leads/${lead.id}`)}
+            onclick={() => goto(`/app/leads/${lead.id}`)}
             class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
           >
             <ArrowLeft class="w-5 h-5 text-gray-600 dark:text-gray-300" />
@@ -159,7 +159,7 @@
                 goto(`/app/leads/${lead.id}`);
               }, 1500);
             } else if (result.data?.error) {
-              errorMessage = result.data.error;
+              errorMessage = result.data.error as string;
             }
           } else {
             errorMessage = 'An unexpected error occurred';
@@ -356,7 +356,7 @@
             </div>
           </div>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="mb-6">
             <div>
               <label for="ownerId" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Lead Owner</label>
               <select
@@ -364,26 +364,10 @@
                 name="ownerId"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all"
               >
-                {#each users as user}
-                  <option value={user.id} selected={lead.ownerId === user.id}>{user.name}</option>
+                {#each users as userOrg}
+                  <option value={userOrg.user.id} selected={lead.ownerId === userOrg.user.id}>{userOrg.user.name}</option>
                 {/each}
               </select>
-            </div>
-            
-            <div>
-              <label for="annualRevenue" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                <DollarSign class="w-4 h-4 inline mr-1" />
-                Annual Revenue (Optional)
-              </label>
-              <input
-                id="annualRevenue"
-                name="annualRevenue"
-                type="number"
-                step="0.01"
-                value={lead.annualRevenue || ''}
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all"
-                placeholder="Enter annual revenue"
-              />
             </div>
           </div>
 
@@ -405,7 +389,7 @@
       <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
         <button
           type="button"
-          on:click={cancelEdit}
+          onclick={cancelEdit}
           class="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
         >
           <X class="w-4 h-4 mr-2" />
