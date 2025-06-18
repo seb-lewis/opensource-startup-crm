@@ -187,7 +187,7 @@
                                     <!-- Google Sign In Button -->
                                     <div in:fade="{{ duration: 600, delay: 600 }}">
                                         <a href="{data['google_url']}"
-                                           on:click={handleGoogleLogin}
+                                           onclick={handleGoogleLogin}
                                            class="group w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-800 font-semibold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-200 relative overflow-hidden">
                                             
                                             <!-- Button Background Effect -->

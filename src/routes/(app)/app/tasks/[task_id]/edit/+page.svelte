@@ -41,7 +41,7 @@
                     </div>
                     <button 
                         type="button" 
-                        on:click={handleCancel} 
+                        onclick={handleCancel} 
                         class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors duration-200"
                         aria-label="Close"
                     >
@@ -211,7 +211,7 @@
                         <button 
                             type="button" 
                             class="h-11 px-6 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium transition-colors duration-200 flex items-center space-x-2" 
-                            on:click={handleCancel}
+                            onclick={handleCancel}
                         >
                             <X class="w-4 h-4" />
                             <span>Cancel</span>

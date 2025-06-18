@@ -1007,7 +1007,7 @@
     <div class="space-y-4">
       <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
         <button 
-          on:click={() => toggleFaq(0)}
+          onclick={() => toggleFaq(0)}
           class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
           aria-expanded={activeFaq === 0}
         >
@@ -1026,7 +1026,7 @@
 
       <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
         <button 
-          on:click={() => toggleFaq(1)}
+          onclick={() => toggleFaq(1)}
           class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
           aria-expanded={activeFaq === 1}
         >
@@ -1045,7 +1045,7 @@
 
       <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
         <button 
-          on:click={() => toggleFaq(2)}
+          onclick={() => toggleFaq(2)}
           class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
           aria-expanded={activeFaq === 2}
         >
@@ -1064,7 +1064,7 @@
 
       <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
         <button 
-          on:click={() => toggleFaq(3)}
+          onclick={() => toggleFaq(3)}
           class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
           aria-expanded={activeFaq === 3}
         >
@@ -1083,7 +1083,7 @@
 
       <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
         <button 
-          on:click={() => toggleFaq(4)}
+          onclick={() => toggleFaq(4)}
           class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
           aria-expanded={activeFaq === 4}
         >
@@ -1102,7 +1102,7 @@
 
       <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
         <button 
-          on:click={() => toggleFaq(5)}
+          onclick={() => toggleFaq(5)}
           class="w-full px-6 py-5 text-left focus:outline-none focus:bg-gray-100 hover:bg-gray-100 transition-colors duration-200"
           aria-expanded={activeFaq === 5}
         >

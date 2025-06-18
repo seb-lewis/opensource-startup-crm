@@ -87,7 +87,12 @@
                             return ({ result }) => {
                                 deleteLoading = false;
                                 if (result.type === 'success') {
+                                    // Navigate to opportunities list on successful deletion
                                     goto('/app/opportunities');
+                                } else if (result.type === 'failure') {
+                                    // Handle error case - you could show a toast notification here
+                                    console.error('Failed to delete opportunity:', result.data?.message);
+                                    alert(result.data?.message || 'Failed to delete opportunity');
                                 }
                             };
                         }}>

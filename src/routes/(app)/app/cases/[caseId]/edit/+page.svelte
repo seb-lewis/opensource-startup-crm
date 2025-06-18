@@ -61,7 +61,7 @@
         </div>
         <div class="flex items-center gap-3">
           <button 
-            on:click={() => goto(`/app/cases/${data.caseItem.id}`)}
+            onclick={() => goto(`/app/cases/${data.caseItem.id}`)}
             class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-colors"
           >
             <X size="16" />
@@ -230,7 +230,7 @@
           {#if data.caseItem.status === 'CLOSED'}
             <button 
               type="button"
-              on:click={handleReopenCase}
+              onclick={handleReopenCase}
               class="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors"
             >
               <Unlock size="16" />
@@ -239,7 +239,7 @@
           {:else}
             <button 
               type="button"
-              on:click={handleCloseCase}
+              onclick={handleCloseCase}
               class="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors"
             >
               <Lock size="16" />
@@ -275,13 +275,13 @@
             </p>
             <div class="flex gap-3">
               <button
-                on:click={confirmCloseCase}
+                onclick={confirmCloseCase}
                 class="flex-1 px-4 py-2 text-sm font-medium text-white bg-amber-600 dark:bg-amber-600 rounded-lg hover:bg-amber-700 dark:hover:bg-amber-700 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors"
               >
                 Close Case
               </button>
               <button
-                on:click={cancelCloseCase}
+                onclick={cancelCloseCase}
                 class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors"
               >
                 Cancel
@@ -311,13 +311,13 @@
             </p>
             <div class="flex gap-3">
               <button
-                on:click={confirmReopenCase}
+                onclick={confirmReopenCase}
                 class="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 dark:bg-green-600 rounded-lg hover:bg-green-700 dark:hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors"
               >
                 Reopen Case
               </button>
               <button
-                on:click={cancelReopenCase}
+                onclick={cancelReopenCase}
                 class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors"
               >
                 Cancel

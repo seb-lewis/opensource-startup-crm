@@ -112,7 +112,7 @@
 						<button
 							type="button"
 							class="rounded-lg p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300"
-							on:click={startEdit}
+							onclick={startEdit}
 							aria-label="Edit organization"
 						>
 							<Edit class="h-5 w-5" />
@@ -181,7 +181,7 @@
 							<button
 								type="button"
 								class="inline-flex items-center gap-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-6 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200"
-								on:click={cancelEdit}
+								onclick={cancelEdit}
 							>
 								<X class="h-4 w-4" />
 								Cancel
@@ -335,7 +335,7 @@
 														<button 
 															type="button" 
 															class="rounded-lg bg-gray-600 dark:bg-gray-600 p-2 text-white hover:bg-gray-700 dark:hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 dark:focus-visible:outline-gray-500 transition-all duration-200 shadow-sm" 
-															on:click={() => { users[i].editingRole = false }}
+															onclick={() => { users[i].editingRole = false }}
 															title="Cancel"
 														>
 															<X class="h-3.5 w-3.5" />
@@ -345,7 +345,7 @@
 													<button
 														type="button"
 														class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all duration-200 {roleColors[user.role]} hover:bg-opacity-80 dark:hover:bg-opacity-80 hover:shadow-sm"
-														on:click={() => { users[i].editingRole = true }}
+														onclick={() => { users[i].editingRole = true }}
 														title="Click to edit role"
 													>
 														<svelte:component this={roleIcons[user.role] || User} class="h-3.5 w-3.5" />
