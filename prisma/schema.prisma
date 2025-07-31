@@ -43,6 +43,25 @@ model User {
   BoardTask         BoardTask[]
   BoardTaskActivity BoardTaskActivity[]
   BlogPost          BlogPost[]
+  jwtTokens         JwtToken[]
+}
+
+model JwtToken {
+  id          String    @id @default(uuid())
+  token       String    @unique
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt   DateTime
+  isRevoked   Boolean   @default(false)
+  deviceInfo  String?   // Optional: store device/client info
+  ipAddress   String?   // Optional: store IP address
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  lastUsedAt  DateTime?
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([isRevoked])
 }
 
 model Organization {
