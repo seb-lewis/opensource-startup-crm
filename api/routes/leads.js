@@ -10,6 +10,88 @@ router.use(requireOrganization);
 
 /**
  * @swagger
+ * /leads/metadata:
+ *   get:
+ *     summary: Get leads metadata (enums, options, etc.)
+ *     tags: [Leads]
+ *     responses:
+ *       200:
+ *         description: Leads metadata
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 leadStatuses:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                 leadSources:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                 ratings:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                 industries:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ */
+router.get('/metadata', async (req, res) => {
+  try {
+    const metadata = {
+      leadStatuses: [
+        'NEW',
+        'PENDING', 
+        'CONTACTED',
+        'QUALIFIED',
+        'UNQUALIFIED',
+        'CONVERTED'
+      ],
+      leadSources: [
+        'WEB',
+        'PHONE_INQUIRY',
+        'PARTNER_REFERRAL', 
+        'COLD_CALL',
+        'TRADE_SHOW',
+        'EMPLOYEE_REFERRAL',
+        'ADVERTISEMENT',
+        'OTHER'
+      ],
+      ratings: [
+        'Hot',
+        'Warm', 
+        'Cold'
+      ],
+      industries: [
+        'Technology',
+        'Healthcare',
+        'Finance',
+        'Education',
+        'Manufacturing',
+        'Retail',
+        'Real Estate',
+        'Consulting',
+        'Media',
+        'Transportation',
+        'Energy',
+        'Government',
+        'Non-profit',
+        'Other'
+      ]
+    };
+
+    res.json(metadata);
+  } catch (error) {
+    console.error('Get leads metadata error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Lead:
@@ -27,12 +109,30 @@ router.use(requireOrganization);
  *           type: string
  *         company:
  *           type: string
+ *         title:
+ *           type: string
  *         status:
  *           type: string
- *           enum: [NEW, CONTACTED, QUALIFIED, UNQUALIFIED]
- *         source:
+ *           enum: [NEW, PENDING, CONTACTED, QUALIFIED, UNQUALIFIED, CONVERTED]
+ *         leadSource:
  *           type: string
+ *           enum: [WEB, PHONE_INQUIRY, PARTNER_REFERRAL, COLD_CALL, TRADE_SHOW, EMPLOYEE_REFERRAL, ADVERTISEMENT, OTHER]
+ *         industry:
+ *           type: string
+ *         rating:
+ *           type: string
+ *           enum: [Hot, Warm, Cold]
+ *         description:
+ *           type: string
+ *         isConverted:
+ *           type: boolean
+ *         convertedAt:
+ *           type: string
+ *           format: date-time
  *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
  *           type: string
  *           format: date-time
  */
@@ -88,7 +188,7 @@ router.get('/', async (req, res) => {
         orderBy: { createdAt: 'desc' },
         include: {
           owner: {
-            select: { id: true, firstName: true, lastName: true, email: true }
+            select: { id: true, name: true, email: true }
           }
         }
       }),
@@ -148,7 +248,7 @@ router.get('/:id', async (req, res) => {
       },
       include: {
         owner: {
-          select: { id: true, firstName: true, lastName: true, email: true }
+          select: { id: true, name: true, email: true }
         }
       }
     });
@@ -199,7 +299,7 @@ router.get('/:id', async (req, res) => {
  *                 type: string
  *               status:
  *                 type: string
- *               source:
+ *               leadSource:
  *                 type: string
  *     responses:
  *       201:
@@ -209,7 +309,7 @@ router.get('/:id', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, company, status, source } = req.body;
+    const { firstName, lastName, email, phone, company, status, leadSource } = req.body;
 
     if (!firstName || !lastName || !email) {
       return res.status(400).json({ error: 'First name, last name, and email are required' });
@@ -223,13 +323,13 @@ router.post('/', async (req, res) => {
         phone,
         company,
         status: status || 'NEW',
-        source,
+        leadSource,
         organizationId: req.organizationId,
         ownerId: req.userId
       },
       include: {
         owner: {
-          select: { id: true, firstName: true, lastName: true, email: true }
+          select: { id: true, name: true, email: true }
         }
       }
     });

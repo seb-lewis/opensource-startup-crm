@@ -11,28 +11,65 @@ export const verifyToken = async (req, res, next) => {
       return res.status(401).json({ error: 'Access denied. No token provided.' });
     }
 
+    // First verify JWT signature and decode
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+    // Check if token exists in database and is not revoked
+    const dbToken = await prisma.jwtToken.findUnique({
+      where: { token },
       include: {
-        userOrganizations: {
+        user: {
           include: {
-            organization: true
+            organizations: {
+              include: {
+                organization: true
+              }
+            }
           }
         }
       }
     });
 
-    if (!user) {
+    if (!dbToken) {
+      return res.status(401).json({ error: 'Invalid token. Token not found.' });
+    }
+
+    if (dbToken.isRevoked) {
+      return res.status(401).json({ error: 'Token has been revoked.' });
+    }
+
+    if (dbToken.expiresAt < new Date()) {
+      // Mark token as expired in database
+      await prisma.jwtToken.update({
+        where: { id: dbToken.id },
+        data: { isRevoked: true }
+      });
+      return res.status(401).json({ error: 'Token has expired.' });
+    }
+
+    if (!dbToken.user) {
       return res.status(401).json({ error: 'Invalid token. User not found.' });
     }
 
-    req.user = user;
-    req.userId = user.id;
+    // Update last used timestamp
+    await prisma.jwtToken.update({
+      where: { id: dbToken.id },
+      data: { lastUsedAt: new Date() }
+    });
+
+    req.user = dbToken.user;
+    req.userId = dbToken.user.id;
+    req.tokenId = dbToken.id;
     next();
   } catch (error) {
-    return res.status(401).json({ error: 'Invalid token.' });
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error: 'Invalid token format.' });
+    }
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token has expired.' });
+    }
+    console.error('Token verification error:', error);
+    return res.status(401).json({ error: 'Token validation failed.' });
   }
 };
 
@@ -44,7 +81,7 @@ export const requireOrganization = async (req, res, next) => {
       return res.status(400).json({ error: 'Organization ID is required in X-Organization-ID header.' });
     }
 
-    const userOrg = req.user.userOrganizations.find(
+    const userOrg = req.user.organizations.find(
       uo => uo.organizationId === organizationId
     );
 
