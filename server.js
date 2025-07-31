@@ -9,16 +9,21 @@ import { createLogger } from './api/config/logger.js';
 import { requestLogger } from './api/middleware/requestLogger.js';
 import { errorHandler } from './api/middleware/errorHandler.js';
 import authRoutes from './api/routes/auth.js';
+import dashboardRoutes from './api/routes/dashboard.js';
 import leadRoutes from './api/routes/leads.js';
 import accountRoutes from './api/routes/accounts.js';
 import contactRoutes from './api/routes/contacts.js';
 import opportunityRoutes from './api/routes/opportunities.js';
+import taskRoutes from './api/routes/tasks.js';
 
 dotenv.config();
 
 const app = express();
 const logger = createLogger();
 const PORT = process.env.API_PORT || 3001;
+
+// Trust proxy setting for rate limiting
+app.set('trust proxy', 1);
 
 const rateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -74,10 +79,12 @@ app.use(requestLogger);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use('/auth', authRoutes);
+app.use('/dashboard', dashboardRoutes);
 app.use('/leads', leadRoutes);
 app.use('/accounts', accountRoutes);
 app.use('/contacts', contactRoutes);
 app.use('/opportunities', opportunityRoutes);
+app.use('/tasks', taskRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });

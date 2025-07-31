@@ -183,6 +183,22 @@ router.post('/google', async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
     );
 
+    // Calculate expiration date
+    const expiresIn = process.env.JWT_EXPIRES_IN || '24h';
+    const expirationHours = expiresIn.includes('h') ? parseInt(expiresIn) : 24;
+    const expiresAt = new Date(Date.now() + expirationHours * 60 * 60 * 1000);
+
+    // Store JWT token in database
+    await prisma.jwtToken.create({
+      data: {
+        token: JWTtoken,
+        userId: user.id,
+        expiresAt: expiresAt,
+        deviceInfo: req.get('User-Agent'),
+        ipAddress: req.ip || req.socket.remoteAddress
+      }
+    });
+
     // Format response to match SvelteKit patterns
     const userResponse = {
       id: user.id,
@@ -206,6 +222,100 @@ router.post('/google', async (req, res) => {
     if (error.message && error.message.includes('Invalid token')) {
       return res.status(400).json({ error: 'Invalid Google token' });
     }
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Logout and revoke current JWT token
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully logged out
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized
+ */
+router.post('/logout', verifyToken, async (req, res) => {
+  try {
+    // Revoke the current token
+    await prisma.jwtToken.update({
+      where: { id: req.tokenId },
+      data: { 
+        isRevoked: true,
+        updatedAt: new Date()
+      }
+    });
+
+    res.json({ 
+      success: true,
+      message: 'Successfully logged out' 
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/**
+ * @swagger
+ * /auth/revoke-all:
+ *   post:
+ *     summary: Revoke all JWT tokens for current user
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully revoked all tokens
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 revokedCount:
+ *                   type: integer
+ *       401:
+ *         description: Unauthorized
+ */
+router.post('/revoke-all', verifyToken, async (req, res) => {
+  try {
+    // Revoke all tokens for the user
+    const result = await prisma.jwtToken.updateMany({
+      where: { 
+        userId: req.userId,
+        isRevoked: false
+      },
+      data: { 
+        isRevoked: true,
+        updatedAt: new Date()
+      }
+    });
+
+    res.json({ 
+      success: true,
+      message: 'Successfully revoked all tokens',
+      revokedCount: result.count
+    });
+  } catch (error) {
+    console.error('Revoke all tokens error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
