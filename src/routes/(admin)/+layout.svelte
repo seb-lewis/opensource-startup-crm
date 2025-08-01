@@ -2,10 +2,15 @@
     import '../../app.css'
     import { Menu, Bell, User, Search, FileText, Settings, ChartBar, Home, X, LogOut } from '@lucide/svelte';
     
-    /** @type {{ data: import('./admin/$types').LayoutData, children: import('svelte').Snippet }} */
+    /** @type {{ data?: any, children: import('svelte').Snippet }} */
     let { data, children } = $props();
     
     let mobileMenuOpen = $state(false);
+    
+    const handleLogout = () => {
+        // Perform logout action - you might want to redirect to logout endpoint
+        window.location.href = '/logout';
+    };
     
 </script>
 

@@ -17,7 +17,7 @@
     const { metrics } = data;
 
     // Format numbers with commas
-    const formatNumber = (num) => {
+    const formatNumber = (/** @type {any} */ num) => {
         return new Intl.NumberFormat('en-US').format(num);
     };
 </script>

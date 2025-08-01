@@ -1,12 +1,20 @@
 <script>
   import { ArrowLeft, Mail, Phone, Building2, Calendar, User, MapPin, Edit, Plus, ExternalLink, Clock, DollarSign, Target, CheckCircle, Circle, AlertCircle, Users, Star } from '@lucide/svelte';
-  export let data;
-  const { contact } = data;
+  
+  /** @type {{ data: import('./$types').PageData }} */
+  let { data } = $props();
+  
+  const contact = data.contact;
+  
+  if (!contact) {
+    throw new Error('Contact not found');
+  }
 
   // Get primary account relationship
   const primaryAccountRel = contact.accountRelationships?.find(rel => rel.isPrimary);
   const hasMultipleAccounts = contact.accountRelationships?.length > 1;
 
+  /** @param {string | Date} dateStr */
   function formatDate(dateStr) {
     if (!dateStr) return 'N/A';
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -14,6 +22,7 @@
     });
   }
 
+  /** @param {string | Date} dateStr */
   function formatDateTime(dateStr) {
     if (!dateStr) return 'N/A';
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -21,11 +30,13 @@
     });
   }
 
+  /** @param {number} amount */
   function formatCurrency(amount) {
     if (!amount) return '$0';
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
   }
 
+  /** @param {string} status */
   function getStatusColor(status) {
     const colors = {
       'Completed': 'text-green-600 bg-green-50 dark:bg-green-900/20',
@@ -36,16 +47,17 @@
       'NEGOTIATION': 'text-orange-600 bg-orange-50 dark:bg-orange-900/20',
       'PROPOSAL': 'text-purple-600 bg-purple-50 dark:bg-purple-900/20'
     };
-    return colors[status] || 'text-gray-600 bg-gray-50 dark:bg-gray-900/20';
+    return colors[/** @type {keyof typeof colors} */ (status)] || 'text-gray-600 bg-gray-50 dark:bg-gray-900/20';
   }
 
+  /** @param {string} priority */
   function getPriorityColor(priority) {
     const colors = {
       'High': 'text-red-600 bg-red-50 dark:bg-red-900/20',
       'Normal': 'text-blue-600 bg-blue-50 dark:bg-blue-900/20',
       'Low': 'text-gray-600 bg-gray-50 dark:bg-gray-900/20'
     };
-    return colors[priority] || 'text-gray-600 bg-gray-50 dark:bg-gray-900/20';
+    return colors[/** @type {keyof typeof colors} */ (priority)] || 'text-gray-600 bg-gray-50 dark:bg-gray-900/20';
   }
 </script>
 
@@ -111,7 +123,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-4">
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</span>
                 {#if contact.email}
                   <a href="mailto:{contact.email}" class="flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline mt-1">
                     <Mail class="w-4 h-4" />
@@ -122,7 +134,7 @@
                 {/if}
               </div>
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</span>
                 {#if contact.phone}
                   <a href="tel:{contact.phone}" class="flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline mt-1">
                     <Phone class="w-4 h-4" />
@@ -133,21 +145,21 @@
                 {/if}
               </div>
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Department</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Department</span>
                 <p class="text-gray-900 dark:text-white mt-1">{contact.department || 'N/A'}</p>
               </div>
             </div>
             <div class="space-y-4">
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Title</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Title</span>
                 <p class="text-gray-900 dark:text-white mt-1">{contact.title || 'N/A'}</p>
               </div>
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Owner</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Owner</span>
                 <p class="text-gray-900 dark:text-white mt-1">{contact.owner?.name || 'N/A'}</p>
               </div>
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Created</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Created</span>
                 <p class="text-gray-900 dark:text-white mt-1 flex items-center gap-2">
                   <Calendar class="w-4 h-4" />
                   {formatDate(contact.createdAt)}
@@ -157,7 +169,7 @@
           </div>
           {#if contact.description}
             <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-              <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
+              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</span>
               <p class="text-gray-900 dark:text-white mt-2">{contact.description}</p>
             </div>
           {/if}
@@ -181,7 +193,7 @@
                         {relationship.account.name}
                       </a>
                       {#if relationship.isPrimary}
-                        <span class="inline-flex px-2 py-0.5 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded-full flex items-center gap-1">
+                        <span class="flex px-2 py-0.5 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded-full items-center gap-1">
                           <Star class="w-3 h-3" />
                           Primary
                         </span>
@@ -256,7 +268,7 @@
                   <div class="text-right">
                     <p class="font-medium text-gray-900 dark:text-white flex items-center gap-1">
                       <DollarSign class="w-4 h-4" />
-                      {formatCurrency(opp.amount)}
+                      {formatCurrency(opp.amount || 0)}
                     </p>
                     <span class="inline-flex px-2 py-1 text-xs rounded-full {getStatusColor(opp.stage)}">
                       {opp.stage.replace('_', ' ')}

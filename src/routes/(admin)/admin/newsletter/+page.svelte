@@ -6,7 +6,7 @@
   export let data;
   
   // Format date helper
-  function formatDate(dateString) {
+  function formatDate(/** @type {any} */ dateString) {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -17,14 +17,14 @@
   }
   
   // Get status badge class
-  function getStatusClass(isActive, isConfirmed) {
+  function getStatusClass(/** @type {any} */ isActive, /** @type {any} */ isConfirmed) {
     if (!isActive) return 'bg-red-100 text-red-800';
     if (isConfirmed) return 'bg-green-100 text-green-800';
     return 'bg-yellow-100 text-yellow-800';
   }
   
   // Get status text
-  function getStatusText(isActive, isConfirmed) {
+  function getStatusText(/** @type {any} */ isActive, /** @type {any} */ isConfirmed) {
     if (!isActive) return 'Unsubscribed';
     if (isConfirmed) return 'Active';
     return 'Pending';

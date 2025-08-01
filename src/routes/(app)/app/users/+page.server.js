@@ -1,5 +1,6 @@
 import prisma from '$lib/prisma'
 import { fail, redirect } from '@sveltejs/kit';
+import { UserRole } from '@prisma/client';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params, locals }) {
@@ -103,7 +104,8 @@ export const actions = {
 
         const formData = await request.formData();
         const email = formData.get('email')?.toString().trim().toLowerCase();
-        const role = formData.get('role')?.toString();
+        const roleString = formData.get('role')?.toString();
+        const role = /** @type {UserRole} */ (roleString);
         if (!email || !role) return fail(400, { error: 'Email and role are required' });
 
         // Find user by email
@@ -143,7 +145,8 @@ export const actions = {
 
         const formData = await request.formData();
         const user_id = formData.get('user_id')?.toString();
-        const role = formData.get('role')?.toString();
+        const roleString = formData.get('role')?.toString();
+        const role = /** @type {UserRole} */ (roleString);
         if (!user_id || !role) return fail(400, { error: 'User and role are required' });
 
         // Don't allow editing own role (prevent lockout)

@@ -51,11 +51,17 @@
   let showConfirmModal = false;
 
   // Function to get the full name of a lead
+  /**
+   * @param {any} lead
+   */
   function getFullName(lead) {
     return `${lead.firstName} ${lead.lastName}`.trim();
   }
 
   // Function to format date
+  /**
+   * @param {string | Date | null | undefined} dateString
+   */
   function formatDate(dateString) {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -68,6 +74,9 @@
   }
 
   // Function to format date (short)
+  /**
+   * @param {string | Date | null | undefined} dateString
+   */
   function formatDateShort(dateString) {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -78,6 +87,9 @@
   }
 
   // Function to map lead status to colors
+  /**
+   * @param {string} status
+   */
   function getStatusColor(status) {
     switch (status) {
       case 'NEW':
@@ -98,12 +110,18 @@
   }
 
   // Function to get lead source display name
+  /**
+   * @param {string | null | undefined} source
+   */
   function getLeadSourceDisplay(source) {
     if (!source) return 'Unknown';
-    return source.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+    return source.replace('_', ' ').toLowerCase().replace(/\b\w/g, (/** @type {string} */ l) => l.toUpperCase());
   }
 
   // Function to get initials for avatar
+  /**
+   * @param {any} lead
+   */
   function getInitials(lead) {
     const first = lead.firstName?.[0] || '';
     const last = lead.lastName?.[0] || '';
@@ -144,12 +162,17 @@
   function confirmConversion() {
     showConfirmModal = false;
     // Submit the form programmatically
-    document.getElementById('convertForm').requestSubmit();
+    const form = document.getElementById('convertForm');
+    if (form) {
+      // Use dispatchEvent as a cross-browser solution
+      const event = new Event('submit', { cancelable: true, bubbles: true });
+      form.dispatchEvent(event);
+    }
   }
   
   const enhanceConvertForm = () => {
     isConverting = true;
-    return async ({ update }) => {
+    return async (/** @type {{ update: any }} */ { update }) => {
       await update({ reset: false });
       // Note: If conversion is successful, the server will redirect automatically
       // This will only execute if there's an error
@@ -159,7 +182,7 @@
 
   const enhanceCommentForm = () => {
     isSubmittingComment = true;
-    return async ({ update }) => {
+    return async (/** @type {{ update: any }} */ { update }) => {
       await update({ reset: false });
       // Reset the loading state after update
       isSubmittingComment = false;
@@ -455,19 +478,6 @@
                 </div>
               {/if}
 
-              <!-- Annual Revenue -->
-              {#if lead.annualRevenue}
-                <div class="space-y-2">
-                  <div class="flex items-center gap-2">
-                    <DollarSign class="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                    <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Annual Revenue</span>
-                  </div>
-                  <p class="text-sm text-gray-900 dark:text-gray-100 font-medium bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-lg">
-                    ${lead.annualRevenue.toLocaleString()}
-                  </p>
-                </div>
-              {/if}
-
               <!-- Lead Owner -->
               <div class="space-y-2">
                 <div class="flex items-center gap-2">
@@ -490,19 +500,6 @@
                 </p>
               </div>
             </div>
-
-            <!-- Address -->
-            {#if lead.address}
-              <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <div class="flex items-center gap-2 mb-3">
-                  <Location class="w-5 h-5 text-gray-400 dark:text-gray-500" />
-                  <span class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Address</span>
-                </div>
-                <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
-                  <p class="text-sm text-gray-900 dark:text-gray-100 whitespace-pre-line leading-relaxed">{lead.address}</p>
-                </div>
-              </div>
-            {/if}
 
             <!-- Description -->
             {#if lead.description}
@@ -684,14 +681,14 @@
             <div class="flex justify-between items-center">
               <span class="text-sm text-gray-600 dark:text-gray-300">Days Since Created</span>
               <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                {Math.floor((new Date() - new Date(lead.createdAt)) / (1000 * 60 * 60 * 24))}
+                {Math.floor((new Date().getTime() - new Date(lead.createdAt).getTime()) / (1000 * 60 * 60 * 24))}
               </span>
             </div>
             {#if lead.convertedAt}
               <div class="flex justify-between items-center">
                 <span class="text-sm text-gray-600 dark:text-gray-300">Days to Convert</span>
                 <span class="text-sm font-semibold text-green-600 dark:text-green-400">
-                  {Math.floor((new Date(lead.convertedAt) - new Date(lead.createdAt)) / (1000 * 60 * 60 * 24))}
+                  {Math.floor((new Date(lead.convertedAt).getTime() - new Date(lead.createdAt).getTime()) / (1000 * 60 * 60 * 24))}
                 </span>
               </div>
             {/if}

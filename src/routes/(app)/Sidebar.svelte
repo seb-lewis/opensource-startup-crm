@@ -47,7 +47,7 @@
 		userDropdownOpen = !userDropdownOpen;
 	};
 
-	const handleSettingsLinkClick = (event, href) => {
+	const handleSettingsLinkClick = (/** @type {any} */ event, /** @type {any} */ href) => {
 		event.preventDefault();
 		event.stopPropagation();
 		
@@ -58,12 +58,12 @@
 		window.location.href = href;
 	};
 
-	const handleDropdownClick = (event) => {
+	const handleDropdownClick = (/** @type {any} */ event) => {
 		// Prevent clicks inside dropdown from bubbling up
 		event.stopPropagation();
 	};
 
-	const handleClickOutside = (event) => {
+	const handleClickOutside = (/** @type {any} */ event) => {
 		if (userDropdownOpen && dropdownRef && !dropdownRef.contains(event.target)) {
 			userDropdownOpen = false;
 		}
@@ -80,9 +80,10 @@
 	});
 
 	let mainSidebarUrl = $derived($page.url.pathname);
+	/** @type {{ [key: string]: boolean }} */
 	let openDropdowns = $state({});
 
-	const toggleDropdown = (key) => {
+	const toggleDropdown = (/** @type {any} */ key) => {
 		openDropdowns[key] = !openDropdowns[key];
 	};
 
@@ -202,7 +203,7 @@
 									: 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
 							}`}
 						>
-							{@render item.icon({ class: 'w-5 h-5' })}
+							<item.icon class="w-5 h-5" />
 							<span>{item.label}</span>
 						</a>
 					{:else if item.type === 'dropdown'}
@@ -213,13 +214,13 @@
 								onclick={() => toggleDropdown(item.key)}
 							>
 								<div class="flex items-center gap-3">
-									{@render item.icon({ class: 'w-5 h-5' })}
+									<item.icon class="w-5 h-5" />
 									<span>{item.label}</span>
 								</div>
-								<ChevronDown class={`w-4 h-4 transition-transform duration-200 ${openDropdowns[item.key] ? 'rotate-180' : ''}`} />
+								<ChevronDown class={`w-4 h-4 transition-transform duration-200 ${item.key && openDropdowns[item.key] ? 'rotate-180' : ''}`} />
 							</button>
 							
-							{#if openDropdowns[item.key]}
+							{#if item.key && openDropdowns[item.key] && item.children}
 								<div class="ml-8 space-y-1 border-l-2 border-gray-100 dark:border-gray-700 pl-4">
 									{#each item.children as child}
 										<a
@@ -230,7 +231,7 @@
 													: 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300'
 											}`}
 										>
-											{@render child.icon({ class: 'w-4 h-4' })}
+											<child.icon class="w-4 h-4" />
 											<span>{child.label}</span>
 										</a>
 									{/each}

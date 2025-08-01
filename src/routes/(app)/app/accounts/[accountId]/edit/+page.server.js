@@ -15,11 +15,11 @@ export const actions = {
   default: async ({ request, params, locals }) => {
     const org = locals.org;
     const form = await request.formData();
-    const name = form.get('name');
-    const industry = form.get('industry');
-    const type = form.get('type');
-    const website = form.get('website');
-    const phone = form.get('phone');
+    const name = form.get('name')?.toString();
+    const industry = form.get('industry')?.toString() || null;
+    const type = form.get('type')?.toString() || null;
+    const website = form.get('website')?.toString() || null;
+    const phone = form.get('phone')?.toString() || null;
 
     if (!name) {
       return fail(400, { name, missing: true });
