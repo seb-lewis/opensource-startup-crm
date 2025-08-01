@@ -123,7 +123,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-4">
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</span>
                 {#if contact.email}
                   <a href="mailto:{contact.email}" class="flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline mt-1">
                     <Mail class="w-4 h-4" />
@@ -134,7 +134,7 @@
                 {/if}
               </div>
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</span>
                 {#if contact.phone}
                   <a href="tel:{contact.phone}" class="flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline mt-1">
                     <Phone class="w-4 h-4" />
@@ -145,21 +145,21 @@
                 {/if}
               </div>
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Department</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Department</span>
                 <p class="text-gray-900 dark:text-white mt-1">{contact.department || 'N/A'}</p>
               </div>
             </div>
             <div class="space-y-4">
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Title</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Title</span>
                 <p class="text-gray-900 dark:text-white mt-1">{contact.title || 'N/A'}</p>
               </div>
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Owner</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Owner</span>
                 <p class="text-gray-900 dark:text-white mt-1">{contact.owner?.name || 'N/A'}</p>
               </div>
               <div>
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Created</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Created</span>
                 <p class="text-gray-900 dark:text-white mt-1 flex items-center gap-2">
                   <Calendar class="w-4 h-4" />
                   {formatDate(contact.createdAt)}
@@ -169,7 +169,7 @@
           </div>
           {#if contact.description}
             <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-              <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
+              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</span>
               <p class="text-gray-900 dark:text-white mt-2">{contact.description}</p>
             </div>
           {/if}
@@ -193,7 +193,7 @@
                         {relationship.account.name}
                       </a>
                       {#if relationship.isPrimary}
-                        <span class="inline-flex px-2 py-0.5 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded-full flex items-center gap-1">
+                        <span class="flex px-2 py-0.5 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded-full items-center gap-1">
                           <Star class="w-3 h-3" />
                           Primary
                         </span>
