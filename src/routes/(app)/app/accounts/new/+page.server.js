@@ -1,7 +1,5 @@
-import { env } from '$env/dynamic/private';
-import { redirect } from '@sveltejs/kit';
-import prisma from '$lib/prisma';
 import { fail } from '@sveltejs/kit';
+import prisma from '$lib/prisma';
 import { validatePhoneNumber, formatPhoneForStorage } from '$lib/utils/phone.js';
 import { 
   industries, 
@@ -12,9 +10,7 @@ import {
 } from '$lib/data/index.js';
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ locals }) {
-  const user = locals.user;
-  const org = locals.org;
+export async function load() {
 
   // Get data for dropdowns
   return {
