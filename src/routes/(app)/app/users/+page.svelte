@@ -6,23 +6,24 @@
 		Users, 
 		User, 
 		Shield, 
-		Briefcase, 
 		Edit, 
 		LogOut,
 		Plus,
 		Check,
 		X,
-		Trash2,
-		Headphones
+		Trash2
 	} from '@lucide/svelte';
 
+	/** @type {{ organization: any, users: any[], user: { id: string } }} */
 	export let data;
+	/** @type {any} */
 	let org = data.organization;
 	let editing = false;
-	let formOrg = { name: org.name, domain: org.domain || '', description: org.description || '' };
+	/** @type {{ name: string, domain: string, description: string }} */
+	let formOrg = { name: org?.name || '', domain: org?.domain || '', description: org?.description || '' };
 	
 	function startEdit() {
-		formOrg = { name: org.name, domain: org.domain || '', description: org.description || '' };
+		formOrg = { name: org?.name || '', domain: org?.domain || '', description: org?.description || '' };
 		editing = true;
 	}
 	
@@ -32,6 +33,7 @@
 
 	// Get logged-in user id from data (must be provided by server load)
 	let loggedInUserId = data.user?.id;
+	/** @type {Array<{id: string, name: string, email: string, role: string, joined: string, avatar: string, isSelf: boolean, editingRole: boolean}>} */
 	let users = Array.isArray(data.users)
 		? data.users.map((u) => ({
 				id: u.user.id,
@@ -49,21 +51,17 @@
 			}))
 		: [];
 
-	// Map roles to icons (cover all UserRole enum values)
+	// Map roles to icons (only ADMIN and USER exist in schema)
+	/** @type {Record<string, any>} */
 	const roleIcons = {
 		ADMIN: Shield,
-		USER: User,
-		SALES_REP: Briefcase,
-		SUPPORT_REP: Headphones,
-		READ_ONLY: User
+		USER: User
 	};
 
+	/** @type {Record<string, string>} */
 	const roleColors = {
 		ADMIN: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800',
-		USER: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800',
-		SALES_REP: 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800',
-		SUPPORT_REP: 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800',
-		READ_ONLY: 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'
+		USER: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800'
 	};
 </script>
 
@@ -306,7 +304,7 @@
 										<td class="px-6 py-4 whitespace-nowrap">
 											{#if user.isSelf}
 												<span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium {roleColors[user.role]}">
-													{#snippet roleIcon(role)}
+													{#snippet roleIcon(/** @type {string} */ role)}
 														{@const RoleIcon = roleIcons[role] || User}
 														<RoleIcon class="h-3.5 w-3.5" />
 													{/snippet}
@@ -325,9 +323,6 @@
 														>
 															<option value="USER" selected={user.role === 'USER'}>User</option>
 															<option value="ADMIN" selected={user.role === 'ADMIN'}>Admin</option>
-															<option value="SALES_REP" selected={user.role === 'SALES_REP'}>Sales Rep</option>
-															<option value="SUPPORT_REP" selected={user.role === 'SUPPORT_REP'}>Support Rep</option>
-															<option value="READ_ONLY" selected={user.role === 'READ_ONLY'}>Read Only</option>
 														</select>
 														<button 
 															type="submit" 
@@ -352,7 +347,7 @@
 														onclick={() => { users[i].editingRole = true }}
 														title="Click to edit role"
 													>
-														{#snippet roleIcon(role)}
+														{#snippet roleIcon(/** @type {string} */ role)}
 															{@const RoleIcon = roleIcons[role] || User}
 															<RoleIcon class="h-3.5 w-3.5" />
 														{/snippet}

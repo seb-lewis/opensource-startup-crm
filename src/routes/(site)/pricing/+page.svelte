@@ -22,11 +22,15 @@
     Infinity
   } from '@lucide/svelte';
 
+  /** @type {number|null} */
   let activeFaq = null;
   let teamSize = 5;
   let selectedCompetitor = "Enterprise CRM A";
   let calculatedSavings = 1500;
 
+  /**
+   * @param {number} index
+   */
   function toggleFaq(index) {
     activeFaq = activeFaq === index ? null : index;
   }
@@ -41,7 +45,7 @@
     }
   }
 
-  $: updateSavings(teamSize, selectedCompetitor);
+  $: if (teamSize && selectedCompetitor) updateSavings();
 </script>
 
 <svelte:head>

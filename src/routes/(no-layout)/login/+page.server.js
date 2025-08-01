@@ -8,6 +8,10 @@ import { env } from '$env/dynamic/private';
 import { v4 as uuidv4 } from 'uuid';
 
 
+/**
+ * @param {Object} params - OAuth parameters
+ * @param {string} params.access_token - Access token
+ */
 async function fetchUserData(params) {
   const url = 'https://www.googleapis.com/oauth2/v1/userinfo'
 

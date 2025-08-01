@@ -26,13 +26,16 @@
     Cog,
     Layout,
     FileCode,
-    Globe,
     ArrowRight
   } from '@lucide/svelte';
 
+  /** @type {number|null} */
   let activeFaq = null;
   let mounted = false;
 
+  /**
+   * @param {number} index
+   */
   function toggleFaq(index) {
     activeFaq = activeFaq === index ? null : index;
   }

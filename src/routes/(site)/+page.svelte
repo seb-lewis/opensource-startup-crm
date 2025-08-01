@@ -19,10 +19,15 @@
     MessageCircle,
     Github
   } from '@lucide/svelte';
+  import { Download } from '@lucide/svelte';
   
+  /** @type {number|null} */
   let activeFaq = null;
   let mounted = false;
 
+  /**
+   * @param {number} index
+   */
   function toggleFaq(index) {
     activeFaq = activeFaq === index ? null : index;
   }
@@ -308,8 +313,8 @@
       <!-- Mobile CRM & Cloud Access -->
       <div class="bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-gray-100 group relative overflow-hidden">
         <div class="absolute top-4 right-4">
-          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
-            Coming Soon
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+            Available Now
           </span>
         </div>
         
@@ -318,22 +323,198 @@
         </div>
         
         <h3 class="text-2xl font-bold text-gray-900 mb-4">Mobile CRM & Cloud Access</h3>
-        <p class="text-gray-600 mb-6 leading-relaxed">Access your CRM data anywhere with our responsive, mobile-optimized interface. Work offline, sync data automatically, and manage your business on-the-go. Perfect for sales teams, remote workers, and field service management.</p>
+        <p class="text-gray-600 mb-6 leading-relaxed">Access your CRM data anywhere with our native mobile app and responsive web interface. Work offline, sync data automatically, and manage your business on-the-go. Perfect for sales teams, remote workers, and field service management.</p>
         
         <ul class="space-y-2">
           <li class="flex items-center text-sm text-gray-700">
             <Check class="w-4 h-4 text-green-500 mr-2" />
-            Offline Access
-          </li>
-          <li class="flex items-center text-sm text-gray-700">
-            <Check class="w-4 h-4 text-green-500 mr-2" />
-            Real-time Sync
+            Native Mobile App
           </li>
           <li class="flex items-center text-sm text-gray-700">
             <Check class="w-4 h-4 text-green-500 mr-2" />
             Cross-platform Support
           </li>
         </ul>
+        
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <a href="https://play.google.com/store/apps/details?id=io.bottlecrm" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold text-sm">
+            <Download class="w-4 h-4 mr-1" />
+            Download Mobile App
+            <ChevronRight class="w-4 h-4 ml-1" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mobile App Section -->
+<section class="py-20 bg-gradient-to-br from-indigo-600 via-purple-700 to-blue-800 text-white relative overflow-hidden">
+  <div class="absolute inset-0 bg-black/10"></div>
+  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+  
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
+        <Smartphone class="w-5 h-5 mr-2" />
+        <span class="text-sm font-medium">📱 Now Available on Mobile</span>
+      </div>
+      
+      <h2 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+        Take Your CRM <span class="text-yellow-300">On The Go</span>
+      </h2>
+      <p class="text-xl md:text-2xl mb-8 text-blue-100 leading-relaxed max-w-4xl mx-auto">
+        Introducing the BottleCRM mobile app - manage your customers, leads, and sales pipeline from anywhere. 
+        Built with Flutter for seamless cross-platform performance.
+      </p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <!-- Left side - App features -->
+      <div>
+        <h3 class="text-3xl font-bold mb-8">Mobile CRM Features</h3>
+        
+        <div class="space-y-6">
+          <div class="flex items-start space-x-4">
+            <div class="bg-white/20 rounded-lg p-3 flex-shrink-0">
+              <Users class="w-6 h-6" />
+            </div>
+            <div>
+              <h4 class="text-xl font-semibold mb-2">Manage Contacts & Leads</h4>
+              <p class="text-blue-100">Access your complete customer database, add new leads, and update contact information on the go.</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start space-x-4">
+            <div class="bg-white/20 rounded-lg p-3 flex-shrink-0">
+              <BarChart3 class="w-6 h-6" />
+            </div>
+            <div>
+              <h4 class="text-xl font-semibold mb-2">Track Sales Pipeline</h4>
+              <p class="text-blue-100">Monitor deal progress, update opportunity stages, and never miss a follow-up while on the field.</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start space-x-4">
+            <div class="bg-white/20 rounded-lg p-3 flex-shrink-0">
+              <CheckSquare class="w-6 h-6" />
+            </div>
+            <div>
+              <h4 class="text-xl font-semibold mb-2">Task Management</h4>
+              <p class="text-blue-100">Create tasks, set reminders, and manage your daily schedule with integrated task management.</p>
+            </div>
+          </div>
+          
+          
+        </div>
+        
+        <div class="mt-10 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+          <a href="https://play.google.com/store/apps/details?id=io.bottlecrm" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-4 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 hover:scale-105 shadow-lg">
+            <Download class="w-5 h-5 mr-2" />
+            Download on Google Play
+          </a>
+          <a href="https://github.com/MicroPyramid/flutter-crm" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-200">
+            <Github class="w-5 h-5 mr-2" />
+            View Mobile Source
+          </a>
+        </div>
+      </div>
+      
+      <!-- Right side - App showcase -->
+      <div class="flex justify-center lg:justify-end">
+        <div class="relative">
+          <!-- Phone mockup -->
+          <div class="bg-gray-900 rounded-[3rem] p-4 shadow-2xl">
+            <div class="bg-white rounded-[2.5rem] overflow-hidden w-80 h-[640px] relative">
+              <!-- Status bar -->
+              <div class="bg-gray-100 h-8 flex items-center justify-between px-6 text-xs text-gray-600">
+                <span>9:41</span>
+                <div class="flex space-x-1">
+                  <div class="w-4 h-2 bg-gray-400 rounded-sm"></div>
+                  <div class="w-4 h-2 bg-gray-400 rounded-sm"></div>
+                  <div class="w-4 h-2 bg-gray-400 rounded-sm"></div>
+                </div>
+              </div>
+              
+              <!-- App content -->
+              <div class="p-6 bg-gradient-to-br from-blue-50 to-indigo-100 h-full">
+                <div class="text-center mb-8">
+                  <div class="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                    <span class="text-white font-bold text-xl">B</span>
+                  </div>
+                  <h3 class="text-xl font-bold text-gray-900">BottleCRM</h3>
+                  <p class="text-gray-600 text-sm">Mobile CRM App</p>
+                </div>
+                
+                <!-- Mock UI elements -->
+                <div class="space-y-4">
+                  <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="w-24 h-3 bg-blue-200 rounded"></div>
+                      <div class="w-16 h-3 bg-green-200 rounded"></div>
+                    </div>
+                    <div class="w-32 h-2 bg-gray-200 rounded mb-2"></div>
+                    <div class="w-20 h-2 bg-gray-200 rounded"></div>
+                  </div>
+                  
+                  <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="w-28 h-3 bg-purple-200 rounded"></div>
+                      <div class="w-12 h-3 bg-yellow-200 rounded"></div>
+                    </div>
+                    <div class="w-36 h-2 bg-gray-200 rounded mb-2"></div>
+                    <div class="w-24 h-2 bg-gray-200 rounded"></div>
+                  </div>
+                  
+                  <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="w-20 h-3 bg-indigo-200 rounded"></div>
+                      <div class="w-18 h-3 bg-red-200 rounded"></div>
+                    </div>
+                    <div class="w-40 h-2 bg-gray-200 rounded mb-2"></div>
+                    <div class="w-16 h-2 bg-gray-200 rounded"></div>
+                  </div>
+                </div>
+                
+                <!-- Bottom navigation mockup -->
+                <div class="absolute bottom-8 left-6 right-6">
+                  <div class="bg-white rounded-full p-2 shadow-lg flex justify-around">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full"></div>
+                    <div class="w-8 h-8 bg-gray-100 rounded-full"></div>
+                    <div class="w-8 h-8 bg-gray-100 rounded-full"></div>
+                    <div class="w-8 h-8 bg-gray-100 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Floating elements -->
+          <div class="absolute -top-4 -right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold animate-bounce">
+            Free Download
+          </div>
+          <div class="absolute -bottom-4 -left-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+            Open Source
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stats row -->
+    <div class="mt-16 text-center">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+        <div>
+          <div class="text-3xl font-bold text-yellow-300 mb-2">Flutter</div>
+          <div class="text-blue-100">Cross-platform mobile framework</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-yellow-300 mb-2">Free</div>
+          <div class="text-blue-100">No app store fees or subscriptions</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-yellow-300 mb-2">Open Source</div>
+          <div class="text-blue-100">Fully customizable mobile CRM</div>
+        </div>
       </div>
     </div>
   </div>

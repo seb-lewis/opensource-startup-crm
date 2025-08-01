@@ -106,7 +106,7 @@
                                     <div class="flex items-center p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20"
                                          in:fly="{{ y: 30, duration: 600, delay: 600 + (i * 100) }}">
                                         <div class="rounded-lg bg-white/20 p-2 mr-3">
-                                            {#snippet featureIcon(icon)}
+                                            {#snippet featureIcon(/** @type {any} */ icon)}
                                                 {@const FeatureIcon = icon}
                                                 <FeatureIcon class="w-5 h-5" />
                                             {/snippet}

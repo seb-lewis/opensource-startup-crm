@@ -27,11 +27,13 @@
     Send
   } from '@lucide/svelte';
 
+  /** @type {any} */
   export let data;
+  /** @type {any} */
   export let form;
   let users = Array.isArray(data.users) ? data.users : [];
 
-  const { account, contacts, opportunities, quotes, tasks, cases } = data;
+  const { account, contacts, opportunities = [], quotes, tasks, cases } = data;
   let comments = data.comments;
 
   // Form state
