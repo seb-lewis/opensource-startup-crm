@@ -1,8 +1,7 @@
 <script>
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
-  import { Search, Plus, Eye, Edit, Trash2, ExternalLink, Phone, Mail, MapPin, Calendar, Users, TrendingUp, Building2, Globe, DollarSign, ChevronUp, ChevronDown, Filter } from '@lucide/svelte';
+  import { Search, Plus, Eye, Edit, Phone, MapPin, Calendar, Users, TrendingUp, Building2, Globe, DollarSign, ChevronUp, ChevronDown, Filter } from '@lucide/svelte';
   
   export let data;
   
@@ -12,11 +11,16 @@
   let isLoading = false;
   let statusFilter = $page.url.searchParams.get('status') || 'all';
   let searchQuery = $page.url.searchParams.get('q') || '';
+  /** @type {NodeJS.Timeout | undefined} */
   let searchTimeout;
   
+  /**
+   * @param {string} value
+   */
   function debounceSearch(value) {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
+      // eslint-disable-next-line svelte/prefer-svelte-reactivity
       const params = new URLSearchParams($page.url.searchParams);
       if (value.trim()) {
         params.set('q', value.trim());
@@ -30,6 +34,7 @@
   
   function updateQueryParams() {
     isLoading = true;
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const params = new URLSearchParams($page.url.searchParams);
     params.set('sort', sortField);
     params.set('order', sortOrder);
@@ -39,14 +44,21 @@
     goto(`?${params.toString()}`, { keepFocus: true });
   }
   
+  /**
+   * @param {number} newPage
+   */
   function changePage(newPage) {
     if (newPage < 1 || newPage > pagination.totalPages) return;
     
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const params = new URLSearchParams($page.url.searchParams);
     params.set('page', newPage.toString());
     goto(`?${params.toString()}`, { keepFocus: true });
   }
   
+  /**
+   * @param {string} field
+   */
   function toggleSort(field) {
     if (sortField === field) {
       sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
@@ -57,6 +69,9 @@
     updateQueryParams();
   }
   
+  /**
+   * @param {number | null | undefined} amount
+   */
   function formatCurrency(amount) {
     if (!amount) return '-';
     return new Intl.NumberFormat('en-US', {
@@ -67,6 +82,9 @@
     }).format(amount);
   }
   
+  /**
+   * @param {string | Date | null | undefined} date
+   */
   function formatDate(date) {
     if (!date) return '-';
     return new Intl.DateTimeFormat('en-US', {
@@ -107,7 +125,7 @@
             placeholder="Search accounts..."
             class="pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[250px]"
             bind:value={searchQuery}
-            oninput={(e) => debounceSearch(e.target.value)}
+            oninput={(e) => debounceSearch(/** @type {HTMLInputElement} */ (e.target).value)}
           />
         </div>
         
@@ -242,7 +260,7 @@
               </td>
             </tr>
           {:else}
-            {#each accounts as account}
+            {#each accounts as account (account.id)}
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors {account.closedAt ? 'opacity-60' : ''}">
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">

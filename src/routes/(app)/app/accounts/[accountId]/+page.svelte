@@ -1,14 +1,9 @@
 <script>
-  import { page } from '$app/stores';
-  import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
-  import { invalidateAll } from '$app/navigation';
   import { 
     ArrowLeft, 
     Edit, 
     Lock, 
     Unlock, 
-    Trash2, 
     Users, 
     Target, 
     DollarSign, 
@@ -18,9 +13,7 @@
     Phone,
     Mail,
     Globe,
-    Building,
     MapPin,
-    Calendar,
     MessageSquare,
     CheckSquare,
     FolderOpen,
@@ -31,16 +24,14 @@
   export let data;
   /** @type {any} */
   export let form;
-  let users = Array.isArray(data.users) ? data.users : [];
 
-  const { account, contacts, opportunities = [], quotes, tasks, cases } = data;
+  const { account, contacts, opportunities = [], tasks, cases } = data;
   let comments = data.comments;
 
   // Form state
   let showCloseModal = false;
   let closureReason = '';
   let closeError = '';
-  let isClosing = false;
 
   // Comment functionality
   let newComment = '';
@@ -74,14 +65,17 @@
         const data = await res.json().catch(() => ({}));
         commentError = data?.error || data?.message || 'Failed to add comment.';
       }
-    } catch (err) {
+    } catch {
       commentError = 'Failed to add comment.';
     } finally {
       isSubmittingComment = false;
     }
   }
 
-  // Format date string
+  /**
+   * Format date string
+   * @param {string | Date | null | undefined} dateStr
+   */
   function formatDate(dateStr) {
     if (!dateStr) return 'N/A';
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -91,7 +85,10 @@
     });
   }
 
-  // Format currency
+  /**
+   * Format currency
+   * @param {number | null | undefined} value
+   */
   function formatCurrency(value) {
     if (!value) return '$0';
     return new Intl.NumberFormat('en-US', {
@@ -101,7 +98,10 @@
     }).format(value);
   }
 
-  // Badge color functions
+  /**
+   * Badge color functions
+   * @param {string | null | undefined} stage
+   */
   function getStageBadgeColor(stage) {
     switch (stage?.toLowerCase()) {
       case 'prospecting': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400';
@@ -114,24 +114,14 @@
     }
   }
 
+  /**
+   * @param {string | null | undefined} status
+   */
   function getCaseStatusBadgeColor(status) {
     switch (status?.toLowerCase()) {
       case 'open': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
       case 'in_progress': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400';
       case 'closed': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
-    }
-  }
-
-  function getQuoteStatusBadgeColor(status) {
-    switch (status?.toLowerCase()) {
-      case 'draft': return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
-      case 'needs_review': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
-      case 'in_review': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400';
-      case 'approved': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
-      case 'rejected': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
-      case 'presented': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400';
-      case 'accepted': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400';
       default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   }
@@ -431,7 +421,7 @@
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                      {#each contacts as contact}
+                      {#each contacts as contact (contact.id)}
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                           <td class="py-4 font-medium text-gray-900 dark:text-white">
                             <a href="/app/contacts/{contact.id}" class="hover:text-blue-600 dark:hover:text-blue-400 hover:underline">
@@ -501,7 +491,7 @@
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                      {#each opportunities as opportunity}
+                      {#each opportunities as opportunity (opportunity.id)}
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                           <td class="py-4 font-medium text-gray-900 dark:text-white">
                             <a href="/app/opportunities/{opportunity.id}" class="hover:text-blue-600 dark:hover:text-blue-400 hover:underline">
@@ -554,7 +544,7 @@
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                      {#each tasks as task}
+                      {#each tasks as task (task.id)}
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                           <td class="py-4 font-medium text-gray-900 dark:text-white">
                             <a href="/app/tasks/{task.id}" class="hover:text-blue-600 dark:hover:text-blue-400 hover:underline">
@@ -619,7 +609,7 @@
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                      {#each cases as caseItem}
+                      {#each cases as caseItem (caseItem.id)}
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                           <td class="py-4 font-medium text-gray-900 dark:text-white">
                             <a href="/app/cases/{caseItem.id}" class="hover:text-blue-600 dark:hover:text-blue-400 hover:underline">
@@ -688,7 +678,7 @@
                   </div>
                 {:else}
                   <div class="space-y-4">
-                    {#each comments as comment}
+                    {#each comments as comment (comment.id)}
                       <div class="bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4">
                         <div class="flex justify-between items-start mb-2">
                           <div class="flex items-center space-x-2">
@@ -742,7 +732,7 @@
               <div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Pipeline Value</p>
                 <p class="text-2xl font-bold text-gray-900 dark:text-white">
-                  {formatCurrency(opportunities.reduce((sum, opp) => sum + (opp.amount || 0), 0))}
+                  {formatCurrency(opportunities.reduce(/** @param {number} sum @param {any} opp */ (sum, opp) => sum + (opp.amount || 0), 0))}
                 </p>
               </div>
               <DollarSign class="w-8 h-8 text-yellow-500" />
@@ -752,7 +742,7 @@
               <div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Open Cases</p>
                 <p class="text-2xl font-bold text-gray-900 dark:text-white">
-                  {cases.filter(c => c.status !== 'CLOSED').length}
+                  {cases.filter(/** @param {any} c */ (c) => c.status !== 'CLOSED').length}
                 </p>
               </div>
               <AlertTriangle class="w-8 h-8 text-red-500" />
