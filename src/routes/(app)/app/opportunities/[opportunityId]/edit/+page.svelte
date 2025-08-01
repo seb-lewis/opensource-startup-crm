@@ -10,14 +10,24 @@
     ? new Date(opportunity.closeDate).toISOString().slice(0, 10)
     : '';
   
-  $: opportunity.closeDate = closeDateStr;
+  $: {
+    if (closeDateStr) {
+      opportunity.closeDate = new Date(closeDateStr);
+    } else {
+      opportunity.closeDate = null;
+    }
+  }
 
+  /**
+   * @param {SubmitEvent} e
+   */
   async function handleSubmit(e) {
     e.preventDefault();
     isSubmitting = true;
     error = '';
     
-    const formData = new FormData(e.target);
+    const target = /** @type {HTMLFormElement} */ (e.target);
+    const formData = new FormData(target);
     const res = await fetch('', { method: 'POST', body: formData });
     
     if (res.ok) {
@@ -307,8 +317,3 @@
   </div>
 </div>
 
-<style>
-  @media (max-width: 640px) {
-    .max-w-xl { max-width: 100%; padding: 0.5rem; }
-  }
-</style>

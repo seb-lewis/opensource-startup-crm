@@ -8,6 +8,7 @@
   export let form;
 
   // Reactive assignment for task to allow modifications in edit mode
+  /** @type {any} */
   $: task = data.task;
   // Comments are now part of the task object from the server
 
@@ -17,13 +18,17 @@
   // form submission with `enhance` will handle it.
 
   // Helper to format date for display, if not already a string
+  /**
+   * @param {string | Date | null} dateString - The date to format
+   * @returns {string} Formatted date string
+   */
   function formatDate(dateString) {
     if (!dateString) return 'N/A';
     // If it's already YYYY-MM-DD, it's fine. Otherwise, format it.
     try {
       return new Date(dateString).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
     } catch (e) {
-      return dateString; // Fallback to original string if not a valid date
+      return typeof dateString === 'string' ? dateString : 'N/A'; // Fallback to original string if not a valid date
     }
   }
 </script>
@@ -48,7 +53,7 @@
         </div>
         <button 
           class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-600 dark:bg-blue-500 text-white font-medium shadow-sm hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors text-sm" 
-          onclick={() => goto(`/app/tasks/${task.id}/edit`)}
+          onclick={() => task && goto(`/app/tasks/${task.id}/edit`)}
         >
           <Edit3 class="w-4 h-4" />
           <span class="hidden sm:inline">Edit</span>
@@ -154,13 +159,16 @@
 
         <div class="p-4">
           {#if form?.message}
-            <div class="mb-4 p-3 rounded-lg {form.error ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800' : 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800'}">
+            <div class="mb-4 p-3 rounded-lg {form.success === false ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800' : 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800'}">
               <p class="text-xs font-medium">{form.message}</p>
             </div>
           {/if}
           
-          {#if form?.commentBody && form.error}
-            {@const _ = newComment = form.commentBody}
+          {#if form?.fieldError && Array.isArray(form.fieldError) && form.fieldError.includes('commentBody')}
+            {@const formData = /** @type {any} */ (form)}
+            {#if 'commentBody' in formData}
+              {@const _ = newComment = /** @type {string} */ (formData.commentBody || '')}
+            {/if}
           {/if}
 
           <!-- Comments List -->

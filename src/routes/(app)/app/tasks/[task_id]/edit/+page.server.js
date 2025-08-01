@@ -18,9 +18,10 @@ export async function load({ params, locals }) {
   }
 
   // Format dueDate for input[type=date]
-  if (task.dueDate) {
-    task.dueDate = new Date(task.dueDate).toISOString().split('T')[0];
-  }
+  const formattedTask = {
+    ...task,
+    dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : task.dueDate
+  };
 
   const users = await prisma.user.findMany({
     where: {
@@ -39,7 +40,7 @@ export async function load({ params, locals }) {
   });
 
   return {
-    task,
+    task: formattedTask,
     users,
     accounts
   };
@@ -96,7 +97,7 @@ export const actions = {
     accountId = accountId === '' || accountId === 'null' ? null : accountId;
 
     // Convert dueDate to ISOString or null if empty
-    dueDate = dueDate ? new Date(dueDate).toISOString() : null;
+    dueDate = dueDate && typeof dueDate === 'string' && dueDate.trim() !== '' ? new Date(dueDate).toISOString() : null;
 
     try {
       await prisma.task.update({

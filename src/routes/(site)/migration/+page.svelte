@@ -24,15 +24,18 @@
     Unlock,
     ChevronDown,
     Mail,
-    Calendar,
-    BarChart3
+    Calendar
   } from '@lucide/svelte';
 
+  /** @type {number|null} */
   let activeFaq = null;
   let mounted = false;
   let emailForUpdates = '';
   let subscribed = false;
 
+  /**
+   * @param {number} index
+   */
   function toggleFaq(index) {
     activeFaq = activeFaq === index ? null : index;
   }

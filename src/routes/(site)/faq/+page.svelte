@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { 
-    Search,
     ChevronDown,
     HelpCircle,
     DollarSign,
@@ -12,19 +11,16 @@
     Download,
     Github,
     MessageCircle,
-    Check,
-    X,
     Zap,
-    Shield,
-    Cloud,
-    Users,
-    BookOpen,
-    AlertCircle,
     ExternalLink
   } from '@lucide/svelte';
 
+  /** @type {string|null} */
   let activeFaq = null;
 
+  /**
+   * @param {string} faqId
+   */
   function toggleFaq(faqId) {
     activeFaq = activeFaq === faqId ? null : faqId;
   }

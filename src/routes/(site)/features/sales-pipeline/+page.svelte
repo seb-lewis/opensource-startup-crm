@@ -36,6 +36,7 @@
   } from '@lucide/svelte';
 
   let mounted = false;
+  /** @type {any} */
   let selectedDeal = null;
   let showDealModal = false;
 
@@ -43,6 +44,10 @@
     mounted = true;
   });
 
+  /**
+   * Opens the deal details modal
+   * @param {any} deal - The deal object to display
+   */
   function openDealDetails(deal) {
     selectedDeal = deal;
     showDealModal = true;
@@ -53,6 +58,11 @@
     selectedDeal = null;
   }
 
+  /**
+   * Formats a number as currency
+   * @param {number} value - The value to format
+   * @returns {string} The formatted currency string
+   */
   function formatCurrency(value) {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -1074,22 +1084,22 @@
               <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-sm font-medium text-gray-700">Deal Value</label>
+                    <div class="block text-sm font-medium text-gray-700">Deal Value</div>
                     <p class="text-lg font-semibold text-gray-900">{formatCurrency(selectedDeal.value)}</p>
                   </div>
                   <div>
-                    <label class="block text-sm font-medium text-gray-700">Probability</label>
+                    <div class="block text-sm font-medium text-gray-700">Probability</div>
                     <p class="text-lg font-semibold text-gray-900">{selectedDeal.probability}%</p>
                   </div>
                 </div>
                 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700">Primary Contact</label>
+                  <div class="block text-sm font-medium text-gray-700">Primary Contact</div>
                   <p class="text-gray-900">{selectedDeal.contact}</p>
                 </div>
                 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700">Last Activity</label>
+                  <div class="block text-sm font-medium text-gray-700">Last Activity</div>
                   <p class="text-gray-900">{selectedDeal.lastActivity}</p>
                 </div>
               </div>

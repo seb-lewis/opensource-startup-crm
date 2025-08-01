@@ -66,10 +66,10 @@ export const actions = {
             // Store submission in database
             const submission = await prisma.contactSubmission.create({
                 data: {
-                    name: name.toString().trim(),
-                    email: email.toString().trim(),
-                    reason: serviceType.toString().trim(),
-                    message: message.toString().trim(),
+                    name: name?.toString().trim() || '',
+                    email: email?.toString().trim() || '',
+                    reason: serviceType?.toString().trim() || '',
+                    message: message?.toString().trim() || '',
                     ipAddress,
                     userAgent,
                     referrer
@@ -86,7 +86,7 @@ export const actions = {
             console.error('Error saving contact submission:', error);
             
             // More specific error handling
-            if (error.code === 'P1001') {
+            if (error && typeof error === 'object' && 'code' in error && error.code === 'P1001') {
                 return fail(500, {
                     error: 'Database connection failed. Please try again later.',
                     name: name?.toString() || '',

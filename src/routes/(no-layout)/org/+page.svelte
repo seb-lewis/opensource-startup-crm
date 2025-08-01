@@ -9,6 +9,11 @@
     const { orgs } = data;
     
     // Function to handle organization selection
+    /**
+     * @param {Object} org - Organization object
+     * @param {string} org.id - Organization ID
+     * @param {string} org.name - Organization name
+     */
     function selectOrg(org) {
         if (browser) {
             // Set both org id and org name in cookies

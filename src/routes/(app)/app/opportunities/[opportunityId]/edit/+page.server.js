@@ -1,9 +1,21 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 
-export async function load({ params }) {
-  const opportunity = await prisma.opportunity.findUnique({
-    where: { id: params.opportunityId },
+/**
+ * @param {Object} options
+ * @param {Record<string, string>} options.params
+ * @param {App.Locals} options.locals
+ */
+export async function load({ params, locals }) {
+  if (!locals.org?.id) {
+    throw error(403, 'Organization access required');
+  }
+
+  const opportunity = await prisma.opportunity.findFirst({
+    where: { 
+      id: params.opportunityId,
+      organizationId: locals.org.id
+    },
     include: {
       account: {
         select: {
@@ -28,15 +40,26 @@ export async function load({ params }) {
 }
 
 export const actions = {
-  default: async ({ request, params }) => {
+  /**
+   * @param {Object} options
+   * @param {Request} options.request
+   * @param {Record<string, string>} options.params
+   * @param {App.Locals} options.locals
+   */
+  default: async ({ request, params, locals }) => {
+    if (!locals.org?.id) {
+      return fail(403, { error: 'Organization access required' });
+    }
+
     const form = await request.formData();
     
     const name = form.get('name')?.toString().trim();
-    const amount = form.get('amount') ? parseFloat(form.get('amount')) : null;
-    const expectedRevenue = form.get('expectedRevenue') ? parseFloat(form.get('expectedRevenue')) : null;
+    const amount = form.get('amount') ? parseFloat(form.get('amount')?.toString() || '') : null;
+    const expectedRevenue = form.get('expectedRevenue') ? parseFloat(form.get('expectedRevenue')?.toString() || '') : null;
     const stage = form.get('stage')?.toString();
-    const probability = form.get('probability') ? parseFloat(form.get('probability')) : null;
-    const closeDate = form.get('closeDate') ? new Date(form.get('closeDate')) : null;
+    const probability = form.get('probability') ? parseFloat(form.get('probability')?.toString() || '') : null;
+    const closeDateValue = form.get('closeDate')?.toString();
+    const closeDate = closeDateValue ? new Date(closeDateValue) : null;
     const leadSource = form.get('leadSource')?.toString() || null;
     const forecastCategory = form.get('forecastCategory')?.toString() || null;
     const type = form.get('type')?.toString() || null;
@@ -49,6 +72,12 @@ export const actions = {
 
     if (!stage) {
       return fail(400, { message: 'Stage is required.' });
+    }
+
+    // Validate stage is a valid enum value
+    const validStages = ['PROSPECTING', 'QUALIFICATION', 'PROPOSAL', 'NEGOTIATION', 'CLOSED_WON', 'CLOSED_LOST'];
+    if (!validStages.includes(stage)) {
+      return fail(400, { message: 'Invalid stage selected.' });
     }
 
     // Validate probability range
@@ -66,13 +95,27 @@ export const actions = {
     }
 
     try {
+      // Verify the opportunity exists and belongs to the organization
+      const existingOpportunity = await prisma.opportunity.findFirst({
+        where: { 
+          id: params.opportunityId,
+          organizationId: locals.org.id
+        }
+      });
+
+      if (!existingOpportunity) {
+        return fail(404, { message: 'Opportunity not found' });
+      }
+
+      const opportunityStage = /** @type {import('@prisma/client').OpportunityStage} */ (stage);
+      
       await prisma.opportunity.update({
         where: { id: params.opportunityId },
         data: { 
           name, 
           amount, 
           expectedRevenue,
-          stage, 
+          stage: opportunityStage, 
           probability, 
           closeDate, 
           leadSource,

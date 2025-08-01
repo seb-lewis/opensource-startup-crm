@@ -1,15 +1,12 @@
 <!-- contact page -->
 <script>
   import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
+  import { fly } from 'svelte/transition';
   import { enhance } from '$app/forms';
   import { 
     MessageCircle, 
     Mail, 
-    Phone, 
-    Github,
     Clock,
-    MapPin,
     Send,
     Check,
     Star,
@@ -19,11 +16,9 @@
     Code,
     Server,
     Users,
-    BookOpen,
     Shield,
-    ChevronRight,
     AlertCircle,
-    Calendar,
+    Github,
     Download
   } from '@lucide/svelte';
 
@@ -477,9 +472,10 @@
           
           <!-- Service Type -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              What can we help you with? *
-            </label>
+            <fieldset>
+              <legend class="block text-sm font-medium text-gray-700 mb-2">
+                What can we help you with? *
+              </legend>
             <div class="grid gap-3 md:grid-cols-2">
               <label class="flex items-start p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 {formData.serviceType === 'professional-setup' ? 'border-blue-500 bg-blue-50' : ''}">
                 <input type="radio" name="serviceType" bind:group={formData.serviceType} value="professional-setup" class="mt-1 mr-3">
@@ -516,6 +512,7 @@
             {#if form?.errors?.serviceType}
               <p class="text-red-500 text-sm mt-1">{form.errors.serviceType}</p>
             {/if}
+            </fieldset>
           </div>
           
           <div>
@@ -678,7 +675,7 @@
         <Download class="w-6 h-6 mr-3" />
         Try BottleCRM Free
       </a>
-      <button onclick={() => document.querySelector('form').scrollIntoView({behavior: 'smooth'})} class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold rounded-xl text-white border-2 border-white hover:bg-white/10 transition-all duration-200">
+      <button onclick={() => document.querySelector('form')?.scrollIntoView({behavior: 'smooth'})} class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold rounded-xl text-white border-2 border-white hover:bg-white/10 transition-all duration-200">
         <Send class="w-6 h-6 mr-3" />
         Get Professional Help
       </button>

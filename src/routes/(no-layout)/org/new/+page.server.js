@@ -23,7 +23,15 @@ export const actions = {
     
     // Get the submitted form data
     const formData = await request.formData();
-    const orgName = formData.get('org_name');
+    const orgName = formData.get('org_name')?.toString();
+
+    if (!orgName) {
+      return {
+        error: {
+          name: 'Organization name is required'
+        }
+      };
+    }
 
     try {
       // Check if organization with the same name already exists
