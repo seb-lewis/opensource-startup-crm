@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   export let data;
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
@@ -9,10 +9,11 @@
   let accountId = data.caseItem.accountId;
   let dueDate = '';
   if (data.caseItem.dueDate) {
-    if (typeof data.caseItem.dueDate === 'string') {
-      dueDate = data.caseItem.dueDate.split('T')[0];
-    } else if (data.caseItem.dueDate instanceof Date) {
-      dueDate = data.caseItem.dueDate.toISOString().split('T')[0];
+    const dueDateValue: any = data.caseItem.dueDate;
+    if (typeof dueDateValue === 'string') {
+      dueDate = dueDateValue.split('T')[0];
+    } else if (dueDateValue instanceof Date) {
+      dueDate = dueDateValue.toISOString().split('T')[0];
     }
   }
   let assignedId = data.caseItem.ownerId;
@@ -28,7 +29,10 @@
   }
 
   function confirmCloseCase() {
-    document.getElementById('close-case-form').submit();
+    const form = document.getElementById('close-case-form');
+    if (form && 'submit' in form && typeof form.submit === 'function') {
+      form.submit();
+    }
     showCloseConfirmation = false;
   }
 
@@ -41,7 +45,10 @@
   }
 
   function confirmReopenCase() {
-    document.getElementById('reopen-case-form').submit();
+    const form = document.getElementById('reopen-case-form');
+    if (form && 'submit' in form && typeof form.submit === 'function') {
+      form.submit();
+    }
     showReopenConfirmation = false;
   }
 
@@ -80,7 +87,7 @@
         return async ({ result, update }) => {
           loading = false;
           if (result.type === 'failure') {
-            errorMsg = result.data?.error || 'An error occurred';
+            errorMsg = (result.data as any)?.error || 'An error occurred';
           } else if (result.type === 'success') {
             successMsg = 'Case updated successfully!';
           }

@@ -19,22 +19,22 @@
     $: metrics = data.metrics || {};
     $: recentData = data.recentData || {};
     
-    function formatCurrency(amount) {
+    function formatCurrency(/** @type {any} */ amount) {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD'
         }).format(amount);
     }
     
-    function formatDate(date) {
+    function formatDate(/** @type {any} */ date) {
         return new Date(date).toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric'
         });
     }
     
-    function getStatusColor(status) {
-        const colors = {
+    function getStatusColor(/** @type {any} */ status) {
+        const colors = /** @type {{ [key: string]: string }} */ ({
             'NEW': 'bg-blue-100 text-blue-800',
             'PENDING': 'bg-yellow-100 text-yellow-800',
             'CONTACTED': 'bg-green-100 text-green-800',
@@ -42,7 +42,7 @@
             'High': 'bg-red-100 text-red-800',
             'Normal': 'bg-blue-100 text-blue-800',
             'Low': 'bg-gray-100 text-gray-800'
-        };
+        });
         return colors[status] || 'bg-gray-100 text-gray-800';
     }
 </script>

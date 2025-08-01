@@ -1,7 +1,7 @@
 // Newsletter utility functions for email confirmation and management
 
 /**
- * Generate unsubscribe link for newsletter
+ * Generate unsubscribe link
  * @param {string} token - Confirmation token
  * @param {string} baseUrl - Base URL of the application
  * @returns {string} Unsubscribe URL
@@ -95,14 +95,14 @@ export function generateWelcomeEmail(email, unsubscribeLink) {
 
 /**
  * Generate newsletter template for regular updates
- * @param {object} content - Newsletter content
+ * @param {any} content - Newsletter content
  * @param {string} unsubscribeLink - Unsubscribe link
  * @returns {object} Newsletter template with subject and body
  */
 export function generateNewsletterTemplate(content, unsubscribeLink) {
   const { subject, headline, articles = [], ctaText = 'Learn More', ctaLink = 'https://bottlecrm.io' } = content;
   
-  const articlesHtml = articles.map(article => `
+  const articlesHtml = articles.map(/** @param {any} article */ article => `
     <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #667eea;">
       <h3 style="margin: 0 0 10px 0; color: #333;">${article.title}</h3>
       <p style="margin: 0 0 15px 0; color: #666; line-height: 1.6;">${article.excerpt}</p>

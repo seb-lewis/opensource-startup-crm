@@ -3,7 +3,6 @@ import prisma from '$lib/prisma';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params, url, locals }) {
-  const user = locals.user;
   const org = locals.org;
   try {
     const accountId = params.accountId;
@@ -121,7 +120,10 @@ export async function load({ params, url, locals }) {
     };
   } catch (err) {
     console.error('Error loading account data:', err);
-    throw error(err.status || 500, err.message || 'Error loading account data');
+    const errorMessage = err instanceof Error ? err.message : 'Error loading account data';
+    const statusCode = err && typeof err === 'object' && 'status' in err ? 
+      (typeof err.status === 'number' ? err.status : 500) : 500;
+    throw error(statusCode, errorMessage);
   }
 }
 
@@ -207,7 +209,7 @@ export const actions = {
     }
   },
 
-  reopenAccount: async ({ locals, params }) => {
+  reopenAccount: async ({ request, locals, params }) => {
     try {
       const user = locals.user;
       const org = locals.org;
@@ -257,7 +259,7 @@ export const actions = {
       };
 
       // Update the account to mark it as reopened
-      const updatedAccount = await prisma.account.update({
+      await prisma.account.update({
         where: { id: accountId },
         data: {
           closedAt: null,
@@ -289,7 +291,6 @@ export const actions = {
   },
 
   comment: async ({ request, locals, params }) => {
-    const user = locals.user;
     const org = locals.org;
     // Fallback: fetch account to get organizationId
     const account = await prisma.account.findUnique({

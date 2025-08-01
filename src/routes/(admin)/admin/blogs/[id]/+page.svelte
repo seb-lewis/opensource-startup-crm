@@ -17,10 +17,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex justify-between items-center">
         <nav class="text-sm text-gray-500 dark:text-gray-400">
-          <span>Admin</span> <span class="mx-2">/</span> <span>Blogs</span> <span class="mx-2">/</span> <span class="text-gray-900 dark:text-white">{data.blog.title}</span>
+          <span>Admin</span> <span class="mx-2">/</span> <span>Blogs</span> <span class="mx-2">/</span> <span class="text-gray-900 dark:text-white">{data.blog?.title || 'Blog'}</span>
         </nav>
         <a
-          href={`/admin/blogs/${data.blog.id}/edit`}
+          href={`/admin/blogs/${data.blog?.id}/edit`}
           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
         >
           <Edit size={16} />
@@ -35,15 +35,12 @@
     <!-- Blog Header -->
     <header class="text-center mb-12">
       <div class="mb-4">
-        <a 
-          href="/blog/category/{data.blog.categorySlug}" 
-          class="inline-block px-3 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 font-medium text-sm hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors"
-        >
-          {data.blog.category}
-        </a>
+        <span class="inline-block px-3 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 font-medium text-sm">
+          Blog Post
+        </span>
       </div>
       <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-        {data.blog.title}
+        {data.blog?.title || 'Untitled'}
       </h1>
     </header>
 
@@ -52,7 +49,7 @@
       <!-- Main Content Column -->
       <article class="lg:col-span-8 xl:col-span-9">
         <div class="prose prose-lg dark:prose-invert max-w-none">
-          {#each data.blog.contentBlocks as block}
+          {#each data.blog?.contentBlocks || [] as block}
             <div class="mb-8">
               {#if block.type == "MARKDOWN"}
                 <div class="text-gray-800 dark:text-gray-200 leading-relaxed">
@@ -118,8 +115,8 @@
             <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Blog Details</h3>
             <div class="space-y-3 text-sm">
               <div>
-                <span class="text-gray-600 dark:text-gray-400">Category:</span>
-                <span class="ml-2 text-gray-900 dark:text-white">{data.blog.category}</span>
+                <span class="text-gray-600 dark:text-gray-400">Type:</span>
+                <span class="ml-2 text-gray-900 dark:text-white">Blog Post</span>
               </div>
               <div>
                 <span class="text-gray-600 dark:text-gray-400">Status:</span>
@@ -134,14 +131,14 @@
 </div>
 
 <MetaTags
-  title={data.blog.seoTitle}
+  title={data.blog?.seoTitle || 'Blog Post'}
   titleTemplate="%s | BottleCRM"
-  description={data.blog.seoDescription}
-  canonical={"https://bottlecrm.com/blog/" + data.blog.slug + "/"}
+  description={data.blog?.seoDescription || 'Blog post'}
+  canonical={"https://bottlecrm.com/blog/" + (data.blog?.slug || '') + "/"}
   openGraph={{
-    url: data.blog.slug,
-    title: data.blog.seoTitle,
-    description: data.blog.seoDescription,
+    url: data.blog?.slug || '',
+    title: data.blog?.seoTitle || 'Blog Post',
+    description: data.blog?.seoDescription || 'Blog post',
     images: [
       {
         url: "https://bottlecrm.com/images/logo.png",
@@ -150,14 +147,13 @@
         alt: "BottleCRM - Open Source CRM Solution",
       },
     ],
-    site_name: "BottleCRM",
+    siteName: "BottleCRM",
   }}
   twitter={{
-    handle: "@bottlecrm",
     site: "@bottlecrm",
     cardType: "summary_large_image",
-    title: data.blog.seoTitle,
-    description: data.blog.seoDescription,
+    title: data.blog?.seoTitle || 'Blog Post',
+    description: data.blog?.seoDescription || 'Blog post',
     image: "https://bottlecrm.com/images/logo.png",
     imageAlt: "BottleCRM - Open Source CRM Solution",
   }}

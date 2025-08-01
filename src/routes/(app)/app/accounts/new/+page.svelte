@@ -6,7 +6,6 @@
   // Lucide icons
   import { 
     Building, 
-    Mail, 
     Phone, 
     Globe, 
     MapPin, 
@@ -32,6 +31,25 @@
   
   /**
    * Object holding the form fields.
+   * @type {{
+   *   name: string;
+   *   type: string;
+   *   industry: string;
+   *   website: string;
+   *   phone: string;
+   *   street: string;
+   *   city: string;
+   *   state: string;
+   *   postalCode: string;
+   *   country: string;
+   *   description: string;
+   *   numberOfEmployees: string;
+   *   annualRevenue: string;
+   *   accountOwnership: string;
+   *   tickerSymbol: string;
+   *   rating: string;
+   *   sicCode: string;
+   * }}
    */
   let formData = {
     name: '',
@@ -55,15 +73,18 @@
 
   /**
    * Object to store field errors.
+   * @type {Record<string, string>}
    */
   let errors = {};
   
   /**
    * Handles changes to form inputs
+   * @param {Event} event
    */
   function handleChange(event) {
-    const { name, value } = event.target;
-    formData[name] = value;
+    const target = /** @type {HTMLInputElement} */ (event.target);
+    const { name, value } = target;
+    formData[/** @type {keyof typeof formData} */ (name)] = value;
     // Clear error when user starts typing
     if (errors[name]) {
       errors[name] = '';
@@ -96,13 +117,13 @@
     }
     
     // Validate number of employees if provided
-    if (formData.numberOfEmployees && (isNaN(formData.numberOfEmployees) || formData.numberOfEmployees < 0)) {
+    if (formData.numberOfEmployees && (isNaN(Number(formData.numberOfEmployees)) || Number(formData.numberOfEmployees) < 0)) {
       errors.numberOfEmployees = 'Please enter a valid number of employees';
       isValid = false;
     }
     
     // Validate annual revenue if provided
-    if (formData.annualRevenue && (isNaN(formData.annualRevenue) || formData.annualRevenue < 0)) {
+    if (formData.annualRevenue && (isNaN(Number(formData.annualRevenue)) || Number(formData.annualRevenue) < 0)) {
       errors.annualRevenue = 'Please enter a valid annual revenue amount';
       isValid = false;
     }
@@ -139,6 +160,10 @@
     errors = {};
   }
 
+  /**
+   * @param {string} message
+   * @param {string} type
+   */
   function showNotification(message, type = 'success') {
     toastMessage = message;
     toastType = type;
@@ -200,7 +225,7 @@
     {/if}
 
     <!-- Main Form -->
-    <form method="POST" use:enhance={({ formData, cancel }) => {
+    <form method="POST" use:enhance={({ cancel }) => {
       if (!validateForm()) {
         cancel();
         return;
@@ -216,7 +241,10 @@
           resetForm();
           setTimeout(() => goto('/app/accounts'), 1500);
         } else if (result.type === 'failure') {
-          showNotification(result.data?.error || 'Failed to create account', 'error');
+          const errorMessage = (result.data && typeof result.data === 'object' && 'error' in result.data && typeof result.data.error === 'string') 
+            ? result.data.error 
+            : 'Failed to create account';
+          showNotification(errorMessage, 'error');
         }
       };
     }} class="space-y-6">
@@ -261,7 +289,7 @@
                 bind:value={formData.type} 
                 onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
-                {#each data.data.accountTypes as [value, label]}
+                {#each data.data.accountTypes as [value, label] (value)}
                   <option value={value}>{label}</option>
                 {/each}
               </select>
@@ -278,7 +306,7 @@
                 bind:value={formData.industry} 
                 onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
-                {#each data.data.industries as [value, label]}
+                {#each data.data.industries as [value, label] (value)}
                   <option value={value}>{label}</option>
                 {/each}
               </select>
@@ -295,7 +323,7 @@
                 bind:value={formData.rating} 
                 onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
-                {#each data.data.ratings as [value, label]}
+                {#each data.data.ratings as [value, label] (value)}
                   <option value={value}>{label}</option>
                 {/each}
               </select>
@@ -312,7 +340,7 @@
                 bind:value={formData.accountOwnership} 
                 onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
-                {#each data.data.accountOwnership as [value, label]}
+                {#each data.data.accountOwnership as [value, label] (value)}
                   <option value={value}>{label}</option>
                 {/each}
               </select>
@@ -441,7 +469,7 @@
                 bind:value={formData.country} 
                 onchange={handleChange}
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-colors">
-                {#each data.data.countries as [value, label]}
+                {#each data.data.countries as [value, label] (value)}
                   <option value={value}>{label}</option>
                 {/each}
               </select>

@@ -58,6 +58,7 @@
     }
 
     // Pagination
+    /** @param {number} pageNum */
     function goToPage(pageNum) {
         const params = new URLSearchParams($page.url.searchParams);
         params.set('page', pageNum.toString());
@@ -65,14 +66,17 @@
     }
 
     // Modal functions
+    /** @param {any} contact */
     function editContact(contact) {
         goto(`/app/contacts/${contact.id}/edit`);
     }
 
+    /** @param {string | Date} dateString */
     function formatDate(dateString) {
         return new Date(dateString).toLocaleDateString();
     }
 
+    /** @param {string} phone */
     function formatPhone(phone) {
         if (!phone) return '';
         // Basic phone formatting - can be enhanced
@@ -145,10 +149,11 @@
                 <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label for="ownerSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Owner
                             </label>
                             <select
+                                id="ownerSelect"
                                 bind:value={selectedOwner}
                                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
@@ -297,7 +302,39 @@
                                         {formatDate(contact.createdAt)}
                                     </div>
                                 </td>
-                                
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button
+                                            onclick={() => goto(`/app/contacts/${contact.id}`)}
+                                            class="p-1.5 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            title="View contact"
+                                        >
+                                            <Eye class="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onclick={() => editContact(contact)}
+                                            class="p-1.5 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            title="Edit contact"
+                                        >
+                                            <Edit class="w-4 h-4" />
+                                        </button>
+                                        <form method="POST" action="?/delete" use:enhance class="inline">
+                                            <input type="hidden" name="contactId" value={contact.id} />
+                                            <button
+                                                type="submit"
+                                                class="p-1.5 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                                                title="Delete contact"
+                                                onclick={(e) => {
+                                                    if (!confirm('Are you sure you want to delete this contact?')) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                            >
+                                                <Trash2 class="w-4 h-4" />
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         {/each}
                     </tbody>

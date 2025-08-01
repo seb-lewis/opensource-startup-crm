@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 
-export async function load({ locals, url, params }) {
+export async function load({ locals, url }) {
     const org = locals.org;
 
     const page = parseInt(url.searchParams.get('page') || '1');
@@ -13,15 +13,15 @@ export async function load({ locals, url, params }) {
 
     try {
         // Build the where clause for filtering
+        /** @type {import('@prisma/client').Prisma.AccountWhereInput} */
         const where = {organizationId: org.id};
 
         // Add status filter
         const status = url.searchParams.get('status');
         if (status === 'open') {
-            where.closedAt = null;
-            where.active = true;
+            where.isActive = true;
         } else if (status === 'closed') {
-            where.closedAt = { not: null };
+            where.isActive = false;
         }
 
         // Fetch accounts with pagination
