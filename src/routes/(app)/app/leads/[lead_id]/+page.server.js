@@ -239,7 +239,7 @@ export const actions = {
     } catch (err) {
       console.error('Error adding comment:', err instanceof Error ? err.message : String(err));
       if (err instanceof z.ZodError) {
-        return fail(400, { status: 'error', message: err.errors[0].message });
+        return fail(400, { status: 'error', message: err.issues[0].message });
       }
       return fail(500, { status: 'error', message: 'Failed to add comment' });
     }

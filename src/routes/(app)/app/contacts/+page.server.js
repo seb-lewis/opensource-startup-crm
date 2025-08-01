@@ -1,5 +1,6 @@
 import prisma from '$lib/prisma';
 import { error } from '@sveltejs/kit';
+import { Prisma } from '@prisma/client';
 
 
 /** @type {import('./$types').PageServerLoad} */
@@ -18,12 +19,12 @@ export async function load({ url, locals }) {
             organizationId: locals.org.id,
             ...(search && {
                 OR: [
-                    { firstName: { contains: search, mode: 'insensitive' } },
-                    { lastName: { contains: search, mode: 'insensitive' } },
-                    { email: { contains: search, mode: 'insensitive' } },
-                    { phone: { contains: search, mode: 'insensitive' } },
-                    { title: { contains: search, mode: 'insensitive' } },
-                    { department: { contains: search, mode: 'insensitive' } }
+                    { firstName: { contains: search, mode: Prisma.QueryMode.insensitive } },
+                    { lastName: { contains: search, mode: Prisma.QueryMode.insensitive } },
+                    { email: { contains: search, mode: Prisma.QueryMode.insensitive } },
+                    { phone: { contains: search, mode: Prisma.QueryMode.insensitive } },
+                    { title: { contains: search, mode: Prisma.QueryMode.insensitive } },
+                    { department: { contains: search, mode: Prisma.QueryMode.insensitive } }
                 ]
             }),
             ...(ownerId && { ownerId })
@@ -104,7 +105,7 @@ export const actions = {
         try {
 
             const data = await request.formData();
-            const contactId = data.get('contactId');
+            const contactId = data.get('contactId')?.toString();
 
             if (!contactId) {
                 throw error(400, 'Contact ID is required');

@@ -33,7 +33,8 @@ export const actions = {
     const subject = form.get('title')?.toString().trim();
     const description = form.get('description')?.toString().trim();
     const accountId = form.get('accountId')?.toString();
-    const dueDate = form.get('dueDate') ? new Date(form.get('dueDate')) : null;
+    const dueDateValue = form.get('dueDate');
+    const dueDate = dueDateValue ? new Date(dueDateValue.toString()) : null;
     const priority = form.get('priority')?.toString() || 'Medium';
     const ownerId = form.get('assignedId')?.toString();
     if (!subject || !accountId || !ownerId) {

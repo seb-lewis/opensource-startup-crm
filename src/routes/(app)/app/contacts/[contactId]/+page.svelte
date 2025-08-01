@@ -1,12 +1,20 @@
 <script>
   import { ArrowLeft, Mail, Phone, Building2, Calendar, User, MapPin, Edit, Plus, ExternalLink, Clock, DollarSign, Target, CheckCircle, Circle, AlertCircle, Users, Star } from '@lucide/svelte';
-  export let data;
-  const { contact } = data;
+  
+  /** @type {{ data: import('./$types').PageData }} */
+  let { data } = $props();
+  
+  const contact = data.contact;
+  
+  if (!contact) {
+    throw new Error('Contact not found');
+  }
 
   // Get primary account relationship
   const primaryAccountRel = contact.accountRelationships?.find(rel => rel.isPrimary);
   const hasMultipleAccounts = contact.accountRelationships?.length > 1;
 
+  /** @param {string | Date} dateStr */
   function formatDate(dateStr) {
     if (!dateStr) return 'N/A';
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -14,6 +22,7 @@
     });
   }
 
+  /** @param {string | Date} dateStr */
   function formatDateTime(dateStr) {
     if (!dateStr) return 'N/A';
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -21,11 +30,13 @@
     });
   }
 
+  /** @param {number} amount */
   function formatCurrency(amount) {
     if (!amount) return '$0';
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
   }
 
+  /** @param {string} status */
   function getStatusColor(status) {
     const colors = {
       'Completed': 'text-green-600 bg-green-50 dark:bg-green-900/20',
@@ -36,16 +47,17 @@
       'NEGOTIATION': 'text-orange-600 bg-orange-50 dark:bg-orange-900/20',
       'PROPOSAL': 'text-purple-600 bg-purple-50 dark:bg-purple-900/20'
     };
-    return colors[status] || 'text-gray-600 bg-gray-50 dark:bg-gray-900/20';
+    return colors[/** @type {keyof typeof colors} */ (status)] || 'text-gray-600 bg-gray-50 dark:bg-gray-900/20';
   }
 
+  /** @param {string} priority */
   function getPriorityColor(priority) {
     const colors = {
       'High': 'text-red-600 bg-red-50 dark:bg-red-900/20',
       'Normal': 'text-blue-600 bg-blue-50 dark:bg-blue-900/20',
       'Low': 'text-gray-600 bg-gray-50 dark:bg-gray-900/20'
     };
-    return colors[priority] || 'text-gray-600 bg-gray-50 dark:bg-gray-900/20';
+    return colors[/** @type {keyof typeof colors} */ (priority)] || 'text-gray-600 bg-gray-50 dark:bg-gray-900/20';
   }
 </script>
 
@@ -256,7 +268,7 @@
                   <div class="text-right">
                     <p class="font-medium text-gray-900 dark:text-white flex items-center gap-1">
                       <DollarSign class="w-4 h-4" />
-                      {formatCurrency(opp.amount)}
+                      {formatCurrency(opp.amount || 0)}
                     </p>
                     <span class="inline-flex px-2 py-1 text-xs rounded-full {getStatusColor(opp.stage)}">
                       {opp.stage.replace('_', ' ')}

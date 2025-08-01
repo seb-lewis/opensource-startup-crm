@@ -6,28 +6,29 @@
   import { User, Mail, Phone, Building, MapPin, FileText, Star, Save, X, ArrowLeft } from '@lucide/svelte';
   import { validatePhoneNumber } from '$lib/utils/phone.js';
   
-  export let data;
+  /** @type {{ data: import('./$types').PageData }} */
+  let { data } = $props();
 
-  let contact = data.contact;
+  const { contact } = data;
   let account = data.account;
   let isPrimary = data.isPrimary;
   let role = data.role;
 
-  let firstName = contact.firstName;
-  let lastName = contact.lastName;
-  let email = contact.email || '';
-  let phone = contact.phone || '';
-  let title = contact.title || '';
-  let department = contact.department || '';
-  let street = contact.street || '';
-  let city = contact.city || '';
-  let state = contact.state || '';
-  let postalCode = contact.postalCode || '';
-  let country = contact.country || '';
-  let description = contact.description || '';
-  let submitting = false;
-  let errorMsg = '';
-  let phoneError = '';
+  let firstName = $state(contact?.firstName || '');
+  let lastName = $state(contact?.lastName || '');
+  let email = $state(contact?.email || '');
+  let phone = $state(contact?.phone || '');
+  let title = $state(contact?.title || '');
+  let department = $state(contact?.department || '');
+  let street = $state(contact?.street || '');
+  let city = $state(contact?.city || '');
+  let stateField = $state(contact?.state || ''); // Renamed to avoid conflict with Svelte's $state
+  let postalCode = $state(contact?.postalCode || '');
+  let country = $state(contact?.country || '');
+  let description = $state(contact?.description || '');
+  let submitting = $state(false);
+  let errorMsg = $state('');
+  let phoneError = $state('');
 
   // Validate phone number on input
   function validatePhone() {
@@ -44,6 +45,7 @@
     }
   }
 
+  /** @param {Event} e */
   async function handleSubmit(e) {
     e.preventDefault();
     submitting = true;
@@ -57,7 +59,7 @@
     formData.append('department', department);
     formData.append('street', street);
     formData.append('city', city);
-    formData.append('state', state);
+    formData.append('state', stateField);
     formData.append('postalCode', postalCode);
     formData.append('country', country);
     formData.append('description', description);
@@ -69,7 +71,7 @@
     });
     if (res.ok) {
       await invalidateAll();
-      goto(`/app/contacts/${contact.id}`);
+      goto(`/app/contacts/${contact?.id}`);
     } else {
       const data = await res.json();
       errorMsg = data?.message || 'Failed to update contact.';
@@ -84,7 +86,7 @@
     <div class="mb-8">
       <div class="flex items-center gap-4 mb-4">
         <button 
-          onclick={() => goto(`/app/contacts/${contact.id}`)}
+          onclick={() => goto(`/app/contacts/${contact?.id}`)}
           class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
         >
           <ArrowLeft class="w-5 h-5" />
@@ -256,7 +258,7 @@
                 <input 
                   id="state" 
                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400" 
-                  bind:value={state} 
+                  bind:value={stateField} 
                   placeholder="CA"
                 />
               </div>
@@ -367,7 +369,7 @@
       <div class="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
         <button
           type="button"
-          onclick={() => goto(`/app/contacts/${contact.id}`)}
+          onclick={() => goto(`/app/contacts/${contact?.id}`)}
           class="px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 dark:focus:ring-gray-400 transition-colors"
         >
           Cancel

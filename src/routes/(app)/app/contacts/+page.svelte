@@ -58,6 +58,7 @@
     }
 
     // Pagination
+    /** @param {number} pageNum */
     function goToPage(pageNum) {
         const params = new URLSearchParams($page.url.searchParams);
         params.set('page', pageNum.toString());
@@ -65,14 +66,17 @@
     }
 
     // Modal functions
+    /** @param {any} contact */
     function editContact(contact) {
         goto(`/app/contacts/${contact.id}/edit`);
     }
 
+    /** @param {string | Date} dateString */
     function formatDate(dateString) {
         return new Date(dateString).toLocaleDateString();
     }
 
+    /** @param {string} phone */
     function formatPhone(phone) {
         if (!phone) return '';
         // Basic phone formatting - can be enhanced
