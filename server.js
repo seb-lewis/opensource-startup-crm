@@ -15,6 +15,7 @@ import accountRoutes from './api/routes/accounts.js';
 import contactRoutes from './api/routes/contacts.js';
 import opportunityRoutes from './api/routes/opportunities.js';
 import taskRoutes from './api/routes/tasks.js';
+import organizationRoutes from './api/routes/organizations.js';
 
 dotenv.config();
 
@@ -85,6 +86,7 @@ app.use('/accounts', accountRoutes);
 app.use('/contacts', contactRoutes);
 app.use('/opportunities', opportunityRoutes);
 app.use('/tasks', taskRoutes);
+app.use('/organizations', organizationRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
