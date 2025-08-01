@@ -14,14 +14,15 @@
     MessageCircle, 
     Github,
     Twitter,
-    Linkedin,
-    Star
+    Linkedin
   } from '@lucide/svelte';
   import { enhance } from '$app/forms';
 
   let isMenuOpen = false;
   let scrollY = 0;
+  /** @type {HTMLFormElement} */
   let newsletterForm;
+  /** @type {string} */
   let newsletterMessage = '';
   let showNewsletterMessage = false;
   
@@ -45,9 +46,12 @@
     window.addEventListener('scroll', handleScroll);
     
     // Close mobile menu when clicking outside
+    /**
+     * @param {Event} event
+     */
     const handleClickOutside = (event) => {
       const nav = document.querySelector('nav');
-      if (isMenuOpen && nav && !nav.contains(event.target)) {
+      if (isMenuOpen && nav && !nav.contains(/** @type {Node} */ (event.target))) {
         isMenuOpen = false;
       }
     };
@@ -243,20 +247,20 @@
             method="POST" 
             action="/?/subscribe" 
             class="max-w-md mx-auto"
-            use:enhance={({ submitter, formData }) => {
-              submitter.disabled = true;
+            use:enhance={({ submitter }) => {
+              if (submitter) /** @type {HTMLButtonElement} */ (submitter).disabled = true;
               return async ({ result, update }) => {
                 if (result.type === 'success') {
-                  newsletterMessage = result.data?.message || 'Successfully subscribed to newsletter!';
+                  newsletterMessage = /** @type {string} */ (result.data?.message) || 'Successfully subscribed to newsletter!';
                   showNewsletterMessage = true;
                   newsletterForm.reset();
                   setTimeout(() => { showNewsletterMessage = false; }, 5000);
                 } else if (result.type === 'failure') {
-                  newsletterMessage = result.data?.message || 'Failed to subscribe. Please try again.';
+                  newsletterMessage = /** @type {string} */ (result.data?.message) || 'Failed to subscribe. Please try again.';
                   showNewsletterMessage = true;
                   setTimeout(() => { showNewsletterMessage = false; }, 5000);
                 }
-                submitter.disabled = false;
+                if (submitter) /** @type {HTMLButtonElement} */ (submitter).disabled = false;
                 await update();
               };
             }}

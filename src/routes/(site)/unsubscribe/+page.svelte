@@ -6,6 +6,7 @@
   export let data;
   
   let unsubscribeForm;
+  /** @type {string} */
   let message = '';
   let showMessage = false;
   let isSuccess = false;
@@ -58,17 +59,17 @@
             method="POST" 
             action="?/unsubscribe"
             use:enhance={({ submitter }) => {
-              submitter.disabled = true;
+              if (submitter) /** @type {HTMLButtonElement} */ (submitter).disabled = true;
               return async ({ result, update }) => {
                 if (result.type === 'success') {
-                  message = result.data?.message || 'Successfully unsubscribed!';
+                  message = /** @type {string} */ (result.data?.message) || 'Successfully unsubscribed!';
                   showMessage = true;
                   isSuccess = true;
                 } else if (result.type === 'failure') {
-                  message = result.data?.message || 'Failed to unsubscribe. Please try again.';
+                  message = /** @type {string} */ (result.data?.message) || 'Failed to unsubscribe. Please try again.';
                   showMessage = true;
                   isSuccess = false;
-                  submitter.disabled = false;
+                  if (submitter) /** @type {HTMLButtonElement} */ (submitter).disabled = false;
                 }
                 await update();
               };

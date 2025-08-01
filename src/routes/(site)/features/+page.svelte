@@ -7,7 +7,6 @@
     TrendingUp, 
     FileText, 
     Smartphone,
-    Database,
     Shield,
     Zap,
     Check,
@@ -20,25 +19,17 @@
     Phone,
     Target,
     PieChart,
-    Filter,
-    Upload,
-    Download,
-    RefreshCw,
     Lock,
     Code,
-    Layers,
     Cloud,
     Server,
     GitBranch,
     Palette,
     Search,
-    Bell,
     UserCheck,
     DollarSign,
-    Archive,
-    Tag,
-    MapPin,
-    Building
+    Database,
+    MapPin
   } from '@lucide/svelte';
 </script>
 

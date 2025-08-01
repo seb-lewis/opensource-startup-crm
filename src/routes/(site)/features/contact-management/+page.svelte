@@ -41,13 +41,21 @@
   } from '@lucide/svelte';
 
   let mounted = false;
+  /** @type {number|null} */
   let activeFaq = null;
   let selectedContact = null;
 
+  /**
+   * @param {number} index
+   */
   function toggleFaq(index) {
     activeFaq = activeFaq === index ? null : index;
   }
 
+  /**
+   * Selects a contact for display
+   * @param {any} contact - The contact object to select
+   */
   function selectContact(contact) {
     selectedContact = contact;
   }
