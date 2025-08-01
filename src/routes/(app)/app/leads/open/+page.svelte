@@ -77,11 +77,17 @@
   ];
   
   // Function to get the full name of a lead
+  /**
+   * @param {any} lead
+   */
   function getFullName(lead) {
     return `${lead.firstName} ${lead.lastName}`.trim();
   }
   
   // Function to map lead status to colors and icons
+  /**
+   * @param {string} status
+   */
   function getStatusConfig(status) {
     switch (status) {
       case 'NEW':
@@ -102,6 +108,9 @@
   }
 
   // Function to get rating config
+  /**
+   * @param {string} rating
+   */
   function getRatingConfig(rating) {
     switch (rating) {
       case 'Hot':
@@ -116,6 +125,9 @@
   }
   
   // Replace fixed date formatting with relative time
+  /**
+   * @param {string | Date | null | undefined} dateString
+   */
   function formatDate(dateString) {
     if (!dateString) return '-';
     return formatDistanceToNow(new Date(dateString), { addSuffix: true });
@@ -134,8 +146,12 @@
     
     return matchesSearch && matchesStatus && matchesSource && matchesRating;
   }).sort((a, b) => {
-    const aValue = a[sortBy];
-    const bValue = b[sortBy];
+    const getFieldValue = (/** @type {any} */ obj, /** @type {string} */ field) => {
+      return obj[field];
+    };
+    
+    const aValue = getFieldValue(a, sortBy);
+    const bValue = getFieldValue(b, sortBy);
     
     if (sortOrder === 'asc') {
       return aValue > bValue ? 1 : -1;
@@ -145,6 +161,9 @@
   });
   
   // Function to toggle sort order
+  /**
+   * @param {string} field
+   */
   function toggleSort(field) {
     if (sortBy === field) {
       sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
@@ -320,7 +339,7 @@
               <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {#each filteredLeads as lead, i}
                   {@const statusConfig = getStatusConfig(lead.status)}
-                  {@const ratingConfig = getRatingConfig(lead.rating)}
+                  {@const ratingConfig = getRatingConfig(lead.rating || '')}
                   <tr 
                     class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
                     in:fly={{y: 20, duration: 300, delay: i * 50}}
@@ -392,7 +411,7 @@
                     </td>
                     <td class="px-4 py-4">
                       <div class="flex items-center gap-2">
-                        {#snippet statusIcon(config)}
+                        {#snippet statusIcon(/** @type {any} */ config)}
                           {@const StatusIcon = config.icon}
                           <StatusIcon class="w-4 h-4 {config.color.split(' ')[1]} flex-shrink-0" />
                         {/snippet}
@@ -440,7 +459,7 @@
         <div class="xl:hidden divide-y divide-gray-200 dark:divide-gray-700">
           {#each filteredLeads as lead, i}
             {@const statusConfig = getStatusConfig(lead.status)}
-            {@const ratingConfig = getRatingConfig(lead.rating)}
+            {@const ratingConfig = getRatingConfig(lead.rating || '')}
             <div 
               class="p-6 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150" 
               in:fly={{y: 20, duration: 300, delay: i * 50}}
@@ -461,7 +480,7 @@
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
-                  {#snippet statusIcon(config)}
+                  {#snippet statusIcon(/** @type {any} */ config)}
                     {@const StatusIcon = config.icon}
                     <StatusIcon class="w-4 h-4 {config.color.split(' ')[1]}" />
                   {/snippet}

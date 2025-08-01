@@ -35,6 +35,7 @@
 
     /**
      * Object holding the form fields.
+     * @type {Record<string, string>}
      */
     let formData = {
       lead_title: '',
@@ -73,18 +74,25 @@
   
     /**
      * Object to store field errors.
+     * @type {Record<string, string>}
      */
     let errors = {};
     
     /**
      * Handles changes to form inputs
+     * @param {Event} event
      */
     function handleChange(event) {
-      const { name, value } = event.target;
-      formData[name] = value;
-      // Clear error when user starts typing
-      if (errors[name]) {
-        errors[name] = '';
+      const target = event.target;
+      if (!target || !('name' in target && 'value' in target)) return;
+      const name = target.name;
+      const value = target.value;
+      if (typeof name === 'string' && typeof value === 'string') {
+        formData[name] = value;
+        // Clear error when user starts typing
+        if (errors[name]) {
+          errors[name] = '';
+        }
       }
     }
     
@@ -139,7 +147,7 @@
       }
       
       // Validate probability range
-      if (formData.probability && (formData.probability < 0 || formData.probability > 100)) {
+      if (formData.probability && (Number(formData.probability) < 0 || Number(formData.probability) > 100)) {
         errors.probability = 'Probability must be between 0 and 100';
         isValid = false;
       }
@@ -190,6 +198,10 @@
       errors = {};
     }
 
+    /**
+     * @param {string} message
+     * @param {'success' | 'error'} type
+     */
     function showNotification(message, type = 'success') {
       toastMessage = message;
       toastType = type;
@@ -284,7 +296,10 @@
           resetForm();
           setTimeout(() => goto('/app/leads/open'), 1500);
         } else if (result.type === 'failure') {
-          showNotification(result.data?.error || 'Failed to create lead', 'error');
+          const errorMessage = result.data && typeof result.data === 'object' && 'error' in result.data 
+            ? String(result.data.error) 
+            : 'Failed to create lead';
+          showNotification(errorMessage, 'error');
         }
       };
     }} class="space-y-6">
