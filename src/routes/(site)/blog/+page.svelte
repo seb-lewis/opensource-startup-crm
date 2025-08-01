@@ -13,7 +13,11 @@
     hasPreviousPage: false
   };
   
-  // Format date for display
+  /**
+   * Format date for display
+   * @param {string|Date} dateString - The date to format
+   * @returns {string} The formatted date string
+   */
   function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -23,7 +27,12 @@
     });
   }
   
-  // Limit text to a certain number of words
+  /**
+   * Limit text to a certain number of words
+   * @param {string} text - The text to limit
+   * @param {number} limit - The word limit
+   * @returns {string} The limited text
+   */
   function limitWords(text, limit = 30) {
     if (!text) return '';
     const words = text.split(' ');
@@ -32,7 +41,10 @@
     return words.slice(0, limit).join(' ') + '...';
   }
   
-  // Change page function for pagination
+  /**
+   * Change page function for pagination
+   * @param {number} newPage - The new page number
+   */
   function changePage(newPage) {
     if (newPage < 1 || newPage > pagination.totalPages) return;
     
@@ -69,7 +81,7 @@
             <div class="flex flex-col lg:flex-row">
               <div class="flex-1">
                 <div class="flex items-center gap-3 text-sm text-gray-500 mb-2">
-                  <time datetime={post.createdAt}>{formatDate(post.createdAt)}</time>
+                  <time datetime={post.createdAt.toISOString()}>{formatDate(post.createdAt)}</time>
                   <span class="inline-block h-1 w-1 rounded-full bg-gray-300"></span>
                 </div>
                 
