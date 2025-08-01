@@ -210,15 +210,15 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-4">
                 <div>
-                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Name</label>
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Name</span>
                   <p class="mt-1 text-sm text-gray-900 dark:text-white">{account.name || 'N/A'}</p>
                 </div>
                 <div>
-                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Industry</label>
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Industry</span>
                   <p class="mt-1 text-sm text-gray-900 dark:text-white">{account.industry || 'N/A'}</p>
                 </div>
                 <div>
-                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Website</label>
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Website</span>
                   {#if account.website}
                     <a 
                       href={account.website.startsWith('http') ? account.website : `https://${account.website}`} 
@@ -235,7 +235,7 @@
                   {/if}
                 </div>
                 <div>
-                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</label>
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</span>
                   {#if account.phone}
                     <a href={`tel:${account.phone}`} class="mt-1 inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline">
                       <Phone class="w-4 h-4 mr-1" />
@@ -246,7 +246,7 @@
                   {/if}
                 </div>
                 <div>
-                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</label>
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</span>
                   {#if account.email}
                     <a href={`mailto:${account.email}`} class="mt-1 inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline">
                       <Mail class="w-4 h-4 mr-1" />
@@ -260,27 +260,27 @@
               
               <div class="space-y-4">
                 <div>
-                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Annual Revenue</label>
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Annual Revenue</span>
                   <p class="mt-1 text-sm text-gray-900 dark:text-white">
                     {account.annualRevenue ? formatCurrency(account.annualRevenue) : 'N/A'}
                   </p>
                 </div>
                 <div>
-                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Employees</label>
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Employees</span>
                   <p class="mt-1 text-sm text-gray-900 dark:text-white">
                     {account.numberOfEmployees ? account.numberOfEmployees.toLocaleString() : 'N/A'}
                   </p>
                 </div>
                 <div>
-                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Ownership</label>
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Ownership</span>
                   <p class="mt-1 text-sm text-gray-900 dark:text-white">{account.accountOwnership || 'N/A'}</p>
                 </div>
                 <div>
-                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Rating</label>
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Rating</span>
                   <p class="mt-1 text-sm text-gray-900 dark:text-white">{account.rating || 'N/A'}</p>
                 </div>
                 <div>
-                  <label class="text-sm font-medium text-gray-500 dark:text-gray-400">SIC Code</label>
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">SIC Code</span>
                   <p class="mt-1 text-sm text-gray-900 dark:text-white">{account.sicCode || 'N/A'}</p>
                 </div>
               </div>
@@ -288,7 +288,7 @@
             
             {#if account.street || account.city || account.state || account.country}
               <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Address</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Address</span>
                 <div class="mt-1 flex items-start text-sm text-gray-900 dark:text-white">
                   <MapPin class="w-4 h-4 mr-2 mt-0.5 text-gray-400" />
                   <address class="not-italic">
@@ -302,7 +302,7 @@
             
             {#if account.description}
               <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</span>
                 <p class="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-line">{account.description}</p>
               </div>
             {/if}
@@ -323,11 +323,11 @@
             
             <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 grid grid-cols-2 gap-4 text-sm">
               <div>
-                <label class="text-gray-500 dark:text-gray-400">Created</label>
+                <span class="text-gray-500 dark:text-gray-400">Created</span>
                 <p class="text-gray-900 dark:text-white">{formatDate(account.createdAt)}</p>
               </div>
               <div>
-                <label class="text-gray-500 dark:text-gray-400">Last Updated</label>
+                <span class="text-gray-500 dark:text-gray-400">Last Updated</span>
                 <p class="text-gray-900 dark:text-white">{formatDate(account.updatedAt)}</p>
               </div>
             </div>
@@ -794,7 +794,14 @@
   {#if showCloseModal}
     <div class="fixed inset-0 z-50 overflow-y-auto">
       <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick={() => showCloseModal = false}></div>
+        <div 
+          class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" 
+          role="button"
+          tabindex="0"
+          aria-label="Close modal"
+          onclick={() => showCloseModal = false}
+          onkeydown={(e) => e.key === 'Escape' && (showCloseModal = false)}
+        ></div>
         
         <div class="relative transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
           <form method="POST" action="?/closeAccount">

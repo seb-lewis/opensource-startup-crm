@@ -10,9 +10,9 @@ export async function load() {
 export const actions = {
   default: async ({ request }) => {
     const data = await request.formData();
-    const title = data.get('title');
-    const excerpt = data.get('excerpt');
-    const slug = data.get('slug');
+    const title = data.get('title')?.toString();
+    const excerpt = data.get('excerpt')?.toString();
+    const slug = data.get('slug')?.toString();
     
     if (!title || !excerpt || !slug) {
       return { error: 'All fields are required' };
@@ -20,9 +20,9 @@ export const actions = {
     try {
       await prisma.blogPost.create({
         data: {
-          title,
-          excerpt,
-          slug,
+          title: title,
+          excerpt: excerpt,
+          slug: slug,
           seoTitle:"",
           seoDescription: "",
           draft: true
@@ -30,7 +30,7 @@ export const actions = {
       });
       return { success: true };
     } catch (e) {
-      return { error: e?.message || 'Error creating blog' };
+      return { error: /** @type {any} */ (e)?.message || 'Error creating blog' };
     }
   }
 };

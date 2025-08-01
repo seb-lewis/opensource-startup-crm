@@ -21,12 +21,20 @@ export const actions = {
 
   'add-block': async ({ request, params }) => {
     const form = await request.formData();
+    const type = form.get('type')?.toString();
+    const content = form.get('content')?.toString();
+    const displayOrder = form.get('displayOrder')?.toString();
+    
+    if (!type || !content || !displayOrder) {
+      return { success: false, error: 'Missing required fields' };
+    }
+    
     await prisma.blogContentBlock.create({
       data: {
         blogId: params.id,
-        type: form.get('type'),
-        content: form.get('content'),
-        displayOrder: Number(form.get('displayOrder')),
+        type: /** @type {import('@prisma/client').ContentBlockType} */ (type),
+        content: content,
+        displayOrder: Number(displayOrder),
         draft: form.get('draft') === 'on'
       }
     });
@@ -34,11 +42,19 @@ export const actions = {
   },
   'edit-block': async ({ request }) => {
     const form = await request.formData();
+    const id = form.get('id')?.toString();
+    const type = form.get('type')?.toString();
+    const content = form.get('content')?.toString();
+    
+    if (!id || !type || !content) {
+      return { success: false, error: 'Missing required fields' };
+    }
+    
     await prisma.blogContentBlock.update({
-      where: { id: form.get('id') },
+      where: { id: id },
       data: {
-        type: form.get('type'),
-        content: form.get('content'),
+        type: /** @type {import('@prisma/client').ContentBlockType} */ (type),
+        content: content,
         draft: form.get('draft') === 'on'
       }
     });
@@ -46,19 +62,25 @@ export const actions = {
   },
   'delete-block': async ({ request }) => {
     const form = await request.formData();
+    const id = form.get('id')?.toString();
+    
+    if (!id) {
+      return { success: false, error: 'Missing block ID' };
+    }
+    
     await prisma.blogContentBlock.delete({
-      where: { id: form.get('id') }
+      where: { id: id }
     });
     return { success: true };
   },
   'update-blog': async ({ request, params }) => {
     const form = await request.formData();
     const data = {
-      title: form.get('title'),
-      seoTitle: form.get('seoTitle'),
-      seoDescription: form.get('seoDescription'),
-      excerpt: form.get('excerpt'),
-      slug: form.get('slug'),
+      title: form.get('title')?.toString() || '',
+      seoTitle: form.get('seoTitle')?.toString() || '',
+      seoDescription: form.get('seoDescription')?.toString() || '',
+      excerpt: form.get('excerpt')?.toString() || '',
+      slug: form.get('slug')?.toString() || '',
       draft: form.get('draft') === 'on'
     };
     await prisma.blogPost.update({
@@ -70,7 +92,13 @@ export const actions = {
   ,
   'reorder-blocks': async ({ request, params }) => {
     const form = await request.formData();
-    const order = JSON.parse(form.get('order'));
+    const orderStr = form.get('order')?.toString();
+    
+    if (!orderStr) {
+      return { success: false, error: 'Missing order data' };
+    }
+    
+    const order = JSON.parse(orderStr);
     for (const { id, displayOrder } of order) {
       await prisma.blogContentBlock.update({
         where: { id },
