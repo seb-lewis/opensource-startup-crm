@@ -14,6 +14,7 @@ BottleCRM is a SaaS CRM platform built with SvelteKit, designed for startups and
 - **Icons**: Lucide Svelte
 - **Validation**: Zod
 - **Package Manager**: pnpm
+- **Type Checking**: JSDoc style type annotations (no TypeScript)
 
 ## Development Commands
 
@@ -90,6 +91,42 @@ npx prisma studio
 - All form labels must be properly associated with form controls for accessibility
 - Use Zod for form validation
 - Follow existing patterns in `/contacts`, `/leads`, `/accounts` for consistency
+
+## Coding Standards
+
+### Type Safety
+- **NO TypeScript**: This project uses JavaScript with JSDoc style type annotations only
+- **JSDoc Comments**: Use JSDoc syntax for type information and documentation
+- **Type Checking**: Use `pnpm run check` to validate types via JSDoc annotations
+- **Function Parameters**: Document parameter types using JSDoc `@param` tags
+- **Return Types**: Document return types using JSDoc `@returns` tags
+
+### JSDoc Examples
+```javascript
+/**
+ * Updates a contact in the database
+ * @param {string} contactId - The contact identifier
+ * @param {Object} updateData - The data to update
+ * @param {string} updateData.name - Contact name
+ * @param {string} updateData.email - Contact email
+ * @param {string} organizationId - Organization ID for data isolation
+ * @returns {Promise<Object>} The updated contact object
+ */
+async function updateContact(contactId, updateData, organizationId) {
+  // Implementation
+}
+
+/**
+ * @typedef {Object} User
+ * @property {string} id - User ID
+ * @property {string} email - User email
+ * @property {string} name - User name
+ * @property {string[]} organizationIds - Array of organization IDs
+ */
+
+/** @type {User|null} */
+let currentUser = null;
+```
 
 ## Security Requirements
 - Never expose cross-organization data
