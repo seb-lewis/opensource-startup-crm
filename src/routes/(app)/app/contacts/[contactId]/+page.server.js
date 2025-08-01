@@ -4,6 +4,15 @@ export async function load({ params, locals }) {
   const org = locals.org;
   const contact = await prisma.contact.findUnique({
     where: { id: params.contactId, organizationId: org.id },
+    include: {
+      owner: {
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
+      }
+    }
   });
 
   if (!contact) {

@@ -17,6 +17,7 @@ export async function load({ locals, url }) {
 
     // Get accounts for the account dropdown (if no specific accountId is provided)
     const accountId = url.searchParams.get('accountId');
+    /** @type {Array<{id: string, name: string, organizationId: string}>} */
     let accounts = [];
     
     if (!accountId) {
@@ -68,8 +69,8 @@ export const actions = {
         }
 
         const data = await request.formData();
-        const firstName = data.get('firstName')?.toString().trim();
-        const lastName = data.get('lastName')?.toString().trim();
+        const firstName = data.get('firstName')?.toString().trim() || '';
+        const lastName = data.get('lastName')?.toString().trim() || '';
         const email = data.get('email')?.toString().trim();
         const phone = data.get('phone')?.toString().trim();
         const title = data.get('title')?.toString().trim();
@@ -246,7 +247,7 @@ export const actions = {
                     description: `Created contact: ${firstName} ${lastName}${accountId ? ` and linked to account` : ''}`,
                     newValues: { contact, accountRelationship: accountId ? { accountId, role, isPrimary } : null },
                     userId: locals.user.id,
-                    organizationId: validatedOrganizationId || null
+                    organizationId: locals.org.id
                 }
             });
 

@@ -5,7 +5,7 @@ import { redirect } from '@sveltejs/kit';
 export async function handle({ event, resolve }) {
 	const sessionId = await event.cookies.get('session');
 	// console.log(sessionId, '-----------------sessionid')
-	let user = false
+	let user = null;
 	if(sessionId && sessionId!=''){
 	  user = await prisma.user.findFirst({
 		where: {

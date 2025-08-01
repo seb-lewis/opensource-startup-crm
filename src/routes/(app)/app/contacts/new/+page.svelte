@@ -33,6 +33,7 @@
         role: form?.values?.role || ''
     });
     
+    /** @type {Record<string, string>} */
     const errors = $derived(form?.errors || {});
     
     // Find the selected account for display
@@ -42,7 +43,7 @@
     
     function handleSubmit() {
         isSubmitting = true;
-        return async ({ update }) => {
+        return async (/** @type {{ update: Function }} */ { update }) => {
             await update();
             isSubmitting = false;
         };
