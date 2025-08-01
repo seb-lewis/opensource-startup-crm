@@ -4,10 +4,10 @@
   /** @type {import('./$types').PageProps} */
   let { form } = $props();
 
-  let title = $state(form?.data?.title ?? '');
-  let excerpt = $state(form?.data?.excerpt ?? '');
+  let title = $state('');
+  let excerpt = $state('');
   
-  function make_slug(title) {
+  function make_slug(/** @type {any} */ title) {
     return title
       .toLowerCase()
       .replace(/\s+/g, '-')

@@ -24,7 +24,7 @@
       {#each data.blogs as blog}
         <tr class="hover:bg-gray-50">
           <td class="py-2 px-4 border-b"><a href="/admin/blogs/{blog.id}/">{blog.title}</a> - <a href="/admin/blogs/{blog.id}/edit/">Edit</a></td>
-          <td class="py-2 px-4 border-b">{blog.category}</td>
+          <td class="py-2 px-4 border-b">N/A</td>
           <td class="py-2 px-4 border-b">
             {#if blog.draft}
               <span class="inline-block px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded">Draft</span>

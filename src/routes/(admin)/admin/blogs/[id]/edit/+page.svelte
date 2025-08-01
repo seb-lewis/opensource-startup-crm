@@ -2,17 +2,16 @@
   import { dndzone } from "svelte-dnd-action";
   /** @type {{ data: import('./$types').PageData }} */
   export let data;
-  export let form;
   /** @type {any} */
-  let blog = data.blog;
+  let blog = /** @type {any} */ (data)?.blog || {};
   /** @type {any[]} */
-  let contentBlocks = blog.contentBlocks
+  let contentBlocks = blog?.contentBlocks || []
 
   // Drag and drop handler for reordering content blocks
-  async function handleReorder({ detail }) {
+  async function handleReorder(/** @type {any} */ { detail }) {
     // detail.items is the new order of contentBlocks
     // Reorder contentBlocks array to match the new order from dndzone
-    contentBlocks = detail.items.map((item, idx) => ({
+    contentBlocks = detail.items.map((/** @type {any} */ item, /** @type {any} */ idx) => ({
       ...item,
       displayOrder: idx + 1
     }));
@@ -29,6 +28,7 @@
   let message = "";
 
   // For editing/adding content blocks
+  /** @type {any} */
   let editingBlockId = null;
   let newBlock = {
     type: "MARKDOWN",
@@ -37,14 +37,14 @@
     draft: false,
   };
 
-  function startEditBlock(block) {
+  function startEditBlock(/** @type {any} */ block) {
     editingBlockId = block.id;
     /** @type {any} */ (block)._editContent = block.content;
     /** @type {any} */ (block)._editType = block.type;
     /** @type {any} */ (block)._editDraft = block.draft;
   }
 
-  function cancelEditBlock(block) {
+  function cancelEditBlock(/** @type {any} */ block) {
     editingBlockId = null;
     delete block._editContent;
     delete block._editType;
@@ -61,12 +61,13 @@
 			.replace(/\s+/g, '-')
 			.replace(/[^\w-]+/g, '');
 	}
-  let editable_title = form?.data?.title ?? blog.title;
-  let slug = form?.data?.slug ?? blog.slug;
+  let editable_title = blog?.title || '';
+  let slug = blog?.slug || '';
 
 
   // Initialize previous_editable_title_for_slug_generation to undefined
   // so we can detect the first run of the reactive block.
+  /** @type {any} */
   let previous_editable_title_for_slug_generation = undefined;
 
   $: {
