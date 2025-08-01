@@ -91,6 +91,11 @@ Create a `.env` file based on the following template:
 # Database Configuration
 DATABASE_URL="postgresql://postgres:password@localhost:5432/bottlecrm?schema=public"
 
+# JWT Secret (required for authentication)
+# Generate a secure secret using openssl:
+#   openssl rand -base64 32
+JWT_SECRET="<your-generated-secret>"
+
 # Google OAuth (Optional)
 GOOGLE_CLIENT_ID=""
 GOOGLE_CLIENT_SECRET=""

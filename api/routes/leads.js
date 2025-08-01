@@ -159,6 +159,39 @@ router.get('/metadata', async (req, res) => {
  *         schema:
  *           type: integer
  *           default: 10
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search by name, email, or company
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [NEW, PENDING, CONTACTED, QUALIFIED, UNQUALIFIED, CONVERTED]
+ *         description: Filter by lead status
+ *       - in: query
+ *         name: leadSource
+ *         schema:
+ *           type: string
+ *           enum: [WEB, PHONE_INQUIRY, PARTNER_REFERRAL, COLD_CALL, TRADE_SHOW, EMPLOYEE_REFERRAL, ADVERTISEMENT, OTHER]
+ *         description: Filter by lead source
+ *       - in: query
+ *         name: industry
+ *         schema:
+ *           type: string
+ *         description: Filter by industry
+ *       - in: query
+ *         name: rating
+ *         schema:
+ *           type: string
+ *           enum: [Hot, Warm, Cold]
+ *         description: Filter by rating
+ *       - in: query
+ *         name: converted
+ *         schema:
+ *           type: boolean
+ *         description: Filter by conversion status
  *     responses:
  *       200:
  *         description: List of leads
@@ -179,10 +212,82 @@ router.get('/', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    
+    const { 
+      search, 
+      status, 
+      leadSource, 
+      industry, 
+      rating, 
+      converted 
+    } = req.query;
+
+    // Build where clause for filtering
+    let whereClause = { 
+      organizationId: req.organizationId 
+    };
+
+    // Add search filter (search in firstName, lastName, email, company)
+    if (search) {
+      whereClause.OR = [
+        { 
+          firstName: { 
+            contains: search, 
+            mode: 'insensitive' 
+          } 
+        },
+        { 
+          lastName: { 
+            contains: search, 
+            mode: 'insensitive' 
+          } 
+        },
+        { 
+          email: { 
+            contains: search, 
+            mode: 'insensitive' 
+          } 
+        },
+        { 
+          company: { 
+            contains: search, 
+            mode: 'insensitive' 
+          } 
+        }
+      ];
+    }
+
+    // Add status filter
+    if (status) {
+      whereClause.status = status;
+    }
+
+    // Add leadSource filter
+    if (leadSource) {
+      whereClause.leadSource = leadSource;
+    }
+
+    // Add industry filter
+    if (industry) {
+      whereClause.industry = {
+        contains: industry,
+        mode: 'insensitive'
+      };
+    }
+
+    // Add rating filter
+    if (rating) {
+      whereClause.rating = rating;
+    }
+
+    // Add converted filter
+    if (converted !== undefined) {
+      whereClause.isConverted = converted === 'true';
+    }
 
     const [leads, total] = await Promise.all([
       prisma.lead.findMany({
-        where: { organizationId: req.organizationId },
+        where: whereClause,
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
@@ -193,17 +298,25 @@ router.get('/', async (req, res) => {
         }
       }),
       prisma.lead.count({
-        where: { organizationId: req.organizationId }
+        where: whereClause
       })
     ]);
 
+    // Calculate pagination info
+    const totalPages = Math.ceil(total / limit);
+    const hasNext = page < totalPages;
+    const hasPrev = page > 1;
+
     res.json({
+      success: true,
       leads,
       pagination: {
         page,
         limit,
         total,
-        pages: Math.ceil(total / limit)
+        totalPages,
+        hasNext,
+        hasPrev
       }
     });
   } catch (error) {
@@ -297,9 +410,20 @@ router.get('/:id', async (req, res) => {
  *                 type: string
  *               company:
  *                 type: string
+ *               title:
+ *                 type: string
  *               status:
  *                 type: string
+ *                 enum: [NEW, PENDING, CONTACTED, QUALIFIED, UNQUALIFIED, CONVERTED]
  *               leadSource:
+ *                 type: string
+ *                 enum: [WEB, PHONE_INQUIRY, PARTNER_REFERRAL, COLD_CALL, TRADE_SHOW, EMPLOYEE_REFERRAL, ADVERTISEMENT, OTHER]
+ *               industry:
+ *                 type: string
+ *               rating:
+ *                 type: string
+ *                 enum: [Hot, Warm, Cold]
+ *               description:
  *                 type: string
  *     responses:
  *       201:
@@ -309,21 +433,61 @@ router.get('/:id', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, company, status, leadSource } = req.body;
+    const { 
+      firstName, 
+      lastName, 
+      email, 
+      phone, 
+      company, 
+      title,
+      status, 
+      leadSource,
+      industry,
+      rating,
+      description
+    } = req.body;
 
     if (!firstName || !lastName || !email) {
       return res.status(400).json({ error: 'First name, last name, and email are required' });
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+
+    // Validate status if provided
+    const validStatuses = ['NEW', 'PENDING', 'CONTACTED', 'QUALIFIED', 'UNQUALIFIED', 'CONVERTED'];
+    if (status && !validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid status value' });
+    }
+
+    // Validate leadSource if provided
+    const validSources = ['WEB', 'PHONE_INQUIRY', 'PARTNER_REFERRAL', 'COLD_CALL', 'TRADE_SHOW', 'EMPLOYEE_REFERRAL', 'ADVERTISEMENT', 'OTHER'];
+    if (leadSource && !validSources.includes(leadSource)) {
+      return res.status(400).json({ error: 'Invalid lead source value' });
+    }
+
+    // Validate rating if provided
+    const validRatings = ['Hot', 'Warm', 'Cold'];
+    if (rating && !validRatings.includes(rating)) {
+      return res.status(400).json({ error: 'Invalid rating value' });
+    }
+
     const lead = await prisma.lead.create({
       data: {
-        firstName,
-        lastName,
-        email,
-        phone,
-        company,
-        status: status || 'NEW',
-        leadSource,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phone?.trim() || null,
+        company: company?.trim() || null,
+        title: title?.trim() || null,
+        status: status || 'PENDING',
+        leadSource: leadSource || null,
+        industry: industry?.trim() || null,
+        rating: rating || null,
+        description: description?.trim() || null,
         organizationId: req.organizationId,
         ownerId: req.userId
       },
@@ -337,6 +501,9 @@ router.post('/', async (req, res) => {
     res.status(201).json(lead);
   } catch (error) {
     console.error('Create lead error:', error);
+    if (error.code === 'P2002') {
+      return res.status(409).json({ error: 'A lead with this email already exists in this organization' });
+    }
     res.status(500).json({ error: 'Internal server error' });
   }
 });
