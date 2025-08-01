@@ -24,3 +24,4 @@ BottleCRM is a modern CRM application built with:
 - We need to ensure access control is strictly enforced based on user roles.
 - No record should be accessible unless the user or the org has the appropriate permissions.
 - When implementing forms in sveltekit A form label must be associated with a control
+- svelte 5+ style coding standards should be followed
