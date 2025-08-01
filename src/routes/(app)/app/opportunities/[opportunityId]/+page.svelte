@@ -32,20 +32,40 @@
     'CLOSED_LOST': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
   };
 
-  const getStageColor = (stage) => stageColors[stage] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+  /**
+   * @param {string} stage
+   * @returns {string}
+   */
+  const getStageColor = (stage) => stageColors[/** @type {keyof typeof stageColors} */ (stage)] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
   
+  /**
+   * @param {number | null} amount
+   * @returns {string}
+   */
   const formatCurrency = (amount) => {
     return amount ? `$${amount.toLocaleString()}` : 'N/A';
   };
 
+  /**
+   * @param {string | Date | null} date
+   * @returns {string}
+   */
   const formatDate = (date) => {
     return date ? new Date(date).toLocaleDateString() : 'N/A';
   };
 
+  /**
+   * @param {string | Date | null} date
+   * @returns {string}
+   */
   const formatDateTime = (date) => {
     return date ? new Date(date).toLocaleString() : 'N/A';
   };
 
+  /**
+   * @param {string} stage
+   * @returns {number}
+   */
   const getStageProgress = (stage) => {
     const stages = ['PROSPECTING', 'QUALIFICATION', 'PROPOSAL', 'NEGOTIATION', 'CLOSED_WON'];
     const index = stages.indexOf(stage);
@@ -212,7 +232,7 @@
             <div class="flex items-center justify-between">
               <span class="text-sm text-gray-500 dark:text-gray-400">Days to Close</span>
               <span class="font-semibold text-gray-900 dark:text-white">
-                {opportunity.closeDate ? Math.ceil((new Date(opportunity.closeDate) - new Date()) / (1000 * 60 * 60 * 24)) : 'N/A'}
+                {opportunity.closeDate ? Math.ceil((new Date(opportunity.closeDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) : 'N/A'}
               </span>
             </div>
           </div>

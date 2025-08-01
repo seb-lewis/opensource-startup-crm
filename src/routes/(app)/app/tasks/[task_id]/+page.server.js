@@ -67,10 +67,10 @@ export async function load({ params, locals }) {
 
     // Format dueDate for input[type=date] if it exists, otherwise it might cause issues
     // Also ensure it's in YYYY-MM-DD format for display if not using toLocaleDateString()
-    if (task.dueDate) {
-        // Ensure it's a string in 'YYYY-MM-DD' format for the input field
-        task.dueDate = new Date(task.dueDate).toISOString().split('T')[0];
-    }
+    const formattedTask = {
+        ...task,
+        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : task.dueDate
+    };
     
     // Assuming locals.user is populated by your auth setup
     const loggedInUser = locals.user ? {
@@ -81,7 +81,7 @@ export async function load({ params, locals }) {
     } : null;
 
     return {
-        task,
+        task: formattedTask,
         users,
         accounts,
         loggedInUser

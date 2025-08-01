@@ -16,13 +16,6 @@
     { value: 'CLOSED_LOST', label: 'Closed Lost', color: 'text-red-600' }
   ];
 
-  function handleSubmit() {
-    return async ({ update }) => {
-      isSubmitting = true;
-      await update();
-      isSubmitting = false;
-    };
-  }
 </script>
 
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
@@ -77,7 +70,13 @@
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">Close Opportunity</h2>
       </div>
       
-      <form method="POST" use:enhance={handleSubmit} class="p-6 space-y-6">
+      <form method="POST" use:enhance={() => {
+        return async ({ update }) => {
+          isSubmitting = true;
+          await update();
+          isSubmitting = false;
+        };
+      }} class="p-6 space-y-6">
         {#if form?.error}
           <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
             <div class="flex items-center gap-2">

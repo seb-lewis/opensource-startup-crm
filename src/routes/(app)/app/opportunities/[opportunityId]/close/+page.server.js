@@ -1,6 +1,11 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import prisma from '$lib/prisma';
 
+/**
+ * @param {Object} options
+ * @param {Record<string, string>} options.params
+ * @param {App.Locals} options.locals
+ */
 export async function load({ params, locals }) {
   if (!locals.org?.id) {
     throw error(403, 'Organization access required');
@@ -26,15 +31,21 @@ export async function load({ params, locals }) {
 }
 
 export const actions = {
+  /**
+   * @param {Object} options
+   * @param {Request} options.request
+   * @param {Record<string, string>} options.params
+   * @param {App.Locals} options.locals
+   */
   default: async ({ request, params, locals }) => {
     if (!locals.org?.id) {
       return fail(403, { error: 'Organization access required' });
     }
 
     const formData = await request.formData();
-    const status = formData.get('status');
-    const closeDate = formData.get('closeDate');
-    const closeReason = formData.get('closeReason');
+    const status = formData.get('status')?.toString();
+    const closeDate = formData.get('closeDate')?.toString();
+    const closeReason = formData.get('closeReason')?.toString();
 
     // Validate required fields
     if (!status || !closeDate) {
@@ -42,7 +53,8 @@ export const actions = {
     }
 
     // Validate status
-    if (!['CLOSED_WON', 'CLOSED_LOST'].includes(status)) {
+    const validCloseStatuses = ['CLOSED_WON', 'CLOSED_LOST'];
+    if (!status || !validCloseStatuses.includes(status)) {
       return fail(400, { error: 'Invalid status selected' });
     }
 
@@ -63,12 +75,14 @@ export const actions = {
       }
 
       // Update the opportunity with closing details
-      const updatedOpportunity = await prisma.opportunity.update({
+      const opportunityStage = /** @type {import('@prisma/client').OpportunityStage} */ (status);
+      
+      await prisma.opportunity.update({
         where: { id: params.opportunityId },
         data: {
-          stage: status, // CLOSED_WON or CLOSED_LOST
+          stage: opportunityStage, // CLOSED_WON or CLOSED_LOST
           status: status === 'CLOSED_WON' ? 'SUCCESS' : 'FAILED',
-          closeDate: new Date(closeDate),
+          closeDate: closeDate ? new Date(closeDate) : null,
           description: closeReason ? 
             (opportunity.description ? `${opportunity.description}\n\nClose Reason: ${closeReason}` : `Close Reason: ${closeReason}`) 
             : opportunity.description,
@@ -97,7 +111,7 @@ export const actions = {
       throw redirect(303, `/app/opportunities/${opportunity.id}`);
     } catch (err) {
       console.error('Error closing opportunity:', err);
-      if (err.status === 303) {
+      if (err && typeof err === 'object' && 'status' in err && err.status === 303) {
         throw err; // Re-throw redirect
       }
       return fail(500, { error: 'Failed to close opportunity. Please try again.' });
