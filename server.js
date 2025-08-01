@@ -20,7 +20,7 @@ dotenv.config();
 
 const app = express();
 const logger = createLogger();
-const PORT = process.env.API_PORT || 3001;
+const PORT = process.env.PORT || 3001;
 
 // Trust proxy setting for rate limiting
 app.set('trust proxy', 1);
