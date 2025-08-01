@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
   import { Briefcase, Edit3, Trash2, Clock, User, Building, Calendar, AlertCircle, MessageCircle, Send, CheckCircle, RotateCcw, XCircle } from '@lucide/svelte';
   
   export let data;
   let comment = '';
   let errorMsg = '';
   
-  function getPriorityColor(priority) {
+  function getPriorityColor(priority: string) {
     switch (priority) {
       case 'High': return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800';
       case 'Medium': return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800';
@@ -14,7 +14,7 @@
     }
   }
   
-  function getStatusColor(status) {
+  function getStatusColor(status: string) {
     switch (status) {
       case 'OPEN': return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800';
       case 'IN_PROGRESS': return 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800';
@@ -23,7 +23,7 @@
     }
   }
   
-  function getStatusIcon(status) {
+  function getStatusIcon(status: string) {
     switch (status) {
       case 'OPEN': return AlertCircle;
       case 'IN_PROGRESS': return RotateCcw;
