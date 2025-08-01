@@ -3,13 +3,24 @@
   
   export let data;
 
-  // Function to format date, can be moved to a utility file if used elsewhere
-  function formatDate(dateString) {
-    if (!dateString) return 'N/A';
+  /**
+   * Format date for display
+   * @param {string|Date|null|undefined} dateInput - Date to format
+   * @returns {string} Formatted date string
+   */
+  function formatDate(dateInput) {
+    if (!dateInput) return 'N/A';
+    /** @type {Intl.DateTimeFormatOptions} */
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+    return date.toLocaleDateString(undefined, options);
   }
 
+  /**
+   * Get status icon component
+   * @param {string} status - Task status
+   * @returns {any} Icon component
+   */
   function getStatusIcon(status) {
     switch (status) {
       case 'Completed': return CheckCircle2;
@@ -21,6 +32,11 @@
     }
   }
 
+  /**
+   * Get priority icon component
+   * @param {string} priority - Task priority
+   * @returns {any} Icon component
+   */
   function getPriorityIcon(priority) {
     switch (priority) {
       case 'High': return AlertCircle;
@@ -118,7 +134,7 @@
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
-                      {#snippet statusIcon(status)}
+                      {#snippet statusIcon(/** @type {string} */ status)}
                         {@const StatusIcon = getStatusIcon(status)}
                         <StatusIcon 
                           size={16} 
@@ -145,7 +161,7 @@
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
-                      {#snippet priorityIcon(priority)}
+                      {#snippet priorityIcon(/** @type {string} */ priority)}
                         {@const PriorityIcon = getPriorityIcon(priority)}
                         <PriorityIcon 
                           size={16} 
@@ -241,7 +257,7 @@
               
               <div class="flex flex-wrap gap-2 mb-3">
                 <div class="flex items-center gap-1">
-                  {#snippet statusIconCard(status)}
+                  {#snippet statusIconCard(/** @type {string} */ status)}
                     {@const StatusIcon = getStatusIcon(status)}
                     <StatusIcon 
                       size={14} 
@@ -267,7 +283,7 @@
                 </div>
                 
                 <div class="flex items-center gap-1">
-                  {#snippet priorityIconCard(priority)}
+                  {#snippet priorityIconCard(/** @type {string} */ priority)}
                     {@const PriorityIcon = getPriorityIcon(priority)}
                     <PriorityIcon 
                       size={14} 

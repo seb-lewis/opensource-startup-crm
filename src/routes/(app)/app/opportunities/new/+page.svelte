@@ -8,6 +8,7 @@
     let { data, form } = $props();
 
     let isSubmitting = $state(false);
+    /** @type {string[]} */
     let selectedContacts = $state([]);
     
     // Form data with defaults, including pre-selected account
@@ -54,6 +55,9 @@
         'Other'
     ];
 
+    /**
+     * @param {string} contactId
+     */
     function handleContactToggle(contactId) {
         if (selectedContacts.includes(contactId)) {
             selectedContacts = selectedContacts.filter(id => id !== contactId);
@@ -71,30 +75,6 @@
         return 0;
     }
 
-    // Only create enhance function on client side
-    let enhanceForm = $state();
-    
-    $effect(() => {
-        if (browser) {
-            enhanceForm = enhance(({ submitter, cancel }) => {
-                if (isSubmitting) {
-                    cancel();
-                    return;
-                }
-                
-                isSubmitting = true;
-
-                return async ({ result, update }) => {
-                    isSubmitting = false;
-                    await update();
-                    
-                    if (result.type === 'redirect') {
-                        goto(result.location);
-                    }
-                };
-            });
-        }
-    });
 </script>
 
 <svelte:head>
@@ -135,7 +115,22 @@
             </div>
         {/if}
 
-        <form method="POST" action="?/create" use:enhanceForm class="space-y-8">
+        <form method="POST" action="?/create" use:enhance={() => {
+            if (isSubmitting) {
+                return;
+            }
+            
+            isSubmitting = true;
+
+            return async ({ result, update }) => {
+                isSubmitting = false;
+                await update();
+                
+                if (result.type === 'redirect') {
+                    goto(result.location);
+                }
+            };
+        }} class="space-y-8">
             <!-- Basic Information -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-6 flex items-center">
@@ -174,7 +169,7 @@
                             bind:value={formData.accountId}
                             required
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                            disabled={data.preSelectedAccountId}
+                            disabled={!!data.preSelectedAccountId}
                         >
                             <option value="">Select an account</option>
                             {#each data.accounts as account}
@@ -300,9 +295,9 @@
 
                     <!-- Expected Revenue (calculated) -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <div class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Expected Revenue
-                        </label>
+                        </div>
                         <div class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-600 text-gray-900 dark:text-white">
                             ${calculateExpectedRevenue()}
                         </div>
@@ -350,9 +345,9 @@
                     <!-- Associated Contacts -->
                     {#if data.accountContacts.length > 0}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                            <div class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                                 Associated Contacts {data.preSelectedAccountId ? `from ${data.preSelectedAccountName}` : ''}
-                            </label>
+                            </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-40 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-700">
                                 {#each data.accountContacts as contact}
                                     <label class="flex items-center space-x-2 cursor-pointer hover:bg-white dark:hover:bg-gray-600 p-2 rounded">

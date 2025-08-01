@@ -34,6 +34,7 @@
     let sortDirection = $state('desc');
     let showFilters = $state(false);
     let showDeleteModal = $state(false);
+    /** @type {any} */
     let opportunityToDelete = $state(null);
     let deleteLoading = $state(false);
 
@@ -81,6 +82,10 @@
     const filteredOpportunities = $derived(getFilteredOpportunities());
 
 
+    /**
+     * @param {number | null} amount
+     * @returns {string}
+     */
     function formatCurrency(amount) {
         if (!amount) return '-';
         return new Intl.NumberFormat('en-US', {
@@ -91,6 +96,10 @@
         }).format(amount);
     }
 
+    /**
+     * @param {string | Date | null} date
+     * @returns {string}
+     */
     function formatDate(date) {
         if (!date) return '-';
         return new Date(date).toLocaleDateString('en-US', {
@@ -100,6 +109,9 @@
         });
     }
 
+    /**
+     * @param {string} field
+     */
     function toggleSort(field) {
         if (sortField === field) {
             sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
@@ -109,6 +121,9 @@
         }
     }
 
+    /**
+     * @param {any} opportunity
+     */
     function openDeleteModal(opportunity) {
         opportunityToDelete = opportunity;
         showDeleteModal = true;

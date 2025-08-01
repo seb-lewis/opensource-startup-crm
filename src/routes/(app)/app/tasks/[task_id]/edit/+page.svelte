@@ -14,7 +14,17 @@
     let task = { ...data.task }; // Create a copy to avoid mutating prop directly initially
     
     // Ensure dueDate is in YYYY-MM-DD for the input, or empty string if null
-    task.dueDate = task.dueDate ? task.dueDate.split('T')[0] : '';
+    let dueDateString = '';
+    if (task.dueDate) {
+        /** @type {any} */
+        const dateValue = task.dueDate;
+        if (typeof dateValue === 'string') {
+            dueDateString = dateValue.split('T')[0];
+        } else if (dateValue instanceof Date) {
+            dueDateString = dateValue.toISOString().split('T')[0];
+        }
+    }
+    task = { ...task, dueDate: dueDateString };
 
     const users = data.users;
     const accounts = data.accounts;

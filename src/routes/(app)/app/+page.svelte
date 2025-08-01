@@ -13,6 +13,7 @@
         Plus
     } from '@lucide/svelte';
     
+    /** @type {any} */
     export let data;
     
     $: metrics = data.metrics || {};

@@ -102,18 +102,18 @@ export const actions = {
 
         const formData = await request.formData();
         const data = {
-            name: formData.get('name'),
-            accountId: formData.get('accountId'),
-            stage: formData.get('stage'),
-            amount: formData.get('amount'),
-            closeDate: formData.get('closeDate'),
-            probability: formData.get('probability'),
-            type: formData.get('type'),
-            leadSource: formData.get('leadSource'),
-            nextStep: formData.get('nextStep'),
-            description: formData.get('description'),
-            ownerId: formData.get('ownerId'),
-            contactIds: formData.getAll('contactIds')
+            name: formData.get('name')?.toString(),
+            accountId: formData.get('accountId')?.toString(),
+            stage: formData.get('stage')?.toString(),
+            amount: formData.get('amount')?.toString(),
+            closeDate: formData.get('closeDate')?.toString(),
+            probability: formData.get('probability')?.toString(),
+            type: formData.get('type')?.toString(),
+            leadSource: formData.get('leadSource')?.toString(),
+            nextStep: formData.get('nextStep')?.toString(),
+            description: formData.get('description')?.toString(),
+            ownerId: formData.get('ownerId')?.toString(),
+            contactIds: formData.getAll('contactIds').map(id => id.toString())
         };
 
         // Validation
@@ -129,6 +129,12 @@ export const actions = {
         
         if (!data.stage) {
             errors.stage = 'Stage is required';
+        }
+
+        // Validate stage is a valid enum value
+        const validStages = ['PROSPECTING', 'QUALIFICATION', 'PROPOSAL', 'NEGOTIATION', 'CLOSED_WON', 'CLOSED_LOST'];
+        if (data.stage && !validStages.includes(data.stage)) {
+            errors.stage = 'Invalid stage selected';
         }
         
         if (data.amount && (isNaN(parseFloat(data.amount)) || parseFloat(data.amount) < 0)) {
@@ -158,12 +164,21 @@ export const actions = {
                 return fail(400, { error: 'Invalid account selected' });
             }
 
+            // At this point validation has passed so these values are guaranteed to exist
+            if (!data.name || !data.accountId || !data.stage) {
+                return fail(400, { error: 'Missing required fields after validation' });
+            }
+            
+            const name = data.name;
+            const accountId = data.accountId;
+            const stage = /** @type {import('@prisma/client').OpportunityStage} */ (data.stage);
+
             // Create opportunity
             const opportunity = await prisma.opportunity.create({
                 data: {
-                    name: data.name,
-                    accountId: data.accountId,
-                    stage: data.stage,
+                    name,
+                    accountId,
+                    stage,
                     amount: data.amount ? parseFloat(data.amount) : null,
                     closeDate: data.closeDate ? new Date(data.closeDate) : null,
                     probability: data.probability ? parseFloat(data.probability) : null,
@@ -204,7 +219,7 @@ export const actions = {
 
             throw redirect(302, `/app/opportunities/${opportunity.id}`);
         } catch (error) {
-            if (error.status === 302) {
+            if (error && typeof error === 'object' && 'status' in error && error.status === 302) {
                 throw error; // Re-throw redirect
             }
             console.error('Error creating opportunity:', error);

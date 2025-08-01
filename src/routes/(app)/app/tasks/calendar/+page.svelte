@@ -7,16 +7,18 @@
   let selectedDate = today.toISOString().slice(0, 10);
 
   // Group tasks by due date (YYYY-MM-DD)
+  /** @type {Record<string, Array<{id: string, title: string, description: string, type: string, status: string, priority: string}>>} */
   let tasksByDate = {};
   if (data) {
     for (const t of data.tasks) {
       if (!t.dueDate) continue;
       const date = (typeof t.dueDate === 'string' ? t.dueDate : t.dueDate?.toISOString?.())?.slice(0, 10);
+      if (!date) continue;
       if (!tasksByDate[date]) tasksByDate[date] = [];
       tasksByDate[date].push({
         id: t.id,
-        title: t.subject,
-        description: t.description,
+        title: t.subject || 'Untitled Task',
+        description: t.description || '',
         type: 'CRM',
         status: t.status,
         priority: t.priority
@@ -42,18 +44,37 @@
   $: monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
   
+  /**
+   * Format date to YYYY-MM-DD string
+   * @param {Date} date - Date to format
+   * @returns {string} Formatted date string
+   */
   function formatDate(date) {
     return date.toISOString().slice(0, 10);
   }
   
+  /**
+   * Check if date is today
+   * @param {Date|null} date - Date to check
+   * @returns {boolean} True if date is today
+   */
   function isToday(date) {
-    return date && formatDate(date) === today.toISOString().slice(0, 10);
+    return !!(date && formatDate(date) === today.toISOString().slice(0, 10));
   }
   
+  /**
+   * Check if date has tasks
+   * @param {Date|null} date - Date to check
+   * @returns {boolean} True if date has tasks
+   */
   function hasTasks(date) {
-    return date && tasksByDate[formatDate(date)]?.length > 0;
+    return !!(date && tasksByDate[formatDate(date)]?.length > 0);
   }
   
+  /**
+   * Select a day on the calendar
+   * @param {Date|null} date - Date to select
+   */
   function selectDay(date) {
     if (date) {
       selectedDate = formatDate(date);
@@ -73,6 +94,11 @@
     selectedDate = today.toISOString().slice(0, 10);
   }
 
+  /**
+   * Get priority icon component
+   * @param {string} priority - Task priority
+   * @returns {any} Icon component
+   */
   function getPriorityIcon(priority) {
     switch (priority?.toLowerCase()) {
       case 'high': return AlertCircle;
@@ -81,6 +107,11 @@
     }
   }
 
+  /**
+   * Get status icon component
+   * @param {string} status - Task status
+   * @returns {any} Icon component
+   */
   function getStatusIcon(status) {
     if (status?.toLowerCase() === 'completed') return CheckCircle2;
     return Circle;
@@ -212,7 +243,7 @@
                   >
                     <div class="flex items-start justify-between mb-2">
                       <h4 class="font-medium text-gray-900 dark:text-white overflow-hidden text-ellipsis" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{task.title}</h4>
-                      {#snippet statusIcon(status)}
+                      {#snippet statusIcon(/** @type {string} */ status)}
                         {@const StatusIcon = getStatusIcon(status)}
                         <StatusIcon 
                           class="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 ml-2"
@@ -234,7 +265,7 @@
                                {task.priority === 'High' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' : 
                                  task.priority === 'Medium' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' : 
                                  'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300'}">
-                          {#snippet priorityIcon(priority)}
+                          {#snippet priorityIcon(/** @type {string} */ priority)}
                             {@const PriorityIcon = getPriorityIcon(priority)}
                             <PriorityIcon class="w-3 h-3" />
                           {/snippet}
